@@ -1,0 +1,45 @@
+name: GOLDEN_DOCS Construct
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: golden-docs-construct-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  construct:
+    name: 🏛️ Generate Deterministic Construct
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate GOLDEN_DOCS Construct
+        shell: bash
+        run: |
+          set -euo pipefail
+          scripts/generate_construct.sh GOLDEN_DOCS_CONSTRUCT.txt GOLDEN_DOCS_MANIFEST.txt
+
+      - name: Verify Deterministic Output
+        shell: bash
+        run: |
+          set -euo pipefail
+          scripts/generate_construct.sh GOLDEN_DOCS_CONSTRUCT.verify.txt GOLDEN_DOCS_MANIFEST.verify.txt
+          cmp GOLDEN_DOCS_CONSTRUCT.txt GOLDEN_DOCS_CONSTRUCT.verify.txt
+          cmp GOLDEN_DOCS_MANIFEST.txt GOLDEN_DOCS_MANIFEST.verify.txt
+          rm -f GOLDEN_DOCS_CONSTRUCT.verify.txt GOLDEN_DOCS_MANIFEST.verify.txt
+
+      - name: Upload Construct Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: GOLDEN_DOCS_Construct_${{ github.run_number }}_${{ github.sha }}
+          path: |
+            GOLDEN_DOCS_MANIFEST.txt
+            GOLDEN_DOCS_CONSTRUCT.txt
