@@ -1,15 +1,18 @@
 # MANIFEST
 
-Generated: 2026-09-21T07:28:50.198483Z
+Generated: 2026-09-21T17:41:55.598296Z
 
-239 files, sha256 + size for each.
+246 files, sha256 + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
+| `.github/workflows/construct.yml` | `43659ec4927de503...` | 2398 |
+| `CLAUDE.md` | `0764dd0c2546e50f...` | 4324 |
+| `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
-| `context/MONOREPO_CLAUDE.md` | `5fdcd29c70e9d63c...` | 41424 |
+| `context/MONOREPO_CLAUDE.md` | `5b9b8926bea9a04c...` | 44160 |
 | `context/full-system-context.md` | `ca017bd41b9e6526...` | 40221 |
-| `context/golden-docs-index.md` | `008a13f94a79298b...` | 243195 |
+| `context/golden-docs-index.md` | `53832f72b0d549e7...` | 244346 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -31,6 +34,7 @@ Generated: 2026-09-21T07:28:50.198483Z
 | `docs/CarePyre/docs/HIPAA_COMPLIANCE_NORTHSTAR.md` | `c3a3a6f8ec18c7fc...` | 13710 |
 | `docs/CarePyre/docs/SIP_QR_ONBOARDING_NORTHSTAR.md` | `cafef9fa52d11251...` | 16058 |
 | `docs/DEADWEIGHT/NORTHSTAR.md` | `fa3aca934b405f79...` | 20365 |
+| `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `4ccda9f2d01e9fa0...` | 13786 |
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
 | `docs/DUNG/NORTHSTAR.md` | `cba57dc3b9e59a59...` | 29395 |
 | `docs/ECOWAR/docs/ARENA_API.md` | `87e271cd126e4ab9...` | 8446 |
@@ -164,7 +168,7 @@ Generated: 2026-09-21T07:28:50.198483Z
 | `docs/MJOLNIR/docs/NORTHSTAR.md` | `0b3017312e55f300...` | 7435 |
 | `docs/MJOLNIR/docs/PUSH_NOTIFICATIONS.md` | `b435891822ea4331...` | 5484 |
 | `docs/MJOLNIR/docs/SPEC.md` | `1c8a628788e78fc7...` | 5679 |
-| `docs/OpenExecutive/NORTHSTAR.md` | `60eb1b5ffb3bf200...` | 26667 |
+| `docs/OpenExecutive/NORTHSTAR.md` | `f90d337bb0d2ad8d...` | 30494 |
 | `docs/PAPERCRAFT/MODDING.md` | `f606630ebf4f96c3...` | 26365 |
 | `docs/PAPERCRAFT/NORTHSTAR.md` | `db1bdad034ec6709...` | 106497 |
 | `docs/PAPERCRAFT/docs/NORTHSTAR_MODULAR_BUILDING.md` | `2eeeda199b066423...` | 25316 |
@@ -235,6 +239,7 @@ Generated: 2026-09-21T07:28:50.198483Z
 | `docs/TIPJAR-wiki/Product-Core-Acceptance.md` | `cac741f900f2461f...` | 9961 |
 | `docs/TYLER/HQ-CANON-TYLER-105-EPOCH-EXTINCTION.md` | `f96885888663882a...` | 10284 |
 | `docs/TYLER/HQ-SPEC-LORE-104-QUEEN-SALLY-DOCTRINE.md` | `3a938fd7efcae201...` | 12563 |
+| `docs/TYLER/README.md` | `5b4eebaa2bf91daf...` | 120449 |
 | `docs/TYLER/engine/broadway_spec.md` | `31a3a669a800e1cc...` | 24609 |
 | `docs/TYLER/just_a_duck.md` | `95c53a5e7378f248...` | 992 |
 | `docs/TYLER/multiverse_heroes.md` | `169869e86060b833...` | 94533 |
@@ -244,4 +249,6 @@ Generated: 2026-09-21T07:28:50.198483Z
 | `docs/gpt2-alpine-c/NORTHSTAR.md` | `f5398dcca6f61790...` | 15152 |
 | `docs/gpt2-alpine-c/docs/GAME_AI_NORTHSTAR.md` | `c2701ad6692a199c...` | 11211 |
 | `docs/gpt2-alpine-c/docs/TOWERPRINT.md` | `0a085de28f89b324...` | 9295 |
+| `docs/ladybug/README.md` | `a6ddaa17ca3fdc4a...` | 4482 |
 | `docs/shankpit-460/docs2/NORTHSTAR.md` | `18d29b55a15981cf...` | 14098 |
+| `scripts/generate_construct.sh` | `48f6eda5d91e5e56...` | 3130 |
