@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: 2026-09-21T17:41:55.598296Z
+Generated: 2026-09-21T17:58:11.913972Z
 
-246 files, sha256 + size for each.
+248 files, sha256 + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -34,8 +34,10 @@ Generated: 2026-09-21T17:41:55.598296Z
 | `docs/CarePyre/docs/HIPAA_COMPLIANCE_NORTHSTAR.md` | `c3a3a6f8ec18c7fc...` | 13710 |
 | `docs/CarePyre/docs/SIP_QR_ONBOARDING_NORTHSTAR.md` | `cafef9fa52d11251...` | 16058 |
 | `docs/DEADWEIGHT/NORTHSTAR.md` | `fa3aca934b405f79...` | 20365 |
-| `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `4ccda9f2d01e9fa0...` | 13786 |
+| `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `98513b842ddb0574...` | 16274 |
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
+| `docs/DEADWEIGHT/docs/img/s513_desktop_match.png` | `d02ad05afd78accd...` | 11115 |
+| `docs/DEADWEIGHT/docs/img/s513_desktop_menu.png` | `21f9b655f67cd883...` | 4083 |
 | `docs/DUNG/NORTHSTAR.md` | `cba57dc3b9e59a59...` | 29395 |
 | `docs/ECOWAR/docs/ARENA_API.md` | `87e271cd126e4ab9...` | 8446 |
 | `docs/ECOWAR/docs/NORTHSTAR_LIVING_MAP.md` | `1c1a72555f0c17b6...` | 41751 |
