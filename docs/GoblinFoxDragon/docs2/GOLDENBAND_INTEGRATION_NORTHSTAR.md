@@ -1,0 +1,248 @@
+# GOLDENBAND → GFD Animation Integration — Northstar
+
+*Written 2026-08-05. Founder, real-time, across two messages: "how are we gonna do animations for
+arena or dragonsnshit? i can make some models in blender? where do i rig and animate also blender
+or do we build our own? then how do we play the animations in the game do we need to write some
+kind of engine?" → "ok i need it rigged up for GFD" → (after being told GOLDENBAND has no
+mesh/skin format yet and no Blender asset exists anywhere in the monorepo to design one against)
+→ "write the full implementation plan including what blender assets are needed from the founder
+full plan to md somewhere synced to git."*
+
+**Status (updated same day):** S144-06 (Phase 1, box-rig) shipped and live-verified in both
+REDGARDEN and GFD's `battlegrounds_gui` — real Tyler animation, in production. S144-07 (Phase 2)
+is now split further than originally planned, since it turned out to have its own buildable-now
+half: the `.gskel`/`.gmesh` binary formats, C loaders, real CPU vertex-weighted skinning, and a
+synthetic proof rig (F9 in REDGARDEN's `apps/arena`) are all built and live-verified — a real
+tapered, continuous, multi-bone-blended mesh, not boxes. The Blender-side scripts (armature
+template + exporter, `GOLDENBAND/tools/blender_export/`) are written against the same format, but
+**unrun** — no Blender in this environment, so they're unverified until the founder has one. §4's
+checklist and the axis-conversion caveat in `export_gband_rig.py`'s own header are the load-bearing
+parts once real Blender testing starts.
+
+---
+
+## 1. What exists today, checked directly against the real code
+
+### GOLDENBAND (`/home/fatbaby/GOLDENBAND`, standalone repo, HQ-SPEC-SIM-100 §8 build step 1)
+
+`.gband` is a **flat, semantics-free motion asset** — a fixed 84-byte header (magic, version,
+tick_rate, duration_ticks, num_channels, skeleton_hash, content_hash) followed by row-major
+float32 channel data. The C sampler (`src/gband.c`) is exactly what it claims to be and nothing
+more:
+
+- `gb_sample(clip, tick)` — clamps `tick`, returns a pointer into `clip->data`. Pure array
+  indexing.
+- `gb_blend(a, b, w, out, n)` — `out[i] = a[i] + (b[i]-a[i])*w` for every channel. A plain per-
+  channel lerp with **no rotation-awareness** (no quaternion/euler special-casing at this layer).
+- `gb_verify` — sha256 check against `content_hash`.
+
+There is no joint/bone/skeleton struct anywhere in `gband.h`/`gband.c`. `skeleton_hash` is a raw
+32-byte field carried through the header for future validation; nothing resolves it to an actual
+skeleton today.
+
+`tools/gbtool`'s BVH importer (`bvh.go`) **does** parse the BVH `HIERARCHY` block — joint names,
+parent/child nesting, `OFFSET` lines — but only to derive the flat channel-name list
+(`"Hips/Chest.Zrotation"`-style dotted/slashed strings) and channel count. `OFFSET` values are
+read past but never stored (`BVHJoint` only has `Name`+`Channels`). After import, the tree and all
+rest-pose offsets are discarded; the manifest (`<name>.gband.json`) stores only `channels: []string`
+in flat order, and the binary's `skeleton_hash` is hard-coded to 32 zero bytes with an explicit
+"no skeleton asset resolution yet (v0 scope)" comment.
+
+No mesh, skin-weight, vertex, or glTF code exists anywhere in the repo — confirmed by grep and by
+`GBAND_FORMAT.md`'s own "what v0 does not cover" list (glTF import, skeleton assets, retargeting).
+
+**Bottom line: GOLDENBAND today can sample and blend an animation curve. It cannot tell you what a
+character looks like, what its skeleton is, or how to skin a mesh to it. All of that is new work.**
+
+### GFD's `apps2/battlegrounds_gui` (the bespoke SDL2/OpenGL client — not the real Bedrock client)
+
+- **Rendering**: modern shader-based, VAO/VBO + GLSL (`main.c:1182-1203`, `#version 150`, Lambert
+  diffuse, `uMVP`/`uModel`/`uColor`/`uLightDir` uniforms). `upload_mesh`/`draw_mesh`
+  (`main.c:1323-1342`) build/draw interleaved pos+normal geometry via `glDrawArrays`. (HUD text
+  uses separate legacy immediate-mode GL — irrelevant to this work.)
+- **Characters today**: every hero/mob is a hardcoded stack of unit cubes. `draw_hero_model`
+  (`main.c:1434+`) is a `switch(hero_id)` where each of ~18-20 heroes is 1-4 `BOX(...)` macro
+  calls transforming/drawing one shared `cube_mesh`. No mesh loading, no skinning, no bones,
+  anywhere.
+- **"Animation" today**: `compute_squish` (`main.c:2581`) is a decaying-cosine squash/stretch
+  bounce applied uniformly to every box on movement/cast triggers. `hero_facing_rad[]`
+  (`update_facing_from_motion`, `main.c:2558-2570`) is derived client-side from position deltas
+  between snapshots — there is **no facing/yaw field on the wire protocol at all**
+  (`ArenaHeroSnapshot`, `protocol.h:220-353`, carries position/hp/cooldowns/status timers, nothing
+  directional). There is no idle/walk/attack state machine, just one scalar bounce.
+- **Texturing**: none exists. No `IMG_Load`/`SDL_image`/`glTexImage2D`/`stbi_*` anywhere in this
+  app. All geometry is flat-shaded, `uColor`-tinted only.
+- No `.blend`/`.fbx`/`.gltf`/`.glb` file exists anywhere in the monorepo (checked, repo-wide).
+
+---
+
+## 2. Two-phase plan
+
+Rigging up GOLDENBAND for GFD is really two separable projects: **(1) prove the animation-playback
+mechanism works at all**, which needs no art asset, and **(2) render a real, continuously-deforming
+skinned character**, which needs one. Building (2) blind — inventing a mesh/skin file format with
+no real content to test it against — is how you end up redesigning it the moment real geometry
+shows up. So: Phase 1 first, Phase 2 once there's something to import.
+
+### Phase 1 — procedural box-rig proof (buildable now, zero founder dependency) — **S144-06**
+
+Goal: a small skeleton, driven by a **real** `.gband` clip sampled through the **real** `gb_sample`/
+`gb_blend` C functions, visibly animating inside `battlegrounds_gui` — proving the sample → forward-
+kinematics → render chain end to end, before any mesh/skin design work happens.
+
+- **Skeleton**: a small hand-authored joint list (suggested: `Hips` (root) → `Spine` → `Head`,
+  plus `L_Arm`/`R_Arm` off `Spine` — 5 joints), hardcoded as a plain C struct array (name, parent
+  index, rest local translation) in a new bridge file. **Not a new file format yet** — this is
+  intentionally the cheapest possible skeleton representation, since inventing `.gskel` now with
+  only this one synthetic rig to validate it against would be the same blind-design problem Phase
+  2 is deferred to avoid.
+- **Motion data — via the pipeline that already ships, not a new generator**: hand-write
+  `idle.bvh`/`walk.bvh` text fixtures matching that 5-joint hierarchy (BVH is plain text — trivial
+  to author by hand for 5 joints/a few frames), run them through the existing, tested
+  `gbtool import --bvh` (S144-01) to produce real `.gband`/`.gband.json` files. Commit those as
+  test assets under `apps2/battlegrounds_gui/assets/goldenband_test/`. This exercises the real
+  shipped importer, not a shortcut.
+- **Runtime FK**: per joint, per tick — sample the clip's rotation channels (`Xrotation`/
+  `Yrotation`/`Zrotation`, standard BVH convention: only the root carries translation channels;
+  children's local translation is their fixed rest offset), convert Euler → quaternion, compose
+  local transform = rest-offset-translation + quaternion rotation, multiply by the parent's
+  already-computed world transform (joints processed in parent-before-child order, guaranteed by
+  construction since the array is authored that way). This is standard, well-understood forward
+  kinematics — no new math concepts, just needs writing.
+- **Render**: draw **one existing unit cube per joint**, scaled/oriented along the parent→child
+  offset, at that joint's computed world transform — reusing `cube_mesh`/`draw_mesh`/the existing
+  shader completely unchanged. Zero new vertex format, zero shader changes, zero new rendering
+  primitives.
+- **Integration point**: a new debug-spawned test entity behind a dev hotkey, **not** a
+  replacement of any real hero's art — keeps blast radius on live gameplay at zero.
+- **Animation selection**: reuse the existing pattern exactly — `update_facing_from_motion`
+  already derives client state (facing) from position deltas with no wire-protocol change; idle-
+  vs-walk selection for the test entity follows the same client-derived-from-motion approach (the
+  test entity can patrol a short back-and-forth path to demonstrate both states).
+
+Deliverable: a real, visible, screenshot-verifiable animated stick-figure-of-boxes in
+`battlegrounds_gui`, moved by real `.gband` data through the real C sampler. This is the "do we
+need to write some kind of engine" answer, concretely built: yes, and this is it, minus the mesh.
+
+### Phase 2 — true vertex-weighted skinned mesh (blocked on a real Blender asset) — **S144-07**
+
+Goal: replace the box-per-joint placeholder with a real continuous mesh that deforms smoothly
+across joints, authored in Blender.
+
+- **New formats in `GOLDENBAND/format/`**, specified in the same fixed-binary-table style as
+  `GBAND_FORMAT.md`:
+  - **`.gskel`** — joint count, then per joint: name, parent index (`-1` for root), rest local
+    translation (vec3) + rest local rotation (quaternion), and a **precomputed inverse-bind
+    matrix** (4×4 float32 — computed once by the exporter via Blender's own `mathutils`, so the C
+    runtime never has to invert a matrix).
+  - **`.gmesh`** — vertex count, then per vertex: position (vec3), normal (vec3), UV (vec2, held
+    for Phase 2 but unused for texturing until a later pass), up to 4 bone indices + 4 normalized
+    weights; plus a triangle index buffer.
+- **Blender export script** (new, `GOLDENBAND/tools/blender_export/export_gband_rig.py`): a `bpy`
+  script that walks the selected Armature + Mesh + vertex groups to emit `.gskel`/`.gmesh`.
+  **Animation export needs no new code at all** — it reuses Blender's own built-in BVH exporter
+  feeding straight into the existing, already-shipped `gbtool import --bvh` path.
+- **Runtime skinning — CPU, deliberately, not GPU**: for each vertex, `skinned_pos = Σ weight_k *
+  (joint_world[k] * inverse_bind[k] * bind_pos)`, recomputed each frame and pushed via
+  `glBufferSubData` into the existing dynamic vertex buffer. Chosen specifically so **the existing
+  shader (`VS_SRC`/`FS_SRC`) needs zero changes** — no bone-index/weight attributes, no shader-side
+  skinning matrix palette. One character at a time, this is cheap enough on CPU; a GPU skinning
+  pass is a real, separate, later optimization if/when many skinned characters are on screen at
+  once.
+- **Texturing**: genuinely new work (no `IMG_Load`/`SDL_image`/`glTexImage2D` exists in this app
+  today) — not required for a first cut. Flat-shaded `uColor` tinting, matching the current art
+  style, is an acceptable v1; a textured pass is separate follow-on work.
+
+---
+
+## 3. Open design decisions, settled now so a future session doesn't re-litigate them
+
+- Rotations: quaternion throughout (rest pose and animated), BVH Euler channels converted to
+  quaternion at bind/sample time.
+- Translation: root-only carries translation channels (standard BVH/motion-capture convention);
+  every other joint's local translation is its fixed rest offset.
+- Skinning: CPU linear blend skinning, not GPU/shader-based, for both phases.
+- No LOD, no multi-mesh-per-character, no texturing in v1 of either phase.
+- Inverse-bind matrices are precomputed by the exporter, never inverted at runtime in C.
+
+---
+
+## 4. What the founder needs to do in Blender
+
+This is the concrete, actionable list — Phase 2 cannot start without these, but **items 1-4 can
+be done anytime, in parallel with someone building Phase 1**, since they don't depend on our
+export tooling existing yet:
+
+1. **Model** any low-poly character — doesn't need to be final art, just needs to exist. A simple
+   humanoid or creature is fine.
+2. **Get the matching armature into your scene**: open Blender's Scripting tab, open
+   `GOLDENBAND/tools/blender_export/create_tyler_armature.py`, click Run Script. Creates
+   `TylerRig` with the exact 5 bones (`Hips`/`Spine`/`Head`/`L_Arm`/`R_Arm`) already driving Tyler
+   — you don't need to place bones by hand or worry about matching names. Position/scale your mesh
+   around it in Blender's normal (Z-up) view.
+3. **Skin it**: select your mesh, then shift-select the armature, `Ctrl+P` → **"With Automatic
+   Weights"**. Blender computes the vertex weights for you — no manual weight painting needed for
+   a first pass. (Manual touch-ups in Weight Paint mode are fine later if the auto-weights look
+   wrong at a joint, same standard Blender workflow either way.)
+4. **Author (or apply) an Idle action and a Walk action** on the armature — Blender's Action
+   Editor/NLA, standard keyframe animation. A short, simple loop is enough for a first pass; it
+   doesn't need to be polished.
+5. **Export the animations**: `File → Export → Motion Capture (.bvh)`, once per action (e.g.
+   `idle.bvh`, `walk.bvh`). No plugin needed — stock Blender feature, and it's exactly the file
+   format `gbtool import --bvh` already consumes today (S144-01, shipped).
+6. **Export the mesh + skeleton**: with your mesh selected (Armature modifier pointing at
+   `TylerRig`), run `GOLDENBAND/tools/blender_export/export_gband_rig.py` (Scripting tab, or
+   `blender --background yourfile.blend --python export_gband_rig.py -- <out_dir>`). Writes
+   `<meshname>.gskel` + `<meshname>.gmesh`. **This script is unrun/unverified** (see its own
+   header) — the first real check is whether the exported mesh looks upright and correctly
+   proportioned once loaded in-engine, not sideways or mirrored. If it's wrong, the fix is almost
+   certainly the axis-conversion matrix at the top of that file, not the mesh/rig itself.
+6. **Mesh/skin export (Phase 2 only)** needs the custom `export_gband_rig.py` script from §2,
+   which doesn't exist yet — so for now, only the BVH action exports in step 5 are immediately
+   usable by us. Steps 1-4 (model + rig + weight-paint) can happen anytime; the actual `.gskel`/
+   `.gmesh` export step is a Phase 2 dependency on our side, not something blocked on the founder.
+
+---
+
+## 4a. Queued rig targets (2026-08-19)
+
+Founder, real-time: "i need a crab rig for mnm" / "i need a rig for medusa" / "use the ffxi medusa
+render as an example." Two concrete first candidates for §4's checklist, named here so a future
+Blender session has a real visual brief instead of starting from nothing — the checklist itself
+(model → armature → skin → animate → export) is already generic to any character, not written
+against these two specifically, so nothing in §1–§4 changes; this is just target selection.
+
+- **MnM, the Shapeshifting Crab** (`TYLER/multiverse_heroes.md` #114) — already founder-picked as
+  the Tank archetype for RED GARDEN (`REDGARDEN/NORTHSTAR.md` §7, `EMILY/BACKLOG.md` S170-134), so
+  a real rig for him is directly useful past this doc's own scope, not a one-off. Lore brief: a
+  crab the size of a doorway, shapeshifting mid-sentence — no single fixed shell to model against,
+  which is itself real creative direction (a Blender pass could reasonably pick ONE mid-shift
+  silhouette as the base mesh rather than trying to model "shapeshifting" directly, then treat
+  future alternate shells as separate mesh swaps on the same armature later, not a Phase-2
+  blocker).
+- **Medusa** (Prompt-o-verse's most-generated subject — 26 gens, `TYLER/multiverse_heroes.md` #120,
+  BRAWLPIT `CHARACTER_MEDUSA`) — founder specified the real `medusa-ffxi` Prompt-o-verse generation
+  (`okemily.com/prompt-o-verse/medusa-ffxi/`) as the visual reference for the model itself: full
+  gorgon armor, snake hair, teal/gold color scheme. Same reference image family as this session's
+  cel-shading pass (`RENDERING_QUALITY_NORTHSTAR.md`), so a Medusa model built to match it would
+  also be the first real test of whether a modeled/rigged character reads consistently with that
+  shader pass, not just the existing box-primitive heroes.
+
+Both are genuinely blocked the same way every other Phase 2 asset already is: real Blender
+modeling time from the founder (§4 steps 1-4), not a missing tool or a missing spec on our side.
+Not started this pass — named and grounded so the next session that has Blender time available
+doesn't have to re-derive which two characters to start with or why.
+
+---
+
+## 5. Backlog
+
+Tracked as `S144-06` (Phase 1) and `S144-07` (Phase 2) under `EMILY/BACKLOG.md` SECTION 144.
+
+## Related
+
+- `GOLDENBAND/CLAUDE.md`, `GOLDENBAND/format/GBAND_FORMAT.md` — the existing `.gband` spec this
+  plan builds on top of.
+- `EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` — the source spec GOLDENBAND
+  itself was built from (build steps 1-5; this doc's Phase 1/2 sit alongside step 2,
+  "SHANKPIT integration," as a second Path-A consumer).

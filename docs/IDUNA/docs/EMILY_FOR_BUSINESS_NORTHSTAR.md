@@ -1,0 +1,513 @@
+# Emily for Business — IDUNA as a Zero-Trust, Agent-Native IAM Product
+
+*Real product-scoping pass, 2026-09-03 (S243-02, EMILY/BACKLOG.md's own cruise-column
+sprint-planning). Not an implementation plan — a grounded input for a founder-level product
+decision. See this doc's own "Open questions for the founder" section for what this does NOT
+resolve.*
+
+## Where this came from
+
+Founder's own framing, kanban cruise queue, preserved verbatim: "IDUNA IS THE PRODUCT BASICALLY
+ZERO TRUST SECURITY AGENT NATIVE." No NORTHSTAR existed for this idea anywhere in the monorepo
+before this document (checked: no `EMILY_ENTERPRISE`/"emily for business" doc in EMILY, IDUNA,
+or EmilyOS).
+
+## Real, direct tension this doc has to name, not smooth over
+
+`IDUNA/docs/NORTHSTAR.md`'s own current framing, written 2026-06-13 and still standing: **"IDUNA
+is not a product. It is the backbone."** That line was correct for what IDUNA was built to be —
+the internal trust authority every other repo in this monorepo authenticates through. The
+founder's new framing is a real, explicit reversal of that stance, not a refinement of it. This
+document does not silently resolve that tension in either direction; it hands both framings to
+the founder for a real decision (see "Open questions" below), and describes what's actually true
+of IDUNA today under both readings.
+
+## What IDUNA actually has today — checked directly, not assumed
+
+A real, working internal IAM backbone, already zero-trust-*flavored* in several concrete ways:
+
+- **ES256 JWT + Google OAuth (humans) + M2M agent credentials (agents), same trust root.** No
+  consumer service in this monorepo trusts a token from anywhere but IDUNA — every JWT is
+  verified against IDUNA's own published key set (`/.well-known/jwks.json`).
+- **Agent-native from day one, not bolted on.** `POST /api/v1/auth/agent` (`agent_name` +
+  `agent_secret` → JWT with explicit `permissions[]`, no role inheritance) is a first-class,
+  equally-supported auth path alongside human OAuth — most commercial IAM products treat
+  machine/service identity as an afterthought retrofitted onto a human-first model. This is a
+  real, honest differentiator if "agent native" is the pitch.
+  Hierarchical RBAC (capabilities flow resource → role → user/agent).
+- **Append-only Apples audit ledger**, git-backed (`APPLES/` repo, `emily sync
+  --apples-git-dir`) — a genuinely tamper-evident record of every meaningful system event,
+  queryable by type/repo/agent/date.
+- **Unified logging backend** (`EMILY/BACKLOG.md` SECTION 226, closed 2026-09-03): a real,
+  Splunk-HEC-shaped ingest (`POST /services/collector`) and search (`GET
+  /services/search/jobs`) layer, with real emission points across every login surface, admin
+  role/permission/secret-rotation action, HEIMDAL sprint transitions, and Apple creation. "One
+  real place to jump to and grab the logs" (founder's own framing when this shipped) is a real,
+  sellable security-operations story on its own.
+- **Least-privilege, auditable admin actions**: role assign/revoke, agent permission
+  grant/revoke, and agent secret rotation are all individually logged (the last one records that
+  a rotation happened, never the plaintext secret — verified live by extracting the actual
+  generated secret and confirming it never appears in the event payload).
+
+## What a real "zero trust" pitch to an external buyer would need that doesn't exist yet
+
+Named honestly, not glossed over — this is the actual gap between "internal backbone with
+zero-trust-flavored properties" and "a sellable zero-trust product":
+
+1. **No multi-tenancy.** IDUNA is single-tenant today — one `agents.json`, one set of
+   roles/users, one database. Selling this to external customers means real tenant isolation
+   (data, credentials, audit logs all scoped per customer), not a small feature, a real
+   architectural change.
+2. **No self-serve onboarding.** Agents are seeded via `cmd/bootstrap` reading a hand-edited
+   `config/agents.json` — there is no signup flow, no customer-facing agent-provisioning API or
+   UI.
+3. **No continuous device/posture verification.** A real "zero trust" architecture (per NIST
+   SP 800-207, the standard reference model) expects continuous, per-request trust evaluation —
+   not just "issue a JWT, trust it until it expires." `EmilyOS` (a separate, related repo) has a
+   real *design* for exactly this (`docs/POSTURE.md`'s posture state machine: NORMAL/SIEGE/
+   MERCY/INCIDENT/GAME) — but its own milestone markers are still mostly `[ ] Milestone 1/2`,
+   i.e. largely unimplemented. IDUNA and EmilyOS are not integrated today; whether "IDUNA is the
+   product" means folding EmilyOS's posture model in, or leaving IDUNA narrower than EmilyOS's
+   own real zero-trust ambition, is itself an open question below.
+4. **No network micro-segmentation story.** JWT-based service-to-service auth is one real leg of
+   zero trust (identity-based access); nothing here today makes claims about network-layer
+   segmentation, which most real zero-trust product pitches also cover.
+5. **No per-customer billing/quota/rate-limit story.** Needed for literally any external SaaS
+   product, not specific to zero trust, and not built.
+6. **No compliance attestation.** EmilyOS's own `docs/SOC2.md` is a real, honest *controls map*
+   (not an attestation) — explicitly states "SOC 2 is an attestation about controls. We do not
+   claim 'unhackable.'" — and its own control statuses are mostly `[ ] Milestone 2`. A real
+   external security-product pitch usually needs a real completed audit, not a design doc, before
+   enterprise buyers take it seriously.
+
+## Real, honest bottom line
+
+IDUNA is a real, working, internally-proven, agent-native IAM backbone with several genuinely
+sellable properties (agent-first identity, tamper-evident audit trail, unified log
+search/ingest). It is **not**, today, a productizable external "zero trust security" offering —
+the gap is multi-tenancy, self-serve onboarding, continuous posture verification, and compliance
+attestation, none of which are small. This is a real, substantial build if pursued, not a
+repackaging exercise.
+
+## Open questions for the founder — not resolved here, by design
+
+1. **Is "IDUNA is the product" a literal instruction to externalize the CURRENT IDUNA**, or a
+   direction to build a new, separate product (working name "Emily for Business") that reuses
+   IDUNA's real internal design/code as a starting point while IDUNA itself stays the internal
+   backbone? These have very different engineering paths (retrofit multi-tenancy into a running
+   system everything else depends on, vs. fork/extract a new service).
+2. **Who is the buyer?** Enterprises evaluating IAM vendors broadly, or other teams building
+   agentic AI systems who specifically need "agent-native" identity (a narrower, newer market
+   with less established competition)? The pitch and the roadmap differ substantially.
+3. **Does EmilyOS's posture-kernel design get folded into this pitch**, or does "zero trust" here
+   mean something narrower (identity + audit, the parts that are actually real today) than
+   EmilyOS's own full continuous-verification ambition?
+4. **Pricing/packaging model** — not attempted here at all.
+
+## Real next step
+
+A real founder-level product-scoping conversation, informed by this document's own "what's real
+today" section — not attempted as an engineering task in this pass. Once that conversation
+resolves question 1 above in particular, the actual engineering sequencing (multi-tenancy first?
+self-serve onboarding first? EmilyOS integration first?) can be scoped for real.
+
+## Multi-tenancy architecture direction (2026-09-03, founder real-time — partially answers Open
+Question 1 above)
+
+Founder, real-time, preserved verbatim: "so to make iduna multi tenant we need like a DB per
+install and we need console.okemily.com for our customers and partners to onboard also we can
+use the fatbaby proxies for offering custom subdomains for partners/customers." This is real
+direction on the mechanism (DB-per-install + a real onboarding portal + subdomain routing) — it
+does not by itself resolve whether this is IDUNA-externalized-in-place or a separate product
+(Open Question 1 is still open), but the mechanism described works identically either way, so
+it's worth grounding now.
+
+**Real, checked finding: DB-per-install is already close to free.** IDUNA's own `main.go`
+resolves its database from a single, per-process `SQLITE_PATH` (or `MYSQL_DSN` for the MySQL
+backend) env var, and `RunSQLiteMigrations` runs cleanly against a fresh, empty file. A
+"DB-per-install" tenant is structurally just: a new `SQLITE_PATH`, a fresh migration run, a new
+`agents.json` seeded via `cmd/bootstrap`, on a distinct port. The real work here isn't the
+database layer itself (already tenant-shaped by accident of how it was built) — it's
+**orchestration**: something has to actually spin up a new IDUNA process (or container) per
+tenant, allocate it a port, and register it. Not built yet, not attempted in this pass.
+
+**Real, checked finding: `console.okemily.com` doesn't exist yet.** No service, page, or repo by
+that name exists anywhere in this monorepo today. Building it means a new onboarding flow that,
+per signup, needs to trigger: (a) provisioning a new per-tenant IDUNA instance (see above), (b) a
+new broker route so the tenant's chosen subdomain reaches it, (c) DNS + TLS for that subdomain.
+None of (a)/(b)/(c) are wired together yet — this document names the shape, not a working
+pipeline.
+
+**Real, shipped this session (S243-06): the routing half of (b).** The FatBaby broker
+(`PRRJECT_FATBABY/broker`, the real, already-running reverse proxy behind okemily.com's own
+nginx — the "fatbaby proxies" the founder's own message referred to) previously only matched
+requests by tenant bearer token or URL path prefix; it had **no Host-header (subdomain) matching
+at all**, a real, decisive gap for "custom subdomains for partners/customers." Closed directly:
+new `Route.Host` field (exact, case-insensitive match) + `Registry.ResolveByHost`, checked FIRST
+in `AuthMiddleware` (before path-prefix and bearer-token matching, so a tenant's own paths can
+never be shadowed by an unrelated global route). A Host route deliberately skips the broker's
+own HTTP Basic Auth — for a tenant subdomain, the real auth boundary is that tenant's own
+upstream IDUNA instance (JWT/OAuth), not the broker. 4 new tests, `go build/vet/test ./...`
+clean, zero regressions (`PRRJECT_FATBABY` commit `5876dce`). **What this does NOT do**: actually
+register a new tenant's route — that's still a manual edit to
+`gpt2-alpine-c/config/broker-routes.json` today, the same real, honest gap this repo's own
+`broker/registry.go` doc comment already names for hot-reload in general. A real
+`console.okemily.com` signup flow would need to write a new Route entry into that file (or a
+future DB-backed registry) programmatically, not by hand — real, separate, unbuilt work.
+
+**Real, checked finding: wildcard TLS needs a DNS-01 challenge, not the existing HTTP-01 flow.**
+`okemily.com`'s own DNS is confirmed live on Cloudflare (`nicolas.ns.cloudflare.com` /
+`jocelyn.ns.cloudflare.com`). Every existing cert on this box (`certbot --nginx -d ...`, see
+`sudo-queue/13-carepyre-domain-setup.sh` for the exact real pattern used elsewhere in this
+monorepo) uses HTTP-01, which cannot issue a wildcard cert for `*.console.okemily.com` — only a
+DNS-01 challenge can, which for Cloudflare means the real `certbot-dns-cloudflare` plugin plus a
+real Cloudflare API token (a credential this investigation did not have access to and did not
+attempt to source). Two real, honest alternatives, not chosen between here: (1) a real wildcard
+cert via DNS-01, issued once, reused for every subdomain — the standard approach for this shape
+of product; (2) issue a real, individual cert per new tenant subdomain on signup (more moving
+parts per onboarding, no wildcard-cert/API-token dependency). This is a real, concrete decision
+point for whoever builds the actual onboarding automation, not resolved in this pass.
+
+**Bottom line**: the founder's proposed mechanism is sound and mostly already low-cost given
+what IDUNA and the broker already are — DB-per-install needs an orchestration layer (not a
+database redesign), and subdomain routing's own capability gap is now closed. What's still fully
+unbuilt: `console.okemily.com` itself (the actual onboarding UI/flow), the automation that wires
+a new signup into a new IDUNA instance + broker route + DNS/cert, and the wildcard-vs-per-tenant
+TLS decision above.
+
+## IDUNA_PRO — a real extraction plan (2026-09-03, founder real-time — resolves Open Question 1)
+
+Founder, real-time, preserved verbatim, in two messages: "so we need multi tenant iduna as a
+platform we can offer a free trial that really stands up their iduna instance — we pull some of
+the more custom stuff out of iduna and the code goes right into the emily for business product
+IDUNA_PRO" then "so we use our IDUNA to manage the free trials for emily for business." **This
+resolves Open Question 1 above, decisively**: this repo (internal IDUNA) is NOT being
+externalized in place. It stays exactly what it already is — the internal EINHORN_INDUSTRIAL
+backbone — and additionally becomes the **control plane** for a new, separate, sibling product,
+`IDUNA_PRO`, built from a real subset of this codebase. Checked, not assumed: no `IDUNA_PRO`
+repo exists on GitHub yet (attempted clone, `Repository not found`) — named here, not
+pre-created, unlike `EMILY_FOR_BUSINESS`.
+
+### The control-plane model
+
+Internal IDUNA gains a new, real capability (not yet built, scoped here): tracking and
+provisioning `IDUNA_PRO` tenants, the same way it already tracks HEIMDAL sprints or Apples — a
+new `tenants`/`trials` table plus a real provisioning pipeline triggered by a signup on
+`console.okemily.com`:
+
+1. `console.okemily.com` (itself unbuilt, see above) posts a new trial signup to internal
+   IDUNA's own API (org name, contact, desired subdomain).
+2. Internal IDUNA provisions a real, fresh `IDUNA_PRO` instance for that tenant: a new
+   `SQLITE_PATH`, a fresh migration run (already proven trivial, see above), a seeded
+   `agents.json`, on its own port.
+3. Internal IDUNA registers a new broker `Route` (`Host: "<tenant>.console.okemily.com"`,
+   `UpstreamBase` pointing at the new instance's port) — the real routing capability S243-06
+   already shipped this session, just not yet wired to an automated writer.
+4. Internal IDUNA tracks the tenant's real lifecycle (trial/active/expired) — a genuinely new
+   subsystem, not a re-purposing of anything that exists today.
+
+This is coherent with IDUNA's own stated identity ("IDUNA is not a product, it is the backbone")
+in a way pure externalization wasn't: it stays the backbone, and the backbone now also backs the
+business side, literally.
+
+### What "pull the more custom stuff out" means — a real, checked categorization
+
+`IDUNA_PRO`'s own codebase is a new, separate extraction of the generic parts of this repo — not
+a fork of the whole thing, not a build-tag/feature-flag split of this same binary. Checked
+directly against this repo's actual `internal/` and `internal/http/handlers/` directories
+(2026-09-03):
+
+**Real core candidates — generic IAM/zero-trust primitives, no EINHORN_INDUSTRIAL-specific
+content:**
+- `internal/auth/*` — Google OAuth, ES256 JWT issuance, M2M agent auth, device flow. The actual
+  product.
+- `internal/store/*` — SQLite + MySQL backends, the migrations engine. Already tenant-shaped by
+  accident (see "DB-per-install" above).
+- `internal/userlog/*` — the unified Splunk-shaped logging backend (SECTION 226) — this
+  document's own earlier "what's real today" section already named this as genuinely sellable
+  on its own.
+- `internal/util/*` — generic helpers (rate limiter, etc).
+- `http/handlers`: `auth.go`, `agents.go`, `jwks.go`, `device.go`, `local_auth.go`, `refresh.go`,
+  `register.go`, `me.go`, `admin.go`/`admin_login.go` (core RBAC/admin), `apples.go` (the
+  append-only audit-ledger MECHANISM is generic and real product value, even though "Apples" as
+  a name/concept is EINHORN-flavored — would need a generic rename for the product), `logs.go`/
+  `portal.go` (the log search UI).
+
+**Real "leave behind" candidates — genuinely monorepo-specific, no product value outside this
+org:**
+- `internal/blog`, `internal/tyler`, `internal/promptoverse`, `internal/mailinglist`,
+  `internal/drive` (Google Drive service-account integration for training artifacts),
+  `internal/vault` (explicitly "founder-only password manager" per its own doc comment),
+  `internal/statuspage` (checks specifically EINHORN_INDUSTRIAL's own public services),
+  `internal/backlog` (the kanban-over-`EMILY/BACKLOG.md` bridge — tied to this specific file).
+- `http/handlers`: `blog.go`, `tyler.go`, `mailinglist.go`, `carepyre_contact.go`,
+  `promptoverse*.go`, `mmo_*.go`, `redgarden_*.go`, `shankpit_*.go`, `racer_ticket.go`,
+  `papercraft_ticket.go`, `players*.go`, `player_*.go`, `chat_messages.go`,
+  `admin_dragonsnshit.go`, `admin_gm.go`, `admin_saga.go`, `web_ceremony.go`, `monitors.go`,
+  `intelligence.go`, `status_page.go`, `kanban_*.go`, `kgraph.go`, `dis.go`, `supply.go`,
+  `heimdal.go` (MJOLNIR-sprint-specific), `push_tokens.go` (MJOLNIR FCM-specific).
+
+**Real, genuinely ambiguous — a decision, not a fact, for whoever does the actual extraction:**
+- `internal/honorcode` — the MECHANISM (a versioned, hash-verified, re-acceptance-on-bump
+  covenant) is generic and could be a real product feature (compliance acknowledgment flows);
+  the actual CONTENT (`THE_HONOR_CODE` text) is EINHORN-specific and would need to become
+  pluggable/configurable, not shipped as-is.
+- `subscriptions.go` (`Emily+` subscription provisioning) — billing-adjacent; could plausibly
+  inform `IDUNA_PRO`'s own real tiering/plan model rather than being discarded outright, but
+  today's implementation is almost certainly EINHORN-specific in its details.
+- `kanban.go`/`kanban_page.go`/`kanban_inbox.go` — a genuinely well-built, real feature (drag/
+  sort/inbox-sync, this same session's own S207-68/S235-01 work), but tightly coupled to
+  parsing `EMILY/BACKLOG.md`'s own specific Markdown convention — real, substantial
+  generalization work needed before this could be a customer-facing feature, not a copy-paste.
+
+### Real, shipped: IDUNA_PRO v0 (2026-09-03)
+
+The `IDUNA_PRO` repo was created upstream and pulled in. The "real core candidates" list above
+was extracted directly (`internal/auth`, `internal/store`, `internal/userlog`,
+`internal/util`, `internal/http/middleware`, plus the core handlers: Google/local/agent/device
+auth, JWT refresh, self-serve registration, `/me`, users, agents, Apples, unified logging) into
+a new, standalone Go module. Checked directly before copying: zero cross-imports from these
+packages into any of the "leave behind" custom packages (`blog`/`tyler`/`promptoverse`/
+`mailinglist`/`vault`/`drive`/`statuspage`/`backlog`) — the categorization held up under an
+actual extraction, not just inspection. `go build`/`vet`/`test ./...` clean. **Live-verified**,
+not just compiled: booted the real binary against a fresh SQLite file (migrations ran clean,
+creating exactly the expected core tables and none of the excluded ones), confirmed `/health`,
+a real ES256 key from `/.well-known/jwks.json`, a real self-serve `POST /api/v1/auth/register`
+issuing a real JWT, and `POST /api/v1/auth/local` correctly rejecting bad credentials.
+
+**Real, honest, found gap, not fixed in this pass**: `GET /api/v1/identities/me` calls
+`store.GetUserByID`, which only resolves Google-OAuth-style UUID user IDs — a local-auth JWT's
+subject (`local:<N>`) doesn't resolve, so a self-serve-registered user gets a 404 from `/me`
+today. Confirmed this is a **pre-existing gap inherited from IDUNA itself** (read
+`GetUserByID`'s own implementation directly), not something the extraction introduced — but it
+matters more for `IDUNA_PRO` specifically, since a real product built around self-serve/local
+auth (not Google OAuth) will hit this immediately. Real, named next step: unify the local-user
+and OAuth-user identity models, or teach `/me` to dispatch on the `local:` prefix.
+
+## Extensibility — PARENA mods (2026-09-03, founder real-time)
+
+Founder, real-time, preserved verbatim: "how do we abstract the primitives of the stuff we left
+out to let people build on top to get what they need? like if someone wants to use IDUNA_PRO for
+their game logins it should be like a tutorial on our docs site to show how to get that set up on
+the platform PARENA mods built in I guess — we could even provide an online parena editor."
+
+### The real shape of the problem
+
+`IDUNA_PRO` deliberately excludes every game/product-specific handler this monorepo happens to
+need (mmo, redgarden tickets, shankpit queues, etc — see the categorization above). A real
+customer building their OWN product on `IDUNA_PRO` needs a way to add THEIR OWN custom identity
+logic — extra registration fields, custom permission gates, product-specific post-auth claims —
+without forking `IDUNA_PRO`'s own Go source for every customer. This is exactly the same real
+problem PAPERCRAFT/ECOWAR's own PARENA mod layer solves for game logic ("host owns I/O/
+networking/rendering, PARENA owns the decision") — applied here to auth/identity decisions
+instead of game decisions.
+
+### Real, decisive, checked difference from the PAPERCRAFT/ECOWAR precedent
+
+PAPERCRAFT and ECOWAR's own mods compile via `parena build ... -o file.c` (VS0's C target)
+because their host is C. **`IDUNA_PRO`'s host is Go** — a mod for it needs `BURROW`'s own
+native Go emission target (`burrow build ... -o file.go`), not PARENA's C target. This is the
+exact same real design `DUNG` already established for the same reason (its own host is also
+Go): a `burrow build`-compiled function is a real, ordinary Go import, called directly — **no
+cgo/FFI boundary at all**, the same real, load-bearing advantage `DUNG/NORTHSTAR.md` names for
+its own editor logic. Getting this wrong (assuming the C-target pattern) would have been a real,
+concrete mistake, not just a stylistic choice — a C-target mod cannot link into a pure-Go
+binary without cgo, which `IDUNA_PRO` doesn't use anywhere else and shouldn't have to start
+using just for this.
+
+### Real, phased plan (not built in this pass)
+
+1. **Define the real hook contract** — a small, named set of PARENA functions `IDUNA_PRO`'s Go
+   host calls into at specific real decision points, e.g. `on-register-extra-fields` (validate/
+   transform custom signup fields), `on-permission-check` (custom authorization beyond RBAC),
+   `on-post-auth-claims` (inject custom JWT claims). Lives under a new
+   `PARENA/stdlib/idunapro/*.prn`, matching the exact real `PARENA/stdlib/papercraft/*.prn` /
+   `PARENA/stdlib/ecowar/*.prn` per-consumer-directory convention already established.
+2. **Wire the Go host to call the generated functions** — `IDUNA_PRO`'s own handlers call the
+   `burrow build`-generated Go functions directly at those points, same zero-FFI shape DUNG
+   already proved.
+3. **Docs-site tutorial** — walks a customer through writing their first hook mod and rebuilding
+   their own `IDUNA_PRO` instance with it linked in. No docs site exists for Emily for Business
+   today — real, separate, unbuilt work, named honestly.
+4. **The "online PARENA editor" ask — real precedent exists, but needs real adaptation, not
+   reuse-as-is.** `JEWEL` (`JEWEL` repo, live today at okemily.com's `/jewel/` path via the
+   FatBaby broker) is a real, already-built Jupyter kernel that shells out to `parena build` +
+   gcc per cell — the closest existing thing to "an online PARENA editor." But JEWEL's own real
+   design is built around the **C target** (compile-then-run-a-real-binary per cell) — a
+   customer prototyping an `IDUNA_PRO` hook mod is targeting the **Go** target instead, which
+   doesn't produce a standalone runnable binary the same way (it produces a Go source file
+   meant to be imported into a larger program, not executed alone). A real, adapted online
+   editor for this specific use case would need its own execution model — most likely: compile
+   the hook mod via `burrow build`, then run it against real, fixture sample inputs in a small,
+   sandboxed Go test harness (the same pattern this session's own `test_mixforge_import.c`-style
+   verification uses, adapted to Go) and show the result — not a direct reuse of JEWEL's own
+   C-target compile-and-execute flow.
+
+### Real, honest, not attempted in this pass
+
+This is a design, not an implementation. Not done here: the actual `PARENA/stdlib/idunapro/*.prn`
+hook contract, the Go-host wiring, the docs site, or the adapted online editor. Each is real,
+concrete, separately scoped, and sequenced above — a genuinely large initiative on its own,
+correctly not rushed alongside the extraction that just landed.
+
+### Real, honest, not attempted in this pass (extraction)
+
+The extraction itself is real and live-verified, but not everything is done: `console.okemily.com`
+itself, the `tenants`/`trials` table and its provisioning pipeline, and the wildcard-vs-per-tenant
+TLS decision (see above) all remain real, separate, unbuilt next steps.
+
+## Kanban board — a real "core integration point" (2026-09-03, founder real-time)
+
+Founder, real-time: "build the kanban into IDUNA_PRO its a good affordance for interop between
+human and agents - we will probably build tools on top of the IDUNA_PRO like this is one of the
+core integration points." This was previously listed above as a genuinely ambiguous extraction
+candidate ("tightly coupled to `EMILY/BACKLOG.md`'s own specific Markdown convention"). Real,
+checked correction to that earlier assessment: reading `kanban.go`/`kanban_inbox.go` directly
+showed every BACKLOG.md-specific behavior (bare-section resolution, git auto-commit, Inbox sync)
+was already gated behind an empty-string check on `BacklogPath` — the coupling was real but
+already optional, not structural. Shipped as-is into `IDUNA_PRO`: `BACKLOG_PATH` unset (the
+default) yields a pure, generic, DB-backed board; setting it opts a customer into syncing
+against their own markdown-checkbox file, the exact same mechanism IDUNA itself uses against
+`EMILY/BACKLOG.md`.
+
+Two real product-context fixes made along the way: the "done" move's Apple used to hardcode
+`SourceRepo: "EMILY"` — now a real `KANBAN_SOURCE_REPO_NAME` env var (defaults `"kanban"`); the
+board's own user-visible copy referenced `EMILY/BACKLOG.md` by name and was rewritten to be
+product-neutral. `admin_login.go` (the cookie-session login page IDUNA_PRO's kanban UI needs)
+turned out to have zero `internal/mailinglist` coupling on direct inspection — unlike `admin.go`
+itself — so it came along for free rather than needing to be built from scratch.
+
+**Live-verified, the actual point of the feature**: a real agent JWT (bearer, `kanban.access`
+permission) created/listed/moved a card to Done through `/api/v1/kanban/cards`; separately, a
+real cookie session (`/admin/login`) loaded the real `/admin/kanban` board page and created a
+card through `/admin/kanban/api/cards` — the exact same `KanbanHandler` instance serving both a
+human and an agent caller. `IDUNA_PRO` commit `31cfb54`.
+
+## The pitch sharpens: "the Rails for 2026 agents is an API that lets you create APIs"
+(2026-09-11, founder real-time, blue-sky thread — spec-only, no code in this section)
+
+Founder, real-time, preserved close to verbatim across several messages: "the way claude builds
+apps when I have the IDUNA pro system already is it just builds APIs onto IDUNA PRO and then it
+builds a front end to consume those services... so I think the rails for 2026 agents is an api
+that allows you to create apis... think about it iduna pro already has IAM so once you have IAM
+what do you need? APIs... emily for business is the multiplatform idunapro that lets you just
+vibe code your own login and apis like wtf thats easy... but we dont do the llm side we are just
+the api for claude to use."
+
+**The real reframe, stated precisely**: this section does not introduce a new product idea — it
+sharpens the SAME "Emily for Business" pitch this document has scoped since 2026-09-03 into a
+much more concrete, checked-against-how-work-actually-happens-in-this-monorepo shape. Every real
+app built in this whole session (`KARAMBIT`, `SPIDERBEETLE`, `CarePyre`'s own Community Tools,
+`WOTAN`) follows the identical real pattern: an agent (this session, concretely) builds a thin
+layer of new API surface, then a frontend that consumes it. The IAM/auth/RBAC/audit-trail part —
+the part that's genuinely hard to get right and genuinely dangerous to get wrong — is either
+built from scratch each time (real, repeated, avoidable work) or, when the app already sits on
+IDUNA/IDUNA_PRO, is simply inherited for free. **Emily for Business's real value proposition,
+stated as sharply as the founder just stated it: once IAM is solved, what's left to build a real
+product is APIs — so the product IS the thing that makes an agent (human-directed or
+autonomous) able to stand up new, safely-tenant-isolated APIs against already-solved IAM as fast
+as it can currently write a Go handler function.** "Vibe code your own login and APIs" names the
+real experience this is chasing: a customer (or their own coding agent) should never write
+another `POST /auth/login` handler again, and adding a new API endpoint should feel as
+lightweight as it currently does inside this very monorepo when a new IDUNA_PRO handler gets
+added to an already-running service — because that IS the mechanism, offered outward instead of
+kept internal.
+
+**Real, explicit, load-bearing scope boundary, stated directly because it's easy to smuggle scope
+creep past**: "but we dont do the llm side we are just the api for claude to use." Emily for
+Business is not an agent runtime, not an LLM hosting product, not a Claude-Code-as-a-service
+offering, and does not compete with Anthropic/OpenAI/etc. on model access. It is the
+**substrate** an agent (Claude, specifically, but the interface doesn't care which agent) targets
+when the agent itself — running wherever it already runs, under whatever arrangement its own
+user already has — needs to add real backend capability to something it's building. This
+resolves a real, latent scope-ambiguity risk before it could quietly expand this document's own
+mission into "build a second Bedrock/Vertex" — named here explicitly so it doesn't recur.
+
+**Why this REQUIRES `IDUNA_PRO/docs/MULTI_TENANCY_NORTHSTAR.md`'s own Phase 1-4 first, not
+eventually.** Checked directly, same real audit that produced that document: `IDUNA_PRO` today is
+"just a fork of IDUNA for CarePyre" (founder's own words) — one process, one SQLite file, ten
+files with `carepyre`/`CarePyre` hardcoded by name. "An agent vibe-codes a new API in ten
+seconds" is structurally incompatible with "provision a whole new OS process/port/systemd unit
+per customer" (this document's own 2026-09-03 "IDUNA_PRO v0" extraction section scoped exactly
+that DB-per-install model, which remains real and correct for a small number of dedicated/
+high-isolation customers — CarePyre itself is a plausible permanent resident there). Real,
+row-level, single-process, multi-tenant isolation is the actual Phase 0 this whole pitch depends
+on; see that document for the concrete plan.
+
+**What "an API that lets you create APIs" concretely could look like — real, existing options
+named, not invented from nothing, none chosen between here.** This monorepo already has more than
+one real precedent for "define an API declaratively/generatively, get a working backend," each
+with a real, different tradeoff:
+
+1. **An agent (Claude) just writes ordinary Go handlers directly against `IDUNA_PRO`'s own
+   multi-tenant primitives** (once they exist) — the simplest, most flexible, least "platform-y"
+   option: no new DSL, no new compiler, the agent's own existing code-writing capability IS the
+   interface. Real cost: every new API is bespoke Go source in (or alongside) `IDUNA_PRO` itself,
+   with all the usual risks of an agent editing a shared, multi-tenant codebase directly (a bad
+   edit for tenant A's feature could, in principle, affect tenant B — this is EXACTLY why the
+   `MULTI_TENANCY_NORTHSTAR.md` enforcement mechanism has to be structural, not a matter of an
+   agent "remembering" to scope every query correctly).
+2. **The already-real LO/PARENA "Rails-like framework"** (`LO/FRAMEWORK_NORTHSTAR.md`,
+   `PARENA/stdlib/http/{router,routes,controller}.prn`, `PARENA/stdlib/log/{event,jsonl,
+   projector}.prn` — routing, event-sourced models with SQL projectors, and controller dispatch
+   are all real, shipped, and tested today, dogfooded via `SHITHUB`) is a real, working, MUCH
+   more constrained way to define a new API: declare routes/resources, write PARENA
+   `defn`/`defstruct` models and controllers, get a real HTTP-serving backend out. Real,
+   honest, current limits (see that document): dispatch can't be generic yet (PARENA's own `fn`
+   values are non-capturing/file-scope-only), so every app still hand-writes its own dispatch
+   chain; SQL projection uses shell-escaped string concatenation, not real parameterized queries
+   (a named, unresolved security follow-up in that document already). Real, open question for
+   whoever picks this up: does an `IDUNA_PRO`-hosted API generated this way run AS a PARENA
+   program calling out to `IDUNA_PRO` for IAM (matching `SPIDERBEETLE`/`KARAMBIT`'s own
+   established "PARENA owns decision logic, native host owns I/O" split), or does it need
+   `BURROW`'s own Go-native emission target instead (the same real reason this document's own
+   "Extensibility" section above already concluded PARENA mods for `IDUNA_PRO` need `BURROW`, not
+   `parena`'s C target, since `IDUNA_PRO`'s own host is Go)? Not resolved here — named as the
+   single most important open technical question connecting this section to the LO/PARENA work.
+3. **A real, declarative config format** (the founder's own "it may be weird to define APIs via a
+   platform... we could support terraform yaknow like we dont care what this ends up looking
+   like") — a YAML/HCL-shaped description of routes, models, and permission rules, interpreted by
+   `IDUNA_PRO` itself at runtime (no compile step at all) rather than generating source code in
+   any language. Real, honest tradeoff versus options 1-2: maximally safe (no arbitrary code
+   execution, trivially reviewable, trivially tenant-scoped by construction since the interpreter
+   itself enforces isolation) but real, correspondingly LESS expressive — genuinely custom
+   business logic beyond CRUD-plus-simple-rules would hit a real ceiling this format can't
+   express, the same real ceiling every declarative low-code platform eventually hits.
+
+**The founder's own framing is explicit that this is deliberately unresolved**: "this is an
+exercise in paving the cow paths" and "we dont care what this ends up looking like" — per
+`EMILY/docs/THE_EMILY_WAY.md` Principle 18, the real answer gets found by continuing to build
+real apps on `IDUNA_PRO` (Community Tools, KARAMBIT-style thin API layers, `SHITHUB` itself) and
+noticing which of options 1-3 above (or some future fourth option) the work keeps naturally
+reaching for — not by picking one in the abstract now, before `MULTI_TENANCY_NORTHSTAR.md`'s own
+Phase 1 even exists to build any of them against.
+
+**The frontend half of the same pitch — real, separate, own document.** The founder's own next
+move in the same thread: "what does the frontend look like? we need a super abstract language for
+affordances like a BA would write a user can do this... we can have an android interface or we
+can have a ratatui terminal interface for the same apis... like react native but even more
+abstract." This is real, substantial, and genuinely novel enough (not a refinement of an existing
+scoped idea the way the backend side above is) to warrant its own document rather than a
+subsection here: see `EMILY_FOR_BUSINESS/docs/UNIVERSAL_UI_NORTHSTAR.md`.
+
+## Updated real, honest bottom line (2026-09-11)
+
+The "what's real today" and "what a real pitch needs" sections above (2026-09-03) still stand
+without correction. What's new: the multi-tenancy gap named there as item 1 is no longer just
+"the architecture needs to support this eventually" — it is now understood as the single, literal
+Phase 0 blocking everything else this document has since scoped (the `IDUNA_PRO` extraction, the
+extensibility hooks, and now the "vibe code your own APIs" pitch above), with its own concrete,
+sequenced engineering plan in `IDUNA_PRO/docs/MULTI_TENANCY_NORTHSTAR.md`. Nothing in this
+document is built differently than before this session — this is still a spec-only pass; the real
+next engineering step for the whole platform is that document's own Phase 1.
+
+## Related (updated)
+
+- `IDUNA_PRO/docs/MULTI_TENANCY_NORTHSTAR.md` — the concrete, sequenced plan to close the
+  multi-tenancy gap this document's own 2026-09-03 section first named and this section now
+  treats as Phase 0.
+- `EMILY_FOR_BUSINESS/docs/UNIVERSAL_UI_NORTHSTAR.md` — the frontend half of the platform pitch:
+  an abstract, UI-technology-agnostic affordance language with per-platform adapters.
+- `LO/FRAMEWORK_NORTHSTAR.md` — the real, already-shipped Rails-like PARENA/LO framework, one
+  concrete (not the only) candidate for "an API that lets you create APIs," dogfooded via
+  `SHITHUB`.

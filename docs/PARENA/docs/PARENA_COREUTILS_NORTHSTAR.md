@@ -1,0 +1,346 @@
+# PARENA Coreutils/Busybox — North Star
+
+**Status:** v0 slice shipped this pass (real multi-call dispatch + 5 real applets). Full busybox
+replacement (init/sh/mount) is a real, later, much larger undertaking — named honestly below, not
+promised.
+
+## Why this exists
+
+Founder, real-time: "let's write our own parena powered busybox." Directly motivated by this
+session's own EmilyOS/Alpine Raspberry Pi image work (`EmilyOS/docs/NORTHSTAR_DISTRO.md`): the
+one remaining real gate before a first bootable image is Alpine's own `busybox` package running
+its real `--install -s` trigger script (creating ~304 applet symlinks, including `/sbin/init`)
+under a privileged `chroot` — confirmed live this same session by extracting and reading
+busybox's actual `.trigger` script. A PARENA-native replacement for at least the applets EmilyOS
+actually needs would remove that specific dependency on Alpine's own busybox package entirely,
+and is a real, direct instance of this monorepo's own standing "PARENA native as much as
+possible" theme (`NORTHSTAR_DISTRO.md`'s own 2026-08-25 guidance) — the same dogfooding
+discipline `PITVIPER`/`DUNG`/`SAND`/`ECOWAR`/`MIXFORGE` already follow.
+
+## Real tension named directly, not glossed over
+
+`NORTHSTAR_DISTRO.md`'s own existing guidance says **"GNU tools stay for load-bearing
+infrastructure... proven, correctness-critical pieces don't get experimentally swapped for
+PARENA-native alternatives"** — and `init`/`sh`/`mount` are about as load-bearing as software
+gets (a broken `init` means the machine doesn't boot at all). This is a real, deliberate
+departure from that guidance for exactly this specific ask, not a silent contradiction of it:
+the founder's own explicit ask here is to build these tools, not to switch to them by default
+immediately. Real, honest sequencing that respects both: build and verify each applet on its own
+merits first (this doc's own phased plan), and treat "does this actually replace Alpine's real
+busybox in the shipped Pi image" as a separate, later, explicitly-approved decision — matching
+`turbogrep`/`turbosed`'s own already-established precedent (real, working, available tools that
+are NOT symlinked over the real system equivalents by default, even after verification).
+
+## Real architecture, matching this codebase's own established pattern exactly
+
+Every real PARENA "binary" in this repo already follows the same shape (`turbogrep`,
+`editor-demo`, the `parena-selfhost` binary itself): PARENA-compiled logic + a real, hand-written
+C host driver providing `main()`/`argv`/stdio. A PARENA-powered busybox is the same shape, not a
+new one: `tools/parenabusybox_host.c` provides `main()`, does busybox's own real multi-call
+dispatch (inspect `argv[0]`'s basename — or `argv[1]` when invoked directly as
+`parenabusybox <applet> ...`, matching real busybox's own dual-invocation convention exactly),
+and calls into real PARENA-compiled applet logic in `stdlib/coreutils/*.prn`.
+
+## v0 shipped this pass — 5 real applets, real multi-call dispatch
+
+- `stdlib/coreutils/echo.prn` — `echo-join`: real PARENA string-joining logic (space-separated
+  args + trailing newline), not a C stub. `-n` flag (suppress trailing newline) handled in the
+  host (flag parsing before the joined-string call, matching this whole stdlib's own convention
+  of keeping argv-shaped concerns in the host driver, real logic in PARENA).
+- `stdlib/coreutils/basename.prn` — `basename-of`: real path-basename logic (strip directory
+  prefix, optional suffix strip) built from `string.prn`'s own existing primitives
+  (`char-at`/`substring`), not reimplementing string scanning from scratch.
+- `stdlib/coreutils/pwd.prn` — `pwd-format`: takes the real `getcwd(3)` result (a real, new
+  `#target inline-c` primitive, `raw-getcwd`, matching this stdlib's own established FFI
+  convention) and returns it verbatim — a real, if thin, PARENA function; the actual syscall is a
+  one-line inline-c escape hatch, the same real, honest trust boundary every other syscall-backed
+  primitive in this stdlib already crosses.
+- `true`/`false` — deliberately trivial (exit code only, no real PARENA logic) — included as the
+  real, minimal proof that multi-call dispatch itself works correctly for the two simplest real
+  busybox applets that exist, before layering real logic on top.
+
+Real, honest v0 boundary: no `mount`, no `init` yet — genuinely hard, load-bearing applets a real
+boot depends on, real, separate, larger undertakings needing privileged syscalls this repo's own
+sandbox can't even test end-to-end without root. Not attempted this pass — named directly as real
+next phases, not silently deferred.
+
+## Phase 3 shipped this pass (same day, founder real-time: "zsh etc build it prn") — a real, minimal `sh`
+
+Real, honest scope decision made BEFORE writing anything, grounded in a real audit rather than a
+guess: read the actual OpenRC scripts in this session's own already-built EmilyOS Alpine rootfs
+(`/etc/init.d/hostname`, `/etc/init.d/bootmisc`) and found they use real shell FUNCTIONS,
+`if`/`[ ]` conditionals, and `${var:-default}` parameter expansion — genuinely closer to a full
+POSIX shell than a "run sequential commands" toy. Running those real scripts is explicitly NOT
+this pass's goal (a real, separate, much later milestone, named honestly rather than oversold);
+this v0 is a real, working, useful minimal shell in its own right.
+
+`stdlib/coreutils/sh.prn` ships real PARENA logic: `tokenize-line` (a real, quote-aware
+word-splitter — single/double quotes suppress whitespace/`;` splitting and are stripped from the
+output word; `;` is itself both a splitter and its own emitted token, letting the host split
+sequential commands) and `expand-word` (real, minimal whole-word `$VAR` expansion via a new
+`getenv(3)`-backed `raw-getenv` primitive). `tools/parenash_host.c` does the real process
+management every actual shell needs: a REPL loop (interactive `$ ` prompt on a real tty, silent
+script-mode otherwise — `parenash < script.sh` works too), `fork`/`execvp`/`waitpid` for real
+external commands, and three real builtins that must run in the PARENT process (a forked child
+could never affect the shell's own cwd/environment) — `cd`, `export NAME=value`, `exit [code]`.
+
+Real, live-found VS0 emitter gap, named directly and worked around rather than silently
+papered over: a `loop` whose own terminal (non-`recur`) branch resolves to `Unit` produces an
+invalid `void __loop_result_N` C local (a real, confirmed `variable ... declared void` gcc
+error) — `tokenize-line`'s own terminal branch gives itself a real, dummy `""` tail value instead
+(the function's real result, `words`, is read from the enclosing `let` after the loop, never the
+loop's own value) — a real, separate emitter bug, not fixed in `src/emit.c` itself this pass.
+
+New `make parenash`/`test-parenash` targets. Real end-to-end test coverage
+(`tests/test_parenash.c`) pipes real script text into the ACTUAL compiled binary via `popen`
+(matching `test_parenabusybox.c`'s own "invoke the real binary" discipline) — 9 real assertions
+covering quoting, `;`-sequencing, `$VAR` expansion via a real `export`, all 3 builtins (including
+proving `cd` genuinely mutates the shell's own parent-process cwd, not a throwaway child's), and
+the standard `127` "not found" exit code — all pass. `make test`: 347/347, zero regressions.
+
+Real, honest v0 boundary, named directly: NO pipes, NO redirection, NO functions,
+NO test builtin, NO job control/backgrounding, NO mid-word `$VAR` expansion (only a word that's
+ENTIRELY `$NAME`), NO `${VAR}` brace form. This is a real, useful toy shell — not yet capable of
+running the real OpenRC scripts the audit above found, which is the actual, much larger remaining
+milestone before `sh` could ever be part of a real EmilyOS boot chain.
+
+## Phase 3b shipped same day (founder real-time: "continue") — real `if`/`then`/`else`/`fi`
+
+Real, deliberate architecture choice named directly: control-flow structure recognition
+(`if`/`then`/`else`/`fi`) lives in `tools/parenash_host.c` as a plain recursive-descent walk over
+the already-tokenized word array, NOT in `stdlib/coreutils/sh.prn` — PARENA's own real strength
+in this package is string/token processing (tokenizing, quoting, `$VAR` lookup), and imperative
+control-flow branching is a more natural fit for the same C layer that already does process
+management. `exec_range(words, start, end)` recognizes a single-level `if COND; then BRANCH1;
+[else BRANCH2;] fi` (COND/BRANCH1/BRANCH2 may themselves contain further `;`-separated commands,
+handled by recursing back into `exec_range`), otherwise splits off and runs one simple command up
+to the next top-level `;` and continues with the remainder. Real, honest v0 boundary: no `elif`,
+no nesting (the first `then`/`fi` found closes the nearest-enclosing `if` — correct for the real,
+common non-nested case, a real, named limitation for an `if` nested inside another `if`'s own
+condition or branch).
+
+Confirmed live before shipping that `test`/`[` already work today via the existing plain
+`execvp` fallback (real system binaries, not shell builtins) — `if test -f /etc/passwd; then
+echo has-passwd; else echo missing; fi` runs correctly end to end.
+
+Real, live-found bug caught and fixed before this could ship as broken: a trailing `;` inside the
+condition range (the real, common shape `if false; then ...` produces) fed into an empty tail
+recursion whose own base case returns a fixed `0`, silently DISCARDING the real exit status just
+computed and always taking the then-branch regardless of the condition's real result — confirmed
+live via `if false; then echo yes; fi` wrongly printing `yes`. Fixed: a trailing `;` with nothing
+meaningful after it now returns the already-computed real status directly instead of blindly
+recursing into an empty range. 5 new real end-to-end assertions in `tests/test_parenash.c`
+(covering the then-branch, no-else skip, else-branch, "code after `fi` still runs," and a
+multi-command then-branch) — including one that names the exact bug just fixed and would have
+caught it — all pass, alongside the original 9. `make test`: 347/347, zero regressions.
+
+## Phase 3b continued, same day (founder: "keep working on Emily os busybox and all of that") — real `elif` + `${VAR:-default}`
+
+**`elif`**: `exec_if_chain(words, start, end)` treats a real `elif` identically to a fresh `if`
+(both find their own `then`, then the nearest of `elif`/`else`/`fi` as the branch boundary) —
+when the boundary is another `elif`, it recurses right back into `exec_if_chain` starting at that
+word, correctly sharing the SAME outer `fi` (there is exactly one, closing the whole chain) rather
+than searching for a second one. Live-verified: a taken `elif` runs its own branch, a later
+also-true `elif` never runs once an earlier condition already won, a real multi-`elif` chain
+resolves to the first true condition among them, falling through to `else` when all are false, and
+code after the chain's own `fi` still runs. Real, honest v0 boundary unchanged: still no nesting.
+
+**`${VAR:-default}`/`${VAR-default}`**: real PARENA logic in `stdlib/coreutils/sh.prn` —
+`find-dash-index` (a real, tail-recursive scan for the first `-`, safe because POSIX variable
+names never contain one) plus `expand-param` (splits on that dash into `varname`/`default-val`,
+looks up the real environment value, substitutes the default when empty). Real, honest,
+DELIBERATE simplification named directly: since `raw-getenv` already can't distinguish "unset"
+from "set but empty" (its own pre-existing v0 boundary), the plain `-` form is treated IDENTICALLY
+to `:-` here rather than silently claiming a POSIX distinction this shell can't actually make.
+`expand-word` also grew a plain `${VAR}` (no default operator) passthrough case. Real, honest,
+STILL not attempted: no `:=`/`:+`/`#`/`%` operators, and no NESTED `${...}` inside a default value
+(the real, live shape `${wipe_tmp:=${WIPE_TMP:-no}}` this session's own audited `bootmisc` script
+actually uses) — a real, separate, later extension.
+
+9 new real end-to-end assertions (5 for `elif`, 4 for parameter expansion) — all pass, alongside
+the original 14. `make test`: 347/347, zero regressions.
+
+## Phase 3c shipped same day (founder: "dooittt") — real shell FUNCTIONS + multi-line statements + bare assignment, live-tested against the real EmilyOS `hostname` script
+
+**Real, live-found architectural gap fixed FIRST, before functions could mean anything real**:
+this shell used to execute one PHYSICAL line at a time — confirmed live via the real, standard
+multi-line form `if true\nthen\necho yes\nfi\n` producing three separate, nonsensical "not found"
+errors instead of running as one real conditional. Real OpenRC scripts (and real function
+definitions) are always written this way, so this had to be fixed before functions were worth
+building. Fixed: `tokenize-line` (PARENA side) now treats a real newline exactly like `;` — both
+are statement separators in real shell syntax; the REPL loop (host side) now ACCUMULATES physical
+lines into a growing buffer, re-tokenizing the whole thing after each new line, and only executes
+once a real, honest HEURISTIC (`is_balanced` — net `if`/`fi` and `{`/`}` counts) confirms nothing
+is left dangling. Real, named limitation: a literal `if`/`fi`/`{`/`}` word inside a quoted string
+would confuse the count — checked live and confirmed NOT to affect this session's own two
+audited real scripts.
+
+**Real shell functions**: `NAME() { BODY }` — `exec_range` recognizes the shape (a word ending in
+the real, unspaced `()`, immediately followed by `{`), finds the matching `}` (no nesting v0),
+and stores the body PERSISTENTLY (a real, separate function table, since the per-statement Arena
+that ordinarily holds a line's own words gets freed right after each statement runs). A function
+CALL executes its stored body through the exact same `exec_range` every other construct in this
+shell already uses — meaning a function body gets real `if`/`elif`/multi-line/assignments for
+free, no separate code path. Runs in the CALLING process, never forked, the same real reason
+`cd`/`export` are builtins: a function must be able to affect the shell's own cwd/environment.
+
+**Real bare `NAME=value` assignment** (no `export` keyword) — found live feeding this session's
+own real, audited `/etc/init.d/hostname` script straight into `parenash`: its very first real
+line, `description="Sets the hostname of the machine."`, was being misreported as an unknown
+command (`sh: description=Sets...: not found`) since this shell had no concept of a bare
+assignment at all, only the explicit `export` builtin. Fixed: a single-word simple command
+matching `IDENTIFIER=value` now does a real `setenv`, same as `export` — the same real, honest
+"no separate shell-variable-vs-environment-variable namespace" simplification `export` already
+made, named directly rather than silently claiming full POSIX scoping semantics.
+
+**Real, live end-to-end validation against the actual EmilyOS rootfs**: fed the real
+`/etc/init.d/hostname` script (comments stripped) straight into `parenash` — it now parses and
+defines its own real `depend`/`start` functions with ZERO errors (previously: multiple). Manually
+invoking `start` afterward runs its real `if [ -s /etc/hostname ]` test, the real
+`${hostname:-localhost}` fallback assignment, and attempts the real `hostname` command with real
+expanded arguments — failing only on `ebegin`/`eend` (OpenRC's OWN helper functions, real and
+genuinely separate: they live in `/lib/rc/sh/functions.sh`, sourced by OpenRC's own
+`/sbin/openrc-run` wrapper before a script's `start`/`stop` ever runs — not something a raw `sh`
+invocation would have without a real `source`/`.` builtin, this shell's own next, now clearly-
+named real gap). This is real, direct, evidence-backed progress against the actual stated goal,
+not just more isolated unit tests.
+
+8 new real end-to-end assertions (2 multi-line, 4 functions, 2 bare assignment) — all pass,
+alongside the original 23. `make test`: 347/347, zero regressions.
+
+## Phase 3d shipped same day (founder: "continue emilyos+") — real `source`/`.` + comments + brace-on-its-own-line functions
+
+**`source`/`.`**: reads a real file, tokenizes its ENTIRE content in one pass, and runs it
+through the exact same `exec_range` every other construct uses — no separate execution path.
+Runs in THIS process (never forked), so a sourced file's own assignments/function definitions
+genuinely persist in the calling shell, the entire real point of `source`. Live-verified against
+a real, hand-written test file before attempting anything harder. Then attempted the REAL target
+this was actually for — OpenRC's own real `/lib/rc/sh/functions.sh` — and found, by reading its
+real source directly rather than assuming: it needs `$(( arithmetic ))`, `case`/`esac`, `local`,
+and `eval`, none of which this shell has. `source`/`.` itself is real and correct; that specific
+file needs real, separate, much larger features this pass does not attempt.
+
+**Real `#` comments** — a real, previously-missed gap found immediately while testing `source`
+against a real script: EVERY comment line in `functions.sh` was being executed as a bogus
+`#: not found` command, since this shell had NO comment support at all (prior testing had always
+manually stripped comments with `grep -v '^#'` before feeding a script in, masking the gap). Real
+fix in `tokenize-line`: a `#` is only a comment when it starts a real word (mid-word `foo#bar`
+stays literal, matching real shell semantics), skipping to the next real newline via a new
+`find-newline-index` helper.
+
+**Real brace-on-its-own-line function definitions** — fixing comments exposed a SECOND real gap
+in the exact same `functions.sh` file: `name()\n{\n...\n}` (the opening `{` on its own physical
+line, real and extremely common POSIX style) produced `sh: name(): not found` — two real, distinct
+causes, both fixed: (1) `func_def_brace_index` (renamed from `is_func_def_shape`, now returning
+the real brace index instead of a bool) tolerates one optional `;` token between the `()` word
+and the `{` — the real newline between them already tokenizes as `;`; (2) a real, subtler
+completeness-detection bug in the REPL's own `is_balanced` heuristic: `NAME()` alone, its own
+trailing newline already turned into a `;`, has zero unmatched `if`/`{` — so it looked perfectly
+"complete" and got executed as a bogus command ONE STATEMENT TOO EARLY, before the real `{` on
+the next physical line ever arrived. Fixed: if the last real (non-`;`) word in the accumulated
+buffer is itself `NAME()`-shaped, the buffer is now correctly treated as incomplete regardless of
+brace count — unambiguously a function header awaiting its own `{`.
+
+8 new real end-to-end assertions (3 comments, 3 `source`, 1 brace-on-own-line) — all pass,
+alongside the original 32. `make test`: 347/347, zero regressions. Real, honest conclusion: this
+shell can now source a real file and define/call real functions written in either real brace
+style, and correctly ignores real comments — but running OpenRC's own real `functions.sh`
+end-to-end still needs arithmetic expansion, `case`/`esac`, `local`, and `eval`, each a real,
+separate, later phase, named directly rather than claimed done.
+
+## Phase 3e shipped same day (founder: "dooitttt") — real `case`/`esac` pattern matching
+
+Real `case WORD in PAT1) CMDS1 ;; PAT2) CMDS2 ;; esac`, matching real POSIX shell glob syntax via
+the real, already-correct `fnmatch(3)` (no hand-rolled glob engine) — needed no new tokenizer
+support at all: a case clause's own `PATTERN)` shape is already one real word (no space before
+the `)` in real syntax), and a real `;;` terminator already tokenizes as two literal `;` tokens
+back to back, detected directly. Real pipe-alternation (`yes|true|on)`) splits on `|` and matches
+if any alternative does. Runs only the FIRST matching clause's own commands through the exact
+same `exec_range` every other construct uses; the REPL's own `is_balanced` heuristic extended to
+also track net `case`/`esac` depth, so a real multi-line `case` block is correctly recognized as
+incomplete until its own `esac` arrives, the same real treatment `if`/`fi` and `{`/`}` already
+get. Real, honest v0 boundary: the `case WORD` itself must be exactly one token (no expansion-
+that-produces-multiple-words support).
+
+Live-verified against 6 real scenarios (exact literal match, no-match-no-`*` producing no output,
+a REAL glob pattern in the exact `[Yy][Ee][Ss]`-shaped style `functions.sh` uses throughout,
+pipe-alternation, `*` wildcard fallback, and code after `esac` still running) before writing test
+code. 6 new real end-to-end assertions — all pass, alongside the original 40. `make test`:
+347/347, zero regressions.
+
+**Real, honest further finding, checked live rather than assumed**: `case`/`esac` alone does NOT
+make `functions.sh`'s own real `yesno()` function work — read its actual source directly and
+found it ALSO needs real `&&`/`||` (short-circuit command chaining), real POSITIONAL PARAMETERS
+(`$1`, referenced repeatedly), a real `return` builtin (distinct from `exit` — this shell's own
+`exit` kills the WHOLE process, not just the current function call, a real, meaningful gap for
+any function wanting to return early), plus the already-named `local`/`eval`. `case`/`esac` was a
+real, necessary, independently-useful piece — genuinely used throughout `functions.sh` — but was
+never going to be sufficient alone, named honestly rather than overclaimed.
+
+## Real phased plan
+
+- **Phase 0 (done)**: multi-call dispatch + 5 real applets (`echo`/`basename`/`pwd`/`true`/
+  `false`), real tests, real `make` target.
+- **Phase 1 (done, 2026-09-08, founder: "also a parena based busybox to go with it")**: broadened
+  to 10 applets total. Real PARENA logic where it exists, matching `echo.prn`'s own established
+  split: `count-lines` (`wc -l`, real tail-recursive newline-byte scan), `head-should-print?`
+  (`head`, the one real per-line decision), `yes-line` (`yes`, echo's own close cousin). `cat`/
+  `sleep`/`env` turned out to be host-only pure I/O/syscall utilities with no real logic to
+  extract — no `io.prn`/`process.prn` primitives were needed after all, contrary to this entry's
+  own original guess; `true`/`false` already established that some real applets are legitimately
+  zero-PARENA-logic. 13 new end-to-end tests, all pass; staged into the real EmilyOS Pi image
+  (aarch64 cross-compiled, live-verified via `qemu-aarch64-static`) the same day.
+- **Phase 2**: `mount`/`umount` — needs a real `mount(2)`/`umount(2)` FFI wrapper (new primitive,
+  `stdlib/os/mount.prn` or similar) — genuinely privileged, untestable end-to-end without real
+  root or a real Pi, matching this session's own EmilyOS work's own real constraints.
+  `stdlib/emilyos/fsacl.prn`'s own PARENA-mod-backed `setfacl` wrapper (2026-08-25) is real,
+  direct, already-proven precedent for wrapping a privileged syscall-adjacent operation in PARENA.
+- **Phase 3 (v0 done)**: a real, minimal `sh` — sequential `;`-separated commands, quote-aware
+  tokenizing, whole-word `$VAR` expansion, `cd`/`export`/`exit` builtins.
+- **Phase 3b (v0 done)**: real conditionals — `if`/`then`/`else`/`fi`, `elif`,
+  `${VAR:-default}` — `test`/`[` already work via the plain `execvp` fallback, confirmed live.
+- **Phase 3c (v0 done)**: real multi-line statement support (the real architectural fix that
+  makes everything below possible), real shell FUNCTIONS (`name() { ... }`, single-level, no
+  nested definitions), and real bare `NAME=value` assignment. Live-validated against the actual
+  EmilyOS `/etc/init.d/hostname` script — it now parses and defines its own functions with zero
+  errors, and `start` runs its real conditional/parameter-expansion/command logic correctly.
+- **Phase 3d (v0 done)**: real `source`/`.`, real `#` comments, real brace-on-its-own-line
+  function definitions (`name()\n{...}`). Attempted the real target this was for — OpenRC's own
+  `/lib/rc/sh/functions.sh` — and found, by reading it directly, it needs `$((arithmetic))`,
+  `case`/`esac`, `local`, and `eval`.
+- **Phase 3e (v0 done: `case`/`esac` shipped)**: real POSIX glob pattern matching via
+  `fnmatch(3)`, pipe-alternation, first-match-wins semantics. Attempted the real `yesno()`
+  function in `functions.sh` next and found it ALSO needs real `&&`/`||`, positional parameters
+  (`$1`), a real `return` builtin (distinct from `exit`), plus the already-named `local`/`eval`.
+  **Not yet done**: exactly those, plus `$((arithmetic))`, nested `if`, `:=`/`:+`/`#`/`%`
+  parameter-expansion operators, and nested `${...}` inside a default value — real, concrete,
+  now-precisely-named next slices (not guessed at) before this shell could run `functions.sh`
+  completely end to end. `&&`/`||` and positional parameters are likely the next highest-value
+  pair — both real, independently useful, and check every real init script would need.
+- **Phase 4**: `init` — once `sh`/`mount` exist, a real, minimal init (exec openrc, or replace it
+  entirely with a PARENA-native service supervisor — a real, separate, much bigger design
+  question, not decided here).
+- **Phase 5, the founder call made (2026-09-08: "the alpine pi installable parena powered emily
+  os")**: staged into the real EmilyOS Pi image build (`EmilyOS/packaging/scripts/
+  build-pi-image-rootless.sh` step 3b), cross-compiled for aarch64 by reusing that script's own
+  root-less Debian-cross-toolchain bootstrap — PARENA's own compiler still runs NATIVELY (x86_64)
+  to emit portable C; only the final C-to-object compile needs the cross-compiler, the same
+  two-stage shape `src/emit.c`'s C target already has everywhere else. Kept AVAILABLE, NOT
+  DEFAULT as that precedent always intended: parenabusybox's applet symlinks live in their own
+  `/usr/local/parena-coreutils/`, off Alpine's default `$PATH`, not replacing the real coreutils;
+  parenash goes directly into `/usr/local/bin/` (no name collision risk). Real,
+  previously-undiscovered gap found and fixed along the way via actually EXECUTING the
+  cross-compiled binaries under root-lessly-bootstrapped `qemu-user-static` against the real
+  Alpine rootfs (not just checking `file` output for architecture): this cross-toolchain targets
+  GLIBC, but Alpine ships MUSL — an incompatible dynamic-linker ABI that also silently affected
+  the pre-existing `emilyos` Go binary. Fixed via static linking (`-static`); live-verified all 4
+  parenabusybox applets plus a real parenash script execute correctly. See
+  `EmilyOS/docs/NORTHSTAR_DISTRO.md`'s own matching "Phase 1, continued" entry for the full
+  writeup.
+
+## Related
+
+- `EmilyOS/docs/NORTHSTAR_DISTRO.md` — the real, direct motivation (Alpine/RPi image build).
+- `stdlib/emilyos/fsacl.prn` — real precedent for a PARENA mod wrapping a privileged syscall.
+- `tools/turbogrep_host.c`/`examples/editor_main.c` — the real "PARENA logic + C host driver"
+  architecture this project reuses exactly, not reinvents.
