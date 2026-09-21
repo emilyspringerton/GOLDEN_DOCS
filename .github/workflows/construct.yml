@@ -16,7 +16,7 @@ jobs:
     name: 🏛️ Generate Deterministic Construct
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -43,3 +43,23 @@ jobs:
           path: |
             GOLDEN_DOCS_MANIFEST.txt
             GOLDEN_DOCS_CONSTRUCT.txt
+
+      # Auto-release: only on a real push to main (never on a PR, which has no push rights and
+      # whose HEAD isn't the trunk anyway). Tag includes the run number, not just the date, so
+      # multiple syncs on the same day never collide on the same tag -- a real, plausible case
+      # here given this repo resyncs on every golden-doc change, not on a fixed release cadence.
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="v$(date -u +%Y.%m.%d)-${{ github.run_number }}"
+          zip -q GOLDEN_DOCS_Construct_${{ github.run_number }}.zip GOLDEN_DOCS_CONSTRUCT.txt GOLDEN_DOCS_MANIFEST.txt
+          gh release create "$TAG" \
+            GOLDEN_DOCS_Construct_${{ github.run_number }}.zip \
+            GOLDEN_DOCS_CONSTRUCT.txt \
+            GOLDEN_DOCS_MANIFEST.txt \
+            --title "$TAG" \
+            --notes "Automated GOLDEN_DOCS snapshot release. Commit ${{ github.sha }}."
