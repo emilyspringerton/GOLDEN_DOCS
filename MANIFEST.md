@@ -1,6 +1,6 @@
 # MANIFEST
 
-Generated: 2026-09-22T22:37:29.122654+00:00
+Generated: 2026-09-22T22:46:08.885784+00:00
 
 254 files, sha256 + size for each.
 
@@ -237,7 +237,7 @@ Generated: 2026-09-22T22:37:29.122654+00:00
 | `docs/SHANKPIT/docs2/specs/AI_WAYPOINT_NAV_NORTHSTAR.md` | `f1b0a46bf78eaa86...` | 6681 |
 | `docs/SHANKPIT/docs2/specs/BEDROCK_RACERS_SPEC.md` | `3145362c461ada9d...` | 10748 |
 | `docs/SHANKPIT/docs2/specs/BEDWARS_SPEC.md` | `5908dfc64545c5bd...` | 6627 |
-| `docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md` | `397222c2c0a59713...` | 39568 |
+| `docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md` | `cac40f7b48c9967a...` | 43430 |
 | `docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md` | `af28c362c1e86f00...` | 9395 |
 | `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
 | `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
