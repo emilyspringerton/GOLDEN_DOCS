@@ -130,6 +130,71 @@ infrastructure are already built, generic, and directly reusable:
   client (mirrors the DEADWEIGHT GUI work), 25 match-entries/day cap wired via the already-generic
   `effectiveDailyCap`.
 
+## Adversarial (GAIL) discriminator + the "Super Slow League" (2026-09-22, same-session addendum)
+
+Founder real-time, direct follow-up to this doc: "how can we make our slow league more
+intelligent through adversarial learning? the critic learns and the bot learns" → "that needs to
+be super slow league" → "where bots are always only vs humans."
+
+**What this is:** GAIL (Generative Adversarial Imitation Learning, Ho & Ermon 2016) — a real,
+established technique, not a novel idea being invented here. A small discriminator network scores
+(state, action) pairs as human-recorded vs. bot-generated; that "how human did that look" signal
+feeds into PPO's reward alongside win/loss, so the policy is pushed toward human-legible play, not
+just optimal play. This is directly, load-bearingly connected to `SHANKPIT/docs2/specs/
+CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md`'s own named-but-unsolved humanness-signal gap — the
+same discriminator class solves both problems.
+
+**Why "Super Slow League" is a real, separate matchmaker constraint, not just a rename.** The
+existing 3-role PFSP self-play (Main/Main Exploiter/League Exploiter, `rl_league.py`) trains bots
+against EACH OTHER — bot-vs-bot trajectories would contaminate the discriminator's own "bot" class
+with no clean human counterexample in the same match context, and "fast league" (this doc's own
+existing bot-only continuous queue, Phase 2 above) is explicitly NOT where this belongs. The
+founder's own constraint — "bots are always only vs humans" — is the real fix: a THIRD matchmaker
+mode, layered on top of (not replacing) the existing slow (human queue) / fast (bot-only)
+split already scoped in `ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md`'s own Phase 3 and this repo's own
+Phase 2:
+
+- **Fast league** (existing scope, unaffected) — bot-only, continuous, PFSP self-play. Produces
+  skill, not humanness data. Never touches the discriminator.
+- **Slow league** (existing scope, this doc's own Phase 1-2) — real humans queue, lives-based,
+  today's real ask. May or may not include bot fill when the human queue is thin — not yet
+  decided either way in this doc.
+- **Super Slow League (new, this addendum)** — a real matchmaker CONSTRAINT: every match seats
+  exactly one bot against one (or more) real humans, NEVER bot-vs-bot fill, enforced the same way
+  `apps/matchmaker`'s own `try_match` already enforces its other real pairing rules (ECOWAR's own
+  `FindMatchMsg` precedent for a matchmaker-level constraint, not a client-side one). Purpose:
+  produce clean, paired (bot action, human action) trajectory data from the SAME match context —
+  the actual data the discriminator needs, and the reason a thin human queue can't just be padded
+  with bots the way ordinary queue fill already does.
+
+**Real, checked-first gap, same as the parent doc's own §"Real, genuinely new work":** no human
+trajectory logging exists anywhere in SHANKPIT today (checked directly — `rl_env_packet.py`/
+`var/rl_checkpoints/` only ever record frozen-policy self-play, never a real human's own actions).
+Super Slow League's own match server is the natural place to add this: log (state, action) per
+tick for BOTH the seated human and the seated bot, tagged by which is which — the discriminator's
+own real training set.
+
+**Real, honest, open design risk, not glossed over:** adversarial co-training is notoriously
+unstable (discriminator overpowering the policy early collapses the reward signal to noise; a
+policy can learn superficial "human-like" tics — hesitation, jitter — without matching real human
+decision-making, a form of reward hacking specific to this setup). Standard practice is blending
+GAIL reward with win/loss reward (not replacing it) and a slow discriminator learning rate
+relative to the policy — real tuning work, not a solved parameter choice, deferred to
+implementation.
+
+**Phased plan for this addendum (layered onto the existing Phased plan above, not replacing it):**
+- **Phase A** — Super Slow League matchmaker constraint (always exactly 1 bot : N humans per
+  match, never bot-vs-bot) — a real, scoped addition to whatever Phase 0/1 server this doc's own
+  existing plan stands up, not a fourth server.
+- **Phase B** — human+bot (state, action) trajectory logging from Super Slow League matches only.
+- **Phase C** — discriminator network + GAIL reward blending into `rl_league.py`'s own PPO
+  training loop, real, careful reward-weighting tuning (see risk above).
+- **Phase D** — feed the trained discriminator back into `CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md`
+  Phase 4's own named-but-unsolved humanness-signal gap — the real cross-repo payoff, not built
+  until both sides are ready.
+
+No code shipped from this addendum — same "scope first" standing this whole doc already follows.
+
 ## Open questions for the founder
 
 1. **Lives-assignment direction** (item 3 above) — skill-based handicap (top-Elo gets MOST
@@ -138,3 +203,8 @@ infrastructure are already built, generic, and directly reusable:
    real push.
 3. **License** — "shankpit has a different license" was named but not specified; SHANKPIT's own
    current license needs checking against whatever this repo should carry.
+4. **Super Slow League scope** (adversarial addendum above) — is this a real, separate queue/
+   product surface from the base Slow League, or a mode/flag on the same one? "Always exactly 1
+   bot per match, never bot-vs-bot" is a real constraint on top of ordinary queue fill either way,
+   but whether it's its OWN ticket type / WOTAN leaderboard section, or folds into the existing
+   Slow League's own, isn't decided here.

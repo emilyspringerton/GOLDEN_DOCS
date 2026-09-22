@@ -155,6 +155,106 @@ Two real gaps, of different sizes:
    on `media/codec`/`media/audio`) — share code once those exist, or develop independently?
    Not decided here.
 
+## Pivot: the multiplayer DJ room (2026-09-22, same-session addendum)
+
+Founder real-time: "there was a game we all used to play when i worked at a startup - like up to
+4 djs in a room and you would see each person had a dj table set up at a wall of the room and you
+would go around the room queueing songs from youtube - lets pivot the mixforge app into that
+somehow with real dj primitives built in so i can run 2 youtubes at once or at least our proxy
+for the youtube and i can get like intelligent key information on the current playing song etc -
+again assume they are all on a cruise ship and the tech is a youtube proxy."
+
+**Real, named prior art, not invented from the description alone:** this is Turntable.fm
+(2011-2013) — a real, well-known product with this exact shape: a room holds up to five DJ booth
+seats, each occupied DJ queues tracks, everyone in the room hears the current DJ's track together,
+the crowd votes "awesome"/"lame." Naming it because its own real history is directly load-bearing
+here, not just trivia: **Turntable.fm was sued by ASCAP/BMI and major labels over public-
+performance licensing for exactly this "synchronized shared listening room" mechanism, and that
+pressure was a real factor in its eventual shutdown.** This doc's own existing "cruise ship /
+international waters" framing (from the original legacy transcript, §"What the legacy
+conversation actually specified" above) already names licensing as explicitly, knowingly
+deferred, not solved — the pivot doesn't change that stance, but it does raise the real stakes of
+it, since a synchronized multi-listener room is a materially bigger public-performance surface
+than one hobbyist's own local two-deck mix. Named here plainly so it's a real, informed choice
+going forward, not a silently-inherited risk.
+
+**What's genuinely new versus everything scoped above (Phases 0-5):** every existing phase is
+still needed — import/library (shipped), two-deck crossfade, BPM/key detection, beatmatching —
+but they now get consumed by a ROOM, not a solo user. Three real, new requirement classes:
+
+1. **Room/seat multiplayer state** — up to 4 DJ booth seats, occupancy, a queue-then-DJ turn
+   order ("go around the room queueing songs"), spectator/listener presence. No existing MIXFORGE
+   code touches this at all; the closest real precedent in this monorepo is `SHANKPIT/apps/lobby`
+   (seat/room occupancy) and IDUNA's guest-auth/room-join patterns already proven for DEADWEIGHT/
+   ECOWAR/SLOWBOT_LEAGUE.
+2. **Synchronized room-wide audio playback — the single hardest new piece, harder than anything
+   scoped so far.** Every listener in the room needs to hear the SAME track, in sync, at
+   (roughly) the same playback position, over a network — a real, hard, "shared listening"
+   distributed-systems problem, not a local two-deck crossfade problem. This directly promotes
+   Phase 5 ("live streaming," `stdlib/media/stream.prn`, previously the LAST phase, design-only,
+   named only for its own future "full audio/video streaming" motivation) into a real,
+   near-term blocker — the room pivot can't work without it, so it needs resequencing earlier
+   relative to Phases 2-4, not left last.
+3. **"2 youtubes at once, or our proxy" clarified against the real, already-shipped mechanism**:
+   MIXFORGE's own real V0 (`import.prn`) already downloads a track locally via `yt-dlp` rather
+   than live-relaying a YouTube stream — this is actually the SAFER shape versus what Turntable.fm
+   did (which live-relayed audio in real time), not a new thing to build. "2 youtubes at once" is
+   the existing Phase 2 two-deck concept (already scoped), now needing to run per-DJ-seat instead
+   of per-solo-user. "Our proxy for the youtube" already exists in embryonic form as this same
+   import pipeline — the real remaining gap is turning a downloaded file into a room-wide
+   synchronized stream (item 2 above), not fetching it in the first place.
+
+**Real, undecided architecture question, not guessed at here:** does the ROOM itself need a real
+rendered space ("each person had a dj table set up at a wall of the room" implies a real, visible
+spatial layout, not a plain list UI)? If so, this monorepo already has a proven multiplayer-room
+rendering + netcode engine (`SHANKPIT`'s own lobby/apps pattern, C/SDL2, server-authoritative) —
+reusing it (a DJ room as a new SHANKPIT OS app, matching this session's own IDUNA.GAME/REDGARDEN/
+EDITOR.GAME additions) is a real, live option versus building a new lightweight web room UI from
+scratch. Not decided here — a real founder call, same shape as this doc's own existing open
+question 1 (GUI vs. headless), now with higher stakes since a room implies more UI than a solo
+deck ever did.
+
+**Update (same day): architecture question resolved, first real slice shipped.** Founder
+real-time: "build it with parena wasm" — resolves the room-engine question above in favor of a
+browser/PARENA-WASM stack (not a new SHANKPIT OS app). Real, live first slice:
+`PARENA/stdlib/mixforge/room.prn` — pure, stateless turn-order/seat-validity logic (`next-seat`,
+`is-valid-seat`, `max-seats`), the "go around the room" rule made real. Built via `scripts/
+build_room_wasm.sh` through the exact pipeline `PARENA/docs/LLVM_BACKEND_NORTHSTAR.md`'s own
+`make wasm-smoke` already proved (`parena build` → LLVM IR → `llc -mtriple=wasm32-unknown-
+unknown` → `wasm-ld` → a real `.wasm`), checked in at `web/room.wasm`, loaded and exercised for
+real by `web/index.html` (a real, live, clickable 4-seat room UI in a browser tab) and verified
+headlessly by `web/room_smoke_test.mjs` (real `WebAssembly.instantiate` execution, 9 assertions,
+all pass — wraparound turn order and out-of-bounds seat rejection both checked).
+
+**Update (same day): real room server shipped.** `server/room_server.mjs` — a real WebSocket
+server (`ws` package), real in-memory seat occupancy (join assigns the first free seat via the
+same `room.wasm` `is_valid_seat` export, leave frees it), and real turn broadcasting. Deliberately
+does NOT reimplement turn-order math in JavaScript: it loads and calls the exact same `web/
+room.wasm` the browser client uses, so there is one real source of truth for "what seat comes
+next," with only the genuinely host-side concern (occupancy — an array/state shape `room.wasm`'s
+own scalar-only v0 can't express, the same `defstruct`/array gap named in `CAPTCHA_FPS_PHYSICS_
+DOGFOOD_NORTHSTAR.md`) layered on top as a skip-empty-seats loop. Authorization is real too: a
+`queue_song` message is silently ignored unless it comes from the seat whose turn it currently is.
+
+Real, live, passing test (`server/room_server_test.mjs`) — a REAL WebSocket server, REAL `ws`
+client connections (not mocked): 4 clients fill the room in seat order, a 5th is rejected with
+`room_full`, seat 0 queues a song and every other client receives the real broadcast, turn
+correctly advances to seat 1, a client leaving drops occupancy to 3, and a queue attempt from a
+non-current seat is correctly ignored (the authorization check, not just the happy path). New
+`web/multiplayer.html` — a real, live multi-tab room UI (open several tabs, watch real, separate
+seats fill) wired to this server over the same real `ws://127.0.0.1:8973` protocol the test
+exercises. `web/index.html` (the earlier, server-less compiler-pipeline proof) stays as-is, a
+smaller, simpler artifact for that narrower purpose.
+
+**Real, honest, still NOT done:** no synchronized audio (still gated on Phase 5's `media/
+stream.prn`, still design-only — a client can announce "I'm playing this URL" but nothing plays
+it for anyone else yet), no track queue persistence (a queued URL is broadcast and forgotten),
+no key/BPM display, no IDUNA account/identity (a "seat" is just a WebSocket connection, no login),
+no room listing/creation (exactly one hardcoded room, no multi-room support). Real, concrete next
+step: either Phase 5 (`media/stream.prn`) scoping, since it's the real remaining blocker for
+anyone actually hearing what gets queued, or IDUNA identity integration, matching the same
+guest-auth pattern DEADWEIGHT/ECOWAR/SLOWBOT_LEAGUE already established — not decided here.
+
 ## Golden doc registration
 
 Registered in `EMILY/context/golden-docs-index.md` as `MIXFORGE-NORTH` per S205-101's own

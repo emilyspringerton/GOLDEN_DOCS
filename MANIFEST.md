@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: 2026-09-22T14:40:40.281394+00:00
+Generated: 2026-09-22T16:58:14.279884+00:00
 
-252 files, sha256 + size for each.
+254 files, sha256 + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -11,8 +11,8 @@ Generated: 2026-09-22T14:40:40.281394+00:00
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `ef7f06eb3a878d77...` | 48743 |
-| `context/full-system-context.md` | `ca017bd41b9e6526...` | 40221 |
-| `context/golden-docs-index.md` | `9a85ce5e61b4e1b4...` | 248706 |
+| `context/full-system-context.md` | `633e1228c5be7406...` | 45558 |
+| `context/golden-docs-index.md` | `8828b089cf50908b...` | 250125 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -89,7 +89,7 @@ Generated: 2026-09-22T14:40:40.281394+00:00
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `d6aaacd57c29924a...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `93ccbdbc5ffc02f4...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
@@ -167,7 +167,7 @@ Generated: 2026-09-22T14:40:40.281394+00:00
 | `docs/LO/LO_Formal_Grammar_Phase_0_Complete.md` | `e63ef4ee425f0460...` | 18963 |
 | `docs/LO/NORTHSTAR.md` | `0701cacdd4925c5a...` | 15145 |
 | `docs/LO/QI_NORTHSTAR.md` | `e97142d2a1e27137...` | 9245 |
-| `docs/MIXFORGE/NORTHSTAR.md` | `3ca61e82d153491b...` | 12340 |
+| `docs/MIXFORGE/NORTHSTAR.md` | `ab64c561bc50a676...` | 20543 |
 | `docs/MJOLNIR/docs/APPLES_INTEGRATION.md` | `8d8fdd24e1e6dd99...` | 4069 |
 | `docs/MJOLNIR/docs/NORTHSTAR.md` | `0b3017312e55f300...` | 7435 |
 | `docs/MJOLNIR/docs/PUSH_NOTIFICATIONS.md` | `b435891822ea4331...` | 5484 |
@@ -186,7 +186,7 @@ Generated: 2026-09-22T14:40:40.281394+00:00
 | `docs/PARENA/docs/EXPR_POSITION_BINDING_FORMS_NORTHSTAR.md` | `00e93db5cebc8240...` | 9840 |
 | `docs/PARENA/docs/I2C_NORTHSTAR.md` | `daa2cabd45429892...` | 6897 |
 | `docs/PARENA/docs/KISMET_WIRELESS_NORTHSTAR.md` | `0cd98e34b93fe539...` | 9934 |
-| `docs/PARENA/docs/LLVM_BACKEND_NORTHSTAR.md` | `689d0a2381464535...` | 24532 |
+| `docs/PARENA/docs/LLVM_BACKEND_NORTHSTAR.md` | `5e380084acb5bddf...` | 27357 |
 | `docs/PARENA/docs/NATIVE_PCAP_NORTHSTAR.md` | `fbc0686fc4872a6b...` | 11016 |
 | `docs/PARENA/docs/NORTHSTAR_LINNEN.md` | `c8a97cf94a29e2b9...` | 6827 |
 | `docs/PARENA/docs/OS_PORTABILITY_NORTHSTAR.md` | `e4763e939149e0e2...` | 8491 |
@@ -237,10 +237,12 @@ Generated: 2026-09-22T14:40:40.281394+00:00
 | `docs/SHANKPIT/docs2/specs/AI_WAYPOINT_NAV_NORTHSTAR.md` | `f1b0a46bf78eaa86...` | 6681 |
 | `docs/SHANKPIT/docs2/specs/BEDROCK_RACERS_SPEC.md` | `3145362c461ada9d...` | 10748 |
 | `docs/SHANKPIT/docs2/specs/BEDWARS_SPEC.md` | `5908dfc64545c5bd...` | 6627 |
+| `docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md` | `1b25b95bb0e4a5fe...` | 13394 |
+| `docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md` | `af28c362c1e86f00...` | 9395 |
 | `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
 | `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
 | `docs/SHANKPIT/docs2/specs/WEAKNIGHT_VS0_ACCEPTANCE_CRITERIA.md` | `dab7177a5b153bf9...` | 7218 |
-| `docs/SLOWBOT_LEAGUE/NORTHSTAR.md` | `61bb5db0a456b745...` | 10844 |
+| `docs/SLOWBOT_LEAGUE/NORTHSTAR.md` | `c1f2e76be36fefca...` | 16081 |
 | `docs/SPIDERBEETLE/NORTHSTAR.md` | `fafa1fba572ce86c...` | 4264 |
 | `docs/TIPJAR-wiki/Product-Core-Acceptance.md` | `cac741f900f2461f...` | 9961 |
 | `docs/TYLER/HQ-CANON-TYLER-105-EPOCH-EXTINCTION.md` | `f96885888663882a...` | 10284 |
