@@ -1,6 +1,6 @@
 # MANIFEST
 
-Generated: 2026-09-22T17:12:22.815693+00:00
+Generated: 2026-09-22T17:29:06.180984+00:00
 
 254 files, sha256 + size for each.
 
@@ -89,7 +89,7 @@ Generated: 2026-09-22T17:12:22.815693+00:00
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `e2a668e3d1833475...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `4056314ebbad27d9...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
@@ -237,7 +237,7 @@ Generated: 2026-09-22T17:12:22.815693+00:00
 | `docs/SHANKPIT/docs2/specs/AI_WAYPOINT_NAV_NORTHSTAR.md` | `f1b0a46bf78eaa86...` | 6681 |
 | `docs/SHANKPIT/docs2/specs/BEDROCK_RACERS_SPEC.md` | `3145362c461ada9d...` | 10748 |
 | `docs/SHANKPIT/docs2/specs/BEDWARS_SPEC.md` | `5908dfc64545c5bd...` | 6627 |
-| `docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md` | `950acad5e49c5630...` | 17501 |
+| `docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md` | `05395ad4b0b856e6...` | 19271 |
 | `docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md` | `af28c362c1e86f00...` | 9395 |
 | `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
 | `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
