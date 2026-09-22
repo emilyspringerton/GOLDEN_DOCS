@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: 2026-09-22T14:20:52.079839Z
+Generated: 2026-09-22T14:40:40.281394+00:00
 
-251 files, sha256 + size for each.
+252 files, sha256 + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -12,7 +12,7 @@ Generated: 2026-09-22T14:20:52.079839Z
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `ef7f06eb3a878d77...` | 48743 |
 | `context/full-system-context.md` | `ca017bd41b9e6526...` | 40221 |
-| `context/golden-docs-index.md` | `7f26e7faae33ed5c...` | 247905 |
+| `context/golden-docs-index.md` | `9a85ce5e61b4e1b4...` | 248706 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -40,6 +40,7 @@ Generated: 2026-09-22T14:20:52.079839Z
 | `docs/ECOWAR/docs/ARENA_API.md` | `87e271cd126e4ab9...` | 8446 |
 | `docs/ECOWAR/docs/NORTHSTAR_LIVING_MAP.md` | `1c1a72555f0c17b6...` | 41751 |
 | `docs/ECOWAR/docs/NORTHSTAR_MAP_EDITOR.md` | `4a168f7c906c2865...` | 10753 |
+| `docs/ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md` | `2220398e48c0942d...` | 6542 |
 | `docs/ECOWAR/docs/NORTHSTAR_REFLUX.md` | `97879ecac0c9f002...` | 12256 |
 | `docs/ECOWAR/docs/NORTHSTAR_SPHERE_CAMERA.md` | `8ba43497249ec914...` | 11862 |
 | `docs/EDIS/NORTHSTAR.md` | `adeba9fa008dd126...` | 3230 |
