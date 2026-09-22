@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: 2026-09-21T17:58:11.913972Z
+Generated: 2026-09-22T14:20:52.079839Z
 
-248 files, sha256 + size for each.
+251 files, sha256 + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -10,9 +10,9 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `CLAUDE.md` | `0764dd0c2546e50f...` | 4324 |
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
-| `context/MONOREPO_CLAUDE.md` | `5b9b8926bea9a04c...` | 44160 |
+| `context/MONOREPO_CLAUDE.md` | `ef7f06eb3a878d77...` | 48743 |
 | `context/full-system-context.md` | `ca017bd41b9e6526...` | 40221 |
-| `context/golden-docs-index.md` | `53832f72b0d549e7...` | 244346 |
+| `context/golden-docs-index.md` | `7f26e7faae33ed5c...` | 247905 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -36,8 +36,6 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `docs/DEADWEIGHT/NORTHSTAR.md` | `fa3aca934b405f79...` | 20365 |
 | `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `98513b842ddb0574...` | 16274 |
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
-| `docs/DEADWEIGHT/docs/img/s513_desktop_match.png` | `d02ad05afd78accd...` | 11115 |
-| `docs/DEADWEIGHT/docs/img/s513_desktop_menu.png` | `21f9b655f67cd883...` | 4083 |
 | `docs/DUNG/NORTHSTAR.md` | `cba57dc3b9e59a59...` | 29395 |
 | `docs/ECOWAR/docs/ARENA_API.md` | `87e271cd126e4ab9...` | 8446 |
 | `docs/ECOWAR/docs/NORTHSTAR_LIVING_MAP.md` | `1c1a72555f0c17b6...` | 41751 |
@@ -47,6 +45,7 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `docs/EDIS/NORTHSTAR.md` | `adeba9fa008dd126...` | 3230 |
 | `docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md` | `09aa0513558fa19f...` | 7299 |
 | `docs/EDIS/docs/DIS_DNS_NORTHSTAR.md` | `0cb3afc864d4ec53...` | 7158 |
+| `docs/EDITOR.GAME/NORTHSTAR.md` | `1592cd7cd6d1a7d1...` | 4356 |
 | `docs/EINHORN_SURVIVAL/CLAUDE.md` | `e7d7cfd9f3e45bfa...` | 9511 |
 | `docs/EMILY/GOLDEN.md` | `227398ad72b08e72...` | 3244 |
 | `docs/EMILY/HQ-SPEC-PRIME-097-fixed-points.md` | `20ab0a0b54ce2d39...` | 13066 |
@@ -103,7 +102,7 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `docs/GOLDENBAND/format/GBAND_FORMAT.md` | `35d8f842a20139c1...` | 5833 |
 | `docs/GTA7/docs/NORTHSTAR.md` | `c153562884e62b59...` | 16399 |
 | `docs/GoblinFoxDragon/docs/NORTHSTAR.md` | `96351dcd0295561c...` | 7279 |
-| `docs/GoblinFoxDragon/docs2/BATTLEGROUNDS_MIGRATION_NORTHSTAR.md` | `f6227381e1ff9b27...` | 5865 |
+| `docs/GoblinFoxDragon/docs2/BATTLEGROUNDS_MIGRATION_NORTHSTAR.md` | `55215dcce2e2b402...` | 7047 |
 | `docs/GoblinFoxDragon/docs2/CHAT_BRIDGE_TO_EINHORN_SURVIVAL_SPEC.md` | `aaa5875403c70730...` | 13927 |
 | `docs/GoblinFoxDragon/docs2/DRAGONSNSHIT_TWO_BACKENDS_AUDIT.md` | `92b8008b582cf68e...` | 17265 |
 | `docs/GoblinFoxDragon/docs2/DUNGEON_HAT_DROPS_NORTHSTAR.md` | `5011bc42b141a3a9...` | 6153 |
@@ -128,6 +127,8 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `docs/GoblinFoxDragon/docs2/SSH_TRANSPORT_IDENTITY_NORTHSTAR.md` | `9755ed4d3e98ec6a...` | 27986 |
 | `docs/GoblinFoxDragon/docs2/STACK_CONTINUITY_REPORT.md` | `a4a290007c6495bb...` | 14819 |
 | `docs/GoblinFoxDragon/docs2/specs/REDGARDEN_MUD_BRIDGE_SPEC.md` | `9d19d178c55a6761...` | 9826 |
+| `docs/IDUNA.GAME/NORTHSTAR.md` | `bbfdc0edfad07f5c...` | 11611 |
+| `docs/IDUNA/docs/APP_RELEASE_SIGNING.md` | `c62aa6cd862bd777...` | 6099 |
 | `docs/IDUNA/docs/EMILY_FOR_BUSINESS_NORTHSTAR.md` | `6697dd30981847da...` | 37772 |
 | `docs/IDUNA/docs/EMILY_INFRASTRUCTURE_PLAY_NORTHSTAR.md` | `2c86018706a2c0e3...` | 12450 |
 | `docs/IDUNA/docs/IDUNA_NOTEBOOK_NORTHSTAR.md` | `8172006e2be962dd...` | 6346 |
@@ -195,7 +196,7 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `docs/PARENA/docs/SPI_NORTHSTAR.md` | `101f2a1c99ac4e8f...` | 6844 |
 | `docs/PARENA/docs/UART_SERIAL_NORTHSTAR.md` | `79e55313f4fd4baa...` | 6280 |
 | `docs/PARENA/docs/V16_NORTHSTAR.md` | `b465beba6ee8c17c...` | 12362 |
-| `docs/PITVIPER/docs/NORTHSTAR.md` | `2a3e02be1434cec5...` | 11560 |
+| `docs/PITVIPER/docs/NORTHSTAR.md` | `eef5f561f6d07d79...` | 14412 |
 | `docs/PRRJECT_FATBABY/docs/COMPETITOR_WEST_NORTHSTAR.md` | `2710c5fef3146548...` | 4302 |
 | `docs/PRRJECT_FATBABY/docs/CONTENT_TYPE_TAXONOMY.md` | `07f361f76154d32f...` | 7950 |
 | `docs/PRRJECT_FATBABY/docs/GTM_FUNNEL.md` | `8c326ac72c566ae1...` | 5670 |
@@ -218,6 +219,7 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `docs/SHANKPIT/docs/ANTICHEAT_NORTHSTAR.md` | `c9d6e33806513f5a...` | 10290 |
 | `docs/SHANKPIT/docs/BOT_TRAINING_NORTHSTAR.md` | `654a39f9584fd742...` | 33173 |
 | `docs/SHANKPIT/docs/HUMANNESS_NORTHSTAR.md` | `33957d43c061122f...` | 15018 |
+| `docs/SHANKPIT/docs/SHANKPIT_OS_NORTHSTAR.md` | `902a8360238013c7...` | 10579 |
 | `docs/SHANKPIT/docs/STORY_SYSTEM_NORTHSTAR.md` | `811b9b9c574aa18e...` | 26938 |
 | `docs/SHANKPIT/docs2/CLIENT_PREDICTION_SPEC.md` | `08c756b9c5c53114...` | 5975 |
 | `docs/SHANKPIT/docs2/MESH_EDITING_NORTHSTAR.md` | `6089dfcd51d85569...` | 5692 |
@@ -237,6 +239,7 @@ Generated: 2026-09-21T17:58:11.913972Z
 | `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
 | `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
 | `docs/SHANKPIT/docs2/specs/WEAKNIGHT_VS0_ACCEPTANCE_CRITERIA.md` | `dab7177a5b153bf9...` | 7218 |
+| `docs/SLOWBOT_LEAGUE/NORTHSTAR.md` | `61bb5db0a456b745...` | 10844 |
 | `docs/SPIDERBEETLE/NORTHSTAR.md` | `fafa1fba572ce86c...` | 4264 |
 | `docs/TIPJAR-wiki/Product-Core-Acceptance.md` | `cac741f900f2461f...` | 9961 |
 | `docs/TYLER/HQ-CANON-TYLER-105-EPOCH-EXTINCTION.md` | `f96885888663882a...` | 10284 |
