@@ -1,6 +1,6 @@
 # MANIFEST
 
-Generated: 2026-09-22T22:46:08.885784+00:00
+Generated: 2026-09-23T20:18:37.904460+00:00
 
 254 files, sha256 + size for each.
 
@@ -18,7 +18,7 @@ Generated: 2026-09-22T22:46:08.885784+00:00
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
 | `docs/APPLES/docs/NORTHSTAR.md` | `6cf03336e9667801...` | 4219 |
 | `docs/APPLES/docs/SCHEMA.md` | `3d3639d27befebfb...` | 2521 |
-| `docs/BIG_O/NORTHSTAR.md` | `3c3234553417edd9...` | 39275 |
+| `docs/BIG_O/NORTHSTAR.md` | `76fb8e73e9393477...` | 75051 |
 | `docs/BRAWLPIT/docs/BP_LEVEL_EDITOR_NORTHSTAR.md` | `70fde9db0ff7a07f...` | 9569 |
 | `docs/BRAWLPIT/docs/BP_LOBBY_MATCHMAKING_NORTHSTAR.md` | `72f512153bd509f0...` | 7965 |
 | `docs/BRAWLPIT/docs/BP_SOCIAL_LOBBY_NORTHSTAR.md` | `82a1f3fec2371d43...` | 9179 |

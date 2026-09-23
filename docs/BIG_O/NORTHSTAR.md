@@ -420,3 +420,418 @@ elimination path is real, separate, deferred work below.
      phase 7d (the still-undecided `AI_ROLE_*` roster cutover) and phase 7b's own `witness_ai.c` (SHANKPIT's own
      live population/tick loop, which explicitly does not yet have a resolution/memory-wipe loop at all) are the
      real, eventual places this would need to land on the SHANKPIT side — not built or wired there either.
+
+## 12. Reverse port: bringing SHANKPIT's forward work back into BIG_O (2026-09-23, EMILY/BACKLOG.md SECTION 536 follow-up)
+
+§§1-11 above are BIG_O's tech flowing INTO SHANKPIT (phases 1-7e, "BIG_O engine merge"). SHANKPIT kept building on
+its own MODE_STORY after phase 7e landed — full phone-app parity/costumes/The Men, a 17-item food/cargo system
++ cake distraction, a wheelbarrow carry mechanic, giant zombie bugs (TRAPX Rogue Swarm Doctrine), and a
+walkie-talkie channel/hearing primitive (Asterisk-backed) — none of which exist in this repo. This section is the
+reverse direction: checked first per Principle 19 (investigate, cut a real phase 1, phase the rest), not ported
+blind.
+
+**Phase 1 (landed): walkie-talkie channel/hearing decision logic.** `PARENA/stdlib/big_o/walkie_rules.prn`
+(logic identical to SHANKPIT's own `stdlib/shankpit/walkie_rules.prn`, renamed into this repo's own `big-o/`
+module namespace, same "copied, logic identical" precedent §1/§2 above already established in reverse) generates
+`day/packages/simulation/walkie_rules.c`. New `day/packages/common/bigo_walkie_talkie.h` — pure, header-only host
+wrapper (caller owns all state, unlike SHANKPIT's own version which kept a hidden `g_players[]` array — matches
+this repo's own `bigo_pheromone.h` precedent instead). `scripts/gen_rules.sh` extended to regenerate it. 5/5 real
+assertions pass (`bazel test //day/packages/simulation:bigo_walkie_talkie_test`), verified against the real,
+live PARENA-compiled logic, not a mock.
+
+**Real, honest finding, checked before wiring further (bigger than walkie-talkie itself):** BIG_O's v0 has
+exactly ONE shared crew/world (§7's own "one crew, one onboarding" decision) — there is no team/crew concept for
+players at all. Every player would resolve to the same team_id, so `walkie-can-hear` degenerates to "always
+true" and the channel decision is moot. This module is therefore a real, standalone, tested primitive with NO
+LIVE CONSUMER yet — the same "correct primitive, no consumer" pattern this repo's own phases 2/3/5 already
+established (§§ above), just running in the other direction. Real wiring needs a real team/crew-assignment
+system first (PvP teams? Rival cleanup crews? Undecided) — not guessed at here.
+
+**Real, unrelated bug found mid-pass, then independently fixed by a concurrent commit:**
+`day/packages/common/http_client.h` failed to build (`struct addrinfo`/`struct timeval` used without their POSIX
+feature-test macros) under this sandbox's toolchain, breaking `//day/packages/common:http_client_test` and
+`//day/packages/common:level_loader_test`. Pre-existing (confirmed via `git diff --stat` — untouched by this
+pass), unrelated to walkie-talkie. A same-day upstream commit (`4e53e09`, "fix Bazel C99 build") fixed it before
+this port's own commit landed — rebased cleanly onto it; `bazel test //...` is now 34/34 green, including both
+previously-broken targets.
+
+**Queued, not started — each needs its own real investigation pass, not a blind port (Principle 19):**
+1. **17-item food/cargo system + cake distraction.** SHANKPIT's `food_pickup.c` hand-places pickups around a
+   hardcoded MODE_STORY VOXWORLD landmark and heals the player via `PlayerState`'s 0..100 health scale. BIG_O's
+   `day/` world is structurally different on both counts: it's a real, persisted single-node world fetched from
+   a live worldapi (chunk grid, map-editor-authored `PcWorldObjectFile`), not hardcoded landmark coordinates —
+   and BIG_O's `PlayerSlot` has no health/HP field anywhere (only destructible world-object fragment HP exists).
+   BIG_O *does* already have a more general, better-fitting item substrate than SHANKPIT's own hand-placed spots
+   (`g_entities[]` + `papercraft_inventory.h`'s real stacking pickup path, currently fed only by GTA3-style drops
+   from destroyed world objects) — the real question is whether food items should drop from destruction (reuse
+   as-is) or need a new hand-authored spawn mechanism (a real map-editor content pass), and "eat for heal" is
+   blocked on a player-health system that doesn't exist yet. Real scoping pass needed before any code.
+2. **Wheelbarrow carry mechanic.** Depends on the same hardcoded lab-trespass-circle delivery target SHANKPIT's
+   version uses — BIG_O has no equivalent authored landmark in its persisted world yet either.
+3. **Giant zombie bugs (TRAPX Rogue Swarm Doctrine).** `giant_bug_values.{h,c}` extends `zombie_values.h`, which
+   BIG_O already has natively (`core/zombie_values.h` — SHANKPIT's own copy was ported FROM this repo), so this
+   is likely the next-best-fitting port after walkie-talkie: same foundation, no world-model mismatch. Not
+   investigated in this pass — queued.
+4. **Full phone-app UI parity + costumes + The Men.** Real, player-visible client rendering work (home grid,
+   Wardrobe screen) — BIG_O's own `bigo_phone.h` already has the same app roster (`BP_APP_CARGO` etc.) but no
+   on-screen UI either; this is a real, separate client-rendering scoping pass on both repos' own already-named
+   gaps, not something to guess at here.
+
+session: sess-20260920-1908-24cb3558.
+
+## 13. Reverse port phase 2: giant zombie bugs (2026-09-23, EMILY/BACKLOG.md SECTION 536 follow-up)
+
+§12 named giant zombie bugs as the next-best-fitting reverse-port candidate after walkie-talkie, since
+`giant_bug_values.c` extends `zombie_values.h` (BIG_O's own field, SHANKPIT's copy was ported FROM this repo in
+§3) rather than something BIG_O's own world model has diverged from. Confirmed live: field-for-field identical
+`ZombieState` in both repos, so this ported with zero adaptation.
+
+**Landed:** `PARENA/stdlib/big_o/giant_bug_brain.prn` (logic identical to SHANKPIT's own, renamed into this
+repo's own `big-o/` module namespace) generates `core/giant_bug_brain.c` — the real "8 inputs × 8 hidden units =
+64 hand-picked weights" feedforward net (see the `.prn` file's own doc comment for the honest scope of "64 layer
+hand written llm"). New `core/giant_bug_values.{h,c}` — alien sense-vocabulary state (hunger, swarm_density,
+heat_scent, molt_pressure, ground_vibration, pain, hive_signal, light_aversion) sharing nothing with
+`humanness.h`/`zombie_values.h`'s own vocabularies, plus real, permanent strength/speed growth on
+`giant_bug_eat_zombie` (aggression → strength proxy, inverse `zombie_reaction_delay_ms` → speed proxy, both
+already-live `zombie_values.h` fields, not invented). `scripts/gen_rules.sh` extended to regenerate the brain.
+6/6 real assertions pass (`bazel test //:giant_bug_values_test`); full suite `bazel test //...` is 35/35 green
+with zero regressions.
+
+**Real, honest finding, checked before wiring further:** no live consumer yet, same pattern §12's walkie-talkie
+established — but for a different, more concrete reason here. BIG_O's live `day/apps/server` `ServerNpc` array
+is `PC_NPC_MAX=8`, already fully populated by `server_spawn_npcs` (3 Citizens, 1 The Men, 4 zombies) — there is
+no free slot for a 4th role without growing that array. SHANKPIT's own live version also names a real,
+analogous gate not built here either: `witness_ai_bug_command_authorized` ("Men hold the key" — a spawned bug
+only hunts/eats while ≥1 live The Men NPC is active, TRAPX Rogue Swarm Doctrine) and the leela-kit-reused
+2.5×-scaled-and-tinted visual. All real, separate, named follow-up work for a phase 3 (grow `PC_NPC_MAX`,
+add `PC_NPC_ROLE_GIANT_BUG`, wire the spawn/tick/eat loop and the Men-hold-the-key gate into
+`server_tick_npcs`) — not guessed at or half-built here.
+
+session: sess-20260920-1908-24cb3558.
+
+## 14. Reverse port phase 3: giant zombie bugs go live (2026-09-23, EMILY/BACKLOG.md SECTION 536 follow-up)
+
+§13 named phase 3 as "grow the roster, wire the Men-hold-the-key gate" — checked first, and the growing part
+turned out to be the wrong move: `PC_NPC_MAX=8` is baked into `PcNpcState[PC_NPC_MAX]`'s own wire snapshot size
+(`papercraft_protocol.h`), so resizing it is a real network-protocol change, not a cheap one. SHANKPIT's own live
+version (`witness_ai.c`) already made the same call for the same reason — a genuinely separate array
+(`g_giant_bugs[]`), not a new `PC_NPC_ROLE_*`. This phase copies that same real shape into BIG_O's own live
+server rather than the riskier roster-growth path §13 originally named.
+
+**Landed, live, in the real day server:** `day/apps/server/src/main.c` gained `ServerGiantBug
+g_giant_bugs[BIGO_GIANT_BUG_MAX]` (8 slots, separate from `g_npcs`), `server_spawn_giant_bugs` (one bug spawned
+adjacent to a real zombie NPC's own spawn point, close enough to verify the eat loop live without needing any
+movement AI — neither bugs nor zombies move in this v0), `server_giant_bug_command_authorized` (the real "Men
+hold the key" gate — brought back from SHANKPIT's `witness_ai_bug_command_authorized`, ported verbatim: >=1 live
+`PC_NPC_ROLE_THE_MEN` NPC required), and `server_tick_giant_bugs` (per-tick: if authorized, eat the nearest
+zombie NPC within `BIGO_GIANT_BUG_EAT_RADIUS`, else just drift hunger via `giant_bug_tick`). Wired into the real
+tick loop and startup spawn alongside `server_tick_npcs`/`server_spawn_npcs`. `scripts/build_day.sh` extended
+with the two new source files.
+
+**Live-verified, not just compiled:** ran the real `bigo_day_server` binary (isolated `--port`/`--save-dir`/
+`--world-file`/`--damage-file`, pointed at the real, shared, already-running worldapi on `:7070` read-only, same
+as PAPERCRAFT/WEAKNIGHT_BEDROCK_RACERS' own live instances) — real log output: `S536-BUG: spawned 1 real giant
+zombie bug...` then `S536-BUG: bug0 ate npc4 (zombie) -- strength=1.00 speed=1.13`. Strength stayed at baseline
+(correct: a freshly-spawned zombie has 0.0 aggression, so `giant_bug_eat_zombie`'s real strength-gain formula
+correctly contributes nothing) while speed grew (a dormant zombie's own reaction delay is still finite, so the
+speed proxy is always positive) — exactly the documented "eat a strong/fast zombie, get stronger/faster"
+mechanic behaving correctly on real, live data, not a scripted test. `bazel test //...` 35/35 green, zero
+regressions; `scripts/build.sh` (the real CI ASan/UBSan path) also clean.
+
+**Real, honest, deliberately NOT built here (named, not silently dropped):**
+1. **No bug movement.** Matches zombies' own existing "stationary in v0" scope cut — real movement/hunting AI
+   for either is separate, deferred work.
+2. **No network broadcast / client visual.** `g_giant_bugs` is server-side simulation only, verified via log
+   output — same "prove it live in the log first" precedent `server_tick_witness`'s own live-verification
+   already established. No wire packet, no rendering, no leela-kit-reused 2.5×-scaled-and-tinted visual
+   (SHANKPIT's own real answer, not replicated here).
+3. **No eaten-NPC despawn broadcast.** `prey->active = 0` is real and correct server-side state, but nothing
+   tells a connected client the eaten NPC is gone — moot until #2 above gives bugs (and the wider NPC roster)
+   any client presence at all.
+4. **TRAPX Rogue Swarm Doctrine** — real, named, deliberately not modeled, same deferral SHANKPIT's own version
+   already made (GTA7's own separate faction-doctrine system, not guessed at without checking that repo first).
+
+session: sess-20260920-1908-24cb3558.
+
+## 15. Reverse port phase 4: wheelbarrow (2026-09-23, EMILY/BACKLOG.md SECTION 536 follow-up)
+
+§12 originally named wheelbarrow as blocked ("no equivalent authored landmark in BIG_O's persisted world").
+Re-checked: that blocker was real but smaller than it first looked -- SHANKPIT's own version doesn't use any
+real level-authoring system either, it reuses one hardcoded circle (`WITNESS_AI_LAB_ZONE_*`) "well clear of the
+NPC spawn footprint," the same discipline every other live-server landmark in this repo already uses
+(pheromone detection radius, witness detection radius, dispatch arrival radius). This phase makes the same
+call: a new, real, hardcoded circle at `(BIGO_LAB_ZONE_CX=30, BIGO_LAB_ZONE_CZ=0)`, radius 6 -- 24 units clear
+of the 10-unit NPC spawn circle at origin and the giant-bug spawn point near (-9,0,1).
+
+**Landed, live, in the real day server:** a new wire packet `PC_PACKET_WHEELBARROW_TOGGLE` (15) +
+`PcWheelbarrowTogglePacket` (header-only, no payload -- the server already resolves the sender from the packet's
+own source address, same `PC_PACKET_INTERACT`-style lookup, not a new identification mechanism).
+`server_wheelbarrow_toggle(requester)` -- real, independently-callable decision logic (factored out of the
+packet handler, same "extract the real decision" discipline `server_throw_pheromone` already established): drop
+if already carrying, else pick up the nearest carryable NPC (Citizen or Zombie only, matching the founder's own
+"whole zombie or citizen" wording -- The Men are never carryable) within `BIGO_WHEELBARROW_PICKUP_RADIUS`.
+`server_tick_wheelbarrow()` -- trails the carried NPC 2 units behind its carrier's own real position/yaw every
+tick (BIG_O's `state.yaw` is already radians, unlike SHANKPIT's degrees-with-a-conversion-factor version), then
+checks delivery into the lab circle. Unlike SHANKPIT's own version (which always trails a fixed "hero," player
+slot 0), this tracks WHICH connected player is carrying and trails that specific player -- a real, necessary
+difference since BIG_O's own live server has no fixed-hero convention (real co-op, up to 3 players, §7).
+
+**Live-verified, not scripted-only:** a real scratch integration harness (`#include`s `day/apps/server/src/
+main.c` directly, same "call the real, unmodified functions, skip the socket/ticket layer" precedent the
+pheromone/dispatch phases already used) exercises `server_spawn_npcs` → `server_wheelbarrow_toggle` →
+`server_tick_wheelbarrow` end to end against real state: pickup claims the nearest real Citizen NPC, a second
+toggle drops it, walking the cargo into the real lab zone despawns it and increments the real delivery counter,
+and a disconnected carrier makes the tick stand down safely (cargo stays active, not silently faked as
+delivered). Also re-ran the full, real `bigo_day_server` binary end to end (isolated port/paths, real shared
+worldapi read-only) to confirm the new state doesn't regress startup/shutdown -- clean boot, clean tick, clean
+signal-shutdown. `bazel test //...` 35/35 green; `scripts/build.sh` ASan/UBSan path clean.
+
+**Real, honest, deliberately NOT built here (named, not silently dropped), same scope cuts SHANKPIT's own
+version already made:**
+1. **No literal wheelbarrow prop/model.** A real, separate art task -- the carry mechanic itself is the real
+   feature, matching the founder's own framing.
+2. **No client input wiring.** The real client-side E-key binding (or equivalent) that sends
+   `PC_PACKET_WHEELBARROW_TOGGLE` doesn't exist yet in `day/apps/client` -- verified server-side only, same
+   "prove the server logic first" precedent pheromone/witness/dispatch already used before any client wiring
+   landed for them.
+3. **No network broadcast of carried-NPC position to other clients**, and no despawn broadcast on delivery --
+   moot until #2 gives this any client presence at all.
+4. **A real, live interaction found (not a bug, named for completeness):** a carried NPC that gets eaten by a
+   giant bug mid-carry (phase 3, both mechanics now touch the same `g_npcs[]`) would leave `g_carried_npc_index`
+   pointing at an inactive NPC -- `server_tick_wheelbarrow`'s own `!cargo->active` check already handles this
+   correctly (stands down, same as a disconnected carrier), verified by the scratch harness's own disconnect
+   case exercising the identical code path.
+
+## 16. Reverse port phase 5: the 17-item food/cargo system (real cargo, no heal yet) (2026-09-23, EMILY/BACKLOG.md
+SECTION 536 follow-up)
+
+§12 queued this as item 1, blocked on two named gaps: BIG_O's `day/` world is a real, persisted worldapi-backed
+grid (not SHANKPIT's hardcoded MODE_STORY landmarks), and `PlayerSlot` has no health field at all. Re-investigated
+before writing code, per Principle 19.
+
+**The real finding: the health gap is bigger than originally scoped.** It isn't just "no health field" (a
+10-line fix) -- there is no player DAMAGE SOURCE anywhere in this repo (checked directly: only destructible
+world-object fragment HP exists; giant bugs eat zombie NPCs, never players; no PvP, no fall damage, no zombie
+attack on a player). Adding a health field and an "eat to heal" packet would be real code with zero observable
+effect -- health would sit at its max forever. Forcing a fake self-damage debug command just to demo it would not
+be a real feature. A real damage-source design decision (giant bugs attacking players? zombie NPC aggression?
+PvP?) is genuinely undecided and out of scope for this pass -- named, not guessed at.
+
+**What IS real and landed:** the "cargo" half of "food/cargo system" -- 17 real, pickable, stackable food items,
+reusing BIG_O's EXISTING GTA3-style destruction-drop pipeline as-is (§12 item 1's own named option, not a new
+hand-authored spawn mechanism). WOOD-material world-object destruction (a real, previously-named "no drop yet"
+gap -- the papercraft item_drop_mod.prn's own doc comment already called this out) now drops one of 17 real food
+items.
+
+- `day/packages/common/bigo_food_items.h` (NEW) -- byte-for-byte port of SHANKPIT's own
+  `packages/common/food_items.h`: 17 real items (8 classic Pac-Man fruits + Ms. Pac-Man's 3 + 5 BIG_O-original +
+  the founder-requested BIRTHDAY CAKE), names/points/derived heal-formula all unchanged. Pure data, no PARENA
+  involved (matches SHANKPIT's own choice -- it's a table, not a decision function).
+- `PARENA/stdlib/big_o/item_drop_mod.prn` (NEW) -- forked from `stdlib/papercraft/item_drop_mod.prn`, NOT a
+  shared edit (same "renamed into this repo's own module namespace" precedent walkie_rules.prn/
+  giant_bug_brain.prn already set) -- editing the shared PAPERCRAFT copy in place would have silently made
+  PAPERCRAFT's own world start dropping food items too. PAPER/METAL branches unchanged (scrap/shotgun). Real,
+  small, justified ABI extension: `on-papercraft-item-for-object-destroyed` now takes a second input, the
+  destroyed object's own stable world-index -- `object-index mod 17` picks which food item drops, deterministic
+  variety with no RNG.
+- `PARENA/stdlib/big_o/inventory_mod.prn` (NEW) -- forked from `stdlib/papercraft/inventory_mod.prn` for the
+  same reason. Gives food item ids (`PC_ITEM_FOOD_BASE`=8..24) a real 20-per-slot stack cap -- without it every
+  pickup would burn its own whole slot out of `PC_INVENTORY_SLOTS`' real 8-slot ceiling. `can-stack` unchanged
+  (already fully generic).
+- `day/packages/common/papercraft_protocol.h` -- new `PC_ITEM_FOOD_BASE` (8), doc comment names the real
+  "pickable cargo today, no heal consumer yet" scope explicitly.
+- `day/apps/server/src/main.c` -- `on_papercraft_item_for_object_destroyed` call site now passes the destroyed
+  object's own `target` index as the second arg; drop log names the food item by string when applicable
+  (`S536-FOOD: ...`). No other host change -- the existing GTA3-style pickup-on-walkover path
+  (`try_add_item_to_inventory`) is already item-id-agnostic and needed zero changes.
+- `scripts/gen_rules.sh` extended to regenerate both forked mods from `PARENA/stdlib/big_o/`.
+
+**Verified, not just compiled:** `item_drop_mod_test`/`inventory_mod_test` extended with real assertions for the
+new material/id ranges (including the mod-17 wraparound); new `bigo_food_items_test` (7 assertions on the ported
+data table). A new scratch harness (same `#include main.c` real-function precedent `wheelbarrow_verify.c`
+established in phase 4) drove the real, unmodified `on_papercraft_item_for_object_destroyed` +
+`try_add_item_to_inventory` end to end: WOOD destruction at world-index 5 deterministically drops PEAR,
+lands in a real inventory slot, a second identical pickup stacks (doesn't burn a second slot), a different food
+item takes its own slot, PAPER/METAL drops unchanged -- 5/5 pass. `bazel test //...` 36/36 green (3 new real
+tests, zero regressions). `scripts/build.sh` ASan/UBSan clean. Live-verified booting the real server binary
+against an isolated port/paths against the real worldapi -- clean boot (world load, NPC/giant-bug spawn, real
+bug-eats-zombie event still fires), clean signal-shutdown, no lingering process.
+
+**Real, honest, deliberately NOT built here:**
+1. **Eat-to-heal.** Blocked on the real, bigger gap named above (no player health field, no damage source of any
+   kind to make healing observable). `food_item_heal()` is ported and tested but has no live caller -- same
+   "standalone primitive, no live consumer yet" precedent `bigo_walkie_talkie.h` already established in phase 1.
+2. **Full 17-item Lost-and-Found-style restock landmark.** Not needed for this pass -- the `object-index mod 17`
+   trick already gives real variety through the existing drop pipeline without a new hand-authored spot system.
+   A real, separate landmark (SHANKPIT's own "office" flavor) remains a possible future add, not required.
+3. **Cake distraction/party-event behavior.** Checked directly against SHANKPIT's own `food_items.h` doc
+   comment: SHANKPIT itself never built this either -- BIRTHDAY CAKE is just item #17 in the same data table,
+   with the actual party/wedding NPC-choreography ask named as its own separate, unscoped, un-built future
+   follow-up there too. Nothing deferred here that SHANKPIT itself actually has.
+
+**Remaining queued from §12:** full phone-app UI parity + costumes + The Men (real client-rendering work in
+`day/apps/client`, a different domain than every phase 1-5 change so far, all server-side).
+
+session: sess-20260923-1030-4a526255.
+
+## 17. Two corrections and a real, small fix found investigating phone-app parity (2026-09-23, EMILY/BACKLOG.md
+SECTION 536 follow-up)
+
+Before starting §12 item 4 ("full phone-app UI parity"), re-checked its own premise against the actual live
+code, per Principle 19. Two of this section's own earlier claims turned out wrong -- corrected here, not
+silently overwritten, same discipline §12's own http_client.h correction already used.
+
+**Correction 1 -- BIG_O already has a full, rendered phone UI.** §12 item 4 claimed "no on-screen UI either."
+False: `draw_bigo_phone` (`day/apps/client/src/main.c`, landed in `c25f81e`, 2026-09-20 -- part of the ORIGINAL
+BIG_O engine merge, predating this whole reverse-port thread) already renders every one of the 11 apps
+(Messages/Contacts/Map/Camera/Notes/Lab/Cargo/Skills/Loadout/Wardrobe/Status), including Wardrobe's own real
+costume list. The phone-app roster and its rendering are NOT a gap.
+
+**Correction 2 -- SHANKPIT DID build a cake distraction mechanic.** Phase 5's own NORTHSTAR/BACKLOG entries
+claimed "SHANKPIT itself never built this either." False -- checked directly this time: SHANKPIT's
+`packages/simulation/witness_ai.c` has a real `witness_ai_smash_cake(now_ms)` that halves nearby witness
+vigilance for a real duration (`witness_ai_tick`'s own `if (distracted) vig /= 2` block), triggered by
+`packages/common/phone.h`'s own real `BP_FX_SMASH_CAKE` effect (raised when FOOD_CAKE is selected in CARGO,
+wired live in `apps/lobby/src/main.c`). Real, honest reason this ISN'T ported here either: it needs the
+QUIET-observation half of the witness system (costume/decorum-based noticing) live in `day/`'s real server --
+`core/witness_live.h`'s own doc comment already names this as a genuinely separate, not-yet-built gap (only the
+LOUD-event half, a hunting/frenzied zombie, is wired into the live day server today). Same real blocker, just
+now correctly attributed -- not a SHANKPIT gap, a BIG_O one.
+
+**What eat-to-heal actually looks like in SHANKPIT, checked directly (confirms phase 5's blocker was correctly
+scoped):** `apps/lobby/src/main.c`'s real handling of `BP_FX_EAT_FOOD` (`hero->health += fx.arg`, clamped to
+100) targets SHANKPIT's own MODE_STORY `PlayerState.health` field -- a real field BIG_O's `PcPlayerState` still
+does not have -- and it's explicitly CLIENT-LOCAL, not server-authoritative (`food_pickup.h`'s own doc comment:
+"client-local only, no server-authoritative story yet"). Copying that shape into BIG_O verbatim would be a real
+regression against every other stat here (XP/level/inventory/position are all server-authoritative) -- phase
+5's own "needs a real damage-source design decision, not guessed at" conclusion stands.
+
+**Real, small, honest gap found and fixed while re-checking this (not the parity claim itself, a real
+pre-existing display bug adjacent to it):** `day/apps/client/src/main.c`'s own `PC_ITEM_TABLE` (backing the
+CARGO screen's item names) only had entries for `PC_ITEM_NONE`/`PC_ITEM_SCRAP` -- every `PC_ITEM_WPN_*` (found
+weapons) already fell through to "Unknown Item" BEFORE this reverse-port thread touched anything, and the new
+food items from phase 5 would have hit the same fallback. Fixed: `PC_ITEM_TABLE` now lists all 6 real weapon
+names; food items (`PC_ITEM_FOOD_BASE..+16`) are handled by a real `pc_item_name()` branch into
+`bigo_food_items.h`'s own `food_item_name()` instead of hand-duplicating all 17 names into a second table.
+Verified live against the real, unmodified `pc_item_name()` (a scratch `#include main.c` harness, same
+precedent phase 4/5's own scratch harnesses used, adapted for the client binary this time -- 7/7 assertions
+pass). `scripts/build_client.sh` clean (SDL2/GL linked, real binary produced); `bazel test //...` 36/36 green,
+zero regressions.
+
+**Net result: §12 item 4 ("full phone-app UI parity") is now MUCH closer to done than scoped** -- the
+rendering and app roster already exist; the real remaining gaps are narrower and specific: CARGO has no
+SELECT-to-eat interaction wired (`bigo_phone.h`'s own `BpEffectKind` has no `BP_FX_EAT_FOOD` yet, and
+correctly so -- there is still nothing for it to do), and the cake-smash distraction needs the QUIET-decorum
+witness path live in `day/` first (a real, separate, already-named gap, not new). Both are still correctly
+blocked on the same two things phase 5 already named, not on "the client has no phone UI" (it does).
+
+session: sess-20260923-1030-4a526255.
+
+## 18. Live quiet-observation (Decorum) + the real CANCELLED consequence (2026-09-23, EMILY/BACKLOG.md SECTION 536
+follow-up)
+
+§17 named the quiet-observation path (costume/zone-based noticing, driving the player's own Decorum meter) as
+the biggest remaining gap in this whole reverse-port thread, and correctly declined to guess at what CANCELLED
+should actually DO in a live persistent multiplayer world before founder input, since "cancelled = fail state"
+is this game's own stated core loop, not a side mechanic. Per Principle 19 this section scopes it properly
+before writing code.
+
+**Design decision (founder, real-time, 2026-09-23):** "the regulators are called in - the uberplumbers and they
+delete you with acid and foam." Checked against the existing design docs first, per this repo's own established
+discipline -- this is NOT a new invention, it matches real, already-written canon almost exactly:
+`docs/DESIGN_DIGEST.md` §11 already specifies **"at maximum heat replace 'police' with a Corporate Service
+Call: silent, John-Wick-lethal Regulators who 'cap the line.'"** Regulators are a real, already-named The Men
+sub-type (the "blue-collar cleanup crew" -- plumbers/electricians/engineers/regulators, §11's own roster) whose
+memory-wipe spray already resolves the LOUD zombie-witness path (`resolved=1` in `core/sim.c`/`npc_next_state`,
+live in `day/` since S504-DISPATCH). Death resolution is ALSO already canonical, not invented here: TYLER
+crossover lore (`docs/DESIGN_DIGEST.md` §11) establishes a **somatic-clone germline restore-point** --
+Regulators/Plumbers clean the scene, the basement lab prints a new body, cost = Bio-Slurry. This maps onto
+BIG_O's own already-live `BP_APP_LAB` clone-splicing menu (`clones[]`/`clone_count` in `bigo_phone.h`) as the
+real, natural mechanism -- a player death is a respawn-with-cost in this persistent world, not a hard
+disconnect/game-over, consistent with every other stat in this repo being persistent rather than session-scoped.
+
+**Real scope: this is two genuinely separate systems, not one.** Phase A (below, built this pass) is live
+Decorum tracking -- costume/zone/witness math, entirely reusing already-tested pure decision functions.
+Phase B (named, NOT built this pass) is Regulator dispatch + a real player-kill mechanic + clone respawn +
+Bio-Slurry economy -- each a genuinely new subsystem (BIG_O currently has zero player damage/death of any kind,
+confirmed back in phase 5; zero Regulator NPC type; zero Bio-Slurry resource anywhere in code). Building both in
+one pass would repeat the exact "big, unscoped ask" mistake Principle 19 exists to prevent. Phase B needs its
+own real investigation pass (what makes a Regulator dispatch-eligible vs. The Men's existing hunt-dispatch
+logic; what a "kill" even resets in a shared persistent world multiple players occupy; where Bio-Slurry is
+earned) before any code -- queued below, not guessed at.
+
+### Phase A: live Decorum tracking (built, verified this pass)
+
+All the hard logic already existed, tested, and compiled into the live `day/` binary -- `core/witness_rules.c`
+(generated from `PARENA/stdlib/big_o/witness_rules.prn`) has real `zone_access`/`conspicuousness`/`noticed`/
+`decorum_delta`/`decorum_after`/`decorum_band`/`decorum_start`/`decorum_cap` functions, already linked via
+`scripts/build_day.sh`'s own `../core/witness_rules.c`, just never called from `day/apps/server/src/main.c`.
+This phase is real wiring, not new rules logic.
+
+- `PcPlayerState` -- two new server-authoritative fields, `costume` (COS_* value, default `COS_SUIT`) and
+  `decorum` (default `decorum_start()`=80). Synced in the existing snapshot broadcast like every other player
+  stat (no new packet type needed for the read side).
+- New packet `PC_PACKET_COSTUME_SET` (16, client -> server): sent when Wardrobe's phone SELECT changes the
+  worn costume. New `bigo_phone.h` effect kind `BP_FX_COSTUME_SET` (arg = new costume index) -- the phone
+  already tracked `p->costume` locally for the UI; this is the first time it tells the server.
+  `day/apps/client/src/main.c` sends the packet on receiving the effect.
+- Real, minimal ZONE mapping for `day/`'s live world -- only 2 of the 5 rules-module zones are actually placed
+  yet: `ZONE_PUBLIC` (everywhere by default) and `ZONE_LAB` (reuses phase 4's own existing lab-delivery circle,
+  `BIGO_LAB_ZONE_CX/CZ/RADIUS` -- zero new landmark authoring, same "hardcoded circle, no LevelZone/JSON"
+  precedent used 3 times already in this repo). `ZONE_EXEC`/`ZONE_GENERATOR`/`ZONE_VAULT` have no live
+  landmark yet -- named, not guessed at (Vault also needs a real "stolen token" mechanic `zone_access` already
+  models but nothing here grants yet).
+- `server_tick_decorum` -- fires the real "observe" check ONCE per zone-entry transition per player (not every
+  tick -- matches `core/sim.c`'s own real `sim_enter`-drives-`sim_observe` precedent exactly, since re-rolling a
+  noticing check 20 times a second per player would crash Decorum instantly and doesn't match the abstract
+  scenario-sim's own turn-based semantics). `gear`/token are real, honest 0s -- no live field-gear-carry flag or
+  vault-token mechanic exists yet, so only `DA_WRONG_COSTUME` can ever fire from this pass, never
+  `DA_CARRY_GEAR`. Witnesses are real, active Citizen/The-Men NPCs (never zombies) within a new
+  `BIGO_QUIET_OBSERVE_RADIUS` (10.0 units -- deliberately tighter than the 25-unit loud-event detection radius;
+  noticing an outfit needs real proximity, hearing a zombie scream doesn't), using each NPC's own real
+  `npc_brain_effective_vigilance`. A real, seeded xorshift32 RNG (`server_roll100`, same precedent
+  `core/sim.c`'s own `roll100`/SHANKPIT's `food_pickup.c` `lnf_roll_item` already use) supplies `noticed()`'s
+  roll. On a hit: `decorum_delta(DA_WRONG_COSTUME)` -> `decorum_after` -> `decorum_band`, logged
+  (`S536-DECORUM: ...`). Real, own, v1 passive-regen cadence (not spec'd anywhere else, named and retunable):
+  `DA_QUIET_TICK` (+1) once per real 10 real-world seconds while not currently in violation, matching
+  `core/sim.c`'s own `sim_tick`-applies-`DA_QUIET_TICK`-every-abstract-tick shape at a real-time cadence instead
+  of an abstract-turn one.
+- Reaching `BAND_CANCELLED` logs a real, honest, one-time marker
+  (`S536-DECORUM: player%d CANCELLED -- Regulator escalation is Phase B, not built yet`) rather than faking a
+  consequence -- exactly the same "name it, don't fake it" discipline phase 5 already used for eat-to-heal.
+
+**Verified, not just compiled:** `bigo_phone_test` extended (selecting a different Wardrobe costume raises
+`BP_FX_COSTUME_SET` with the right arg; re-selecting the already-worn costume is a real no-op, not a re-send).
+A new scratch integration harness (same `#include main.c` precedent `wheelbarrow_verify.c`/`food_verify.c`
+already established) drives the real, unmodified `spawn_player`/`server_tick_decorum`/`server_player_zone`
+end to end: a player in the wrong costume (`COS_SUIT`, the real default) standing in the real lab zone, with a
+real nearby The Men NPC (`npc_brain_effective_vigilance` >= 60), takes a real, exact `decorum_after`-computed
+hit (80 -> 60); staying in the same zone does NOT re-trigger the check (matches `core/sim.c`'s own
+zone-entry-only semantics); the correct costume (`COS_LAB_SMOCK`) in the same zone causes zero loss (`noticed()`
+never even rolled, since `conspicuousness(allowed=1, gear=0)` is 0); passive `DA_QUIET_TICK` regen fires after
+the real `BIGO_DECORUM_QUIET_TICK_MS` cadence elapses; repeated violations correctly reach the real
+`BAND_CANCELLED` transition with the one-time marker firing exactly once -- 6/6 real assertions pass. Also
+fixed two small, stale doc-comment claims found live while wiring the client STATUS screen: `pc_item_name`'s
+neighbor `PC_ITEM_TABLE` area was already corrected in §17, and STATUS's own old "rules core is not linked to
+this client" line was already false before this pass (`scripts/build_client.sh` has linked
+`core/witness_rules.c` since the client was first built) -- STATUS now shows the real, live costume/decorum/
+band instead of a placeholder. `bazel test //...` 36/36 green (zero regressions); `scripts/build.sh`
+ASan/UBSan path clean; `scripts/build_client.sh` clean; real server binary boot/tick/shutdown re-verified
+against an isolated port/paths.
+
+### Phase B: Regulator dispatch, real player death, clone respawn, Bio-Slurry (queued, real investigation needed
+before any code -- NOT built this pass)
+
+Real, separate open questions, not guessed at:
+1. What makes a Regulator dispatch-eligible versus reusing The Men's existing hunt-dispatch logic wholesale --
+   a new, deadlier `PC_NPC_ROLE_REGULATOR` or a real "The Men, lethal mode" flag on the existing role?
+2. What does a player "kill" actually reset in a shared, persistent, multi-player world other players are still
+   occupying at the same moment -- position only? inventory? samples/clones in the Lab? Real, honest, not
+   assumed here.
+3. Where is Bio-Slurry earned/stored -- a wholly new resource with no current analog anywhere in this repo's
+   code (`bigo_phone.h`'s own `samples[3]` tracks harvested genetic samples, a real, different, already-live
+   concept this would need to compose with, not replace).
+4. Respawn placement and cooldown -- the basement lab is the canonical location per lore; whether that's a real
+   hardcoded point (same precedent every other landmark here uses) is the likely answer, not yet confirmed.
+
+session: sess-20260923-1030-4a526255.
