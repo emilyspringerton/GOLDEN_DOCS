@@ -1332,3 +1332,171 @@ in-session-only state).
    Not started.
 
 session: sess-20260923-1030-4a526255.
+
+## 26. Air ships -- wedge-shaped hover skateboards, per-board PARENA-tuned physics (2026-09-24, EMILY/BACKLOG.md SECTION 536 follow-up)
+
+Founder real-time: "continue add air ships like wedge shaped hover skateboards they have different physics
+per board and they can be programmed in parena friction and gravity etc can be tuned." Full-stack this pass
+(server physics, wire protocol, client rendering AND input) -- the founder's own visually-descriptive "wedge
+shaped" framing implies wanting to see it, a deliberate departure from §23/§24's own "server logic first,
+client visual later" precedent, matching §25's own full-client treatment for the same reason.
+
+### What shipped
+
+- **`PARENA/stdlib/big_o/hoverboard_rules.prn`** -- new PARENA module: `board-count` (3), `board-speedster`/
+  `board-tank`/`board-glider` (1/2/3, the real board-type IDs), `board-is-valid`, and three real per-board
+  tuned constants (`board-accel-x100`, `board-friction-x1000`, `board-max-speed-x100`) plus `board-gravity-
+  x1000` (GLIDER lightest, TANK unscaled, SPEEDSTER in between). Compiles clean, generates to
+  `day/packages/simulation/hoverboard_rules.c` via `scripts/gen_rules.sh` (updated).
+- **`day/packages/common/bigo_hoverboard.h`** -- new host wrapper. `bigo_hoverboard_tick(board_type, input_x,
+  input_z, dt, *out_vx, *out_vz)` is the real momentum model: exponential drag (`powf(friction, dt)`,
+  frame-rate independent) plus `accel*dt` added to velocity each tick, clamped to `max_speed`. Each board's
+  own natural equilibrium velocity (`accel / -ln(friction)`) is tuned to comfortably exceed its own
+  `max_speed` cap, so the explicit clamp -- not friction -- is what actually governs top speed; friction only
+  shapes how fast a board decelerates once input is released, which is where the three boards' real feel
+  differs (SPEEDSTER retains far more velocity per second than TANK from the same start).
+- **Wire protocol**: `PcPlayerState` gains `int mounted_board` (0 = `BIGO_BOARD_NONE`, else a real board-type
+  ID); new `PC_PACKET_HOVERBOARD_TOGGLE` (client->server, `PcHoverboardTogglePacket{hdr, requested_board}`,
+  same shape as the existing `PcWheelbarrowTogglePacket`).
+- **`day/apps/server/src/main.c`**: a new toggle handler (any invalid `requested_board` is rejected outright,
+  leaving the player's current mount state completely unchanged -- never silently coerced; a real change
+  always resets `board_vx`/`board_vz` so a fresh board never inherits a previous board's own different
+  physics feel). Horizontal movement branches on `mounted_board`: mounted players get real momentum via
+  `bigo_hoverboard_tick`, on-foot players keep the existing direct-input model unchanged. Vertical gravity is
+  scaled per board (`bigo_hoverboard_gravity_scale`). `spawn_player()` resets `board_vx`/`board_vz` to 0 (same
+  "stale previous occupant" bug class `latest_cmd_seq` already guards against).
+- **`day/apps/client/src/main.c`**: `draw_hoverboard()` (a wedge mesh, GL_QUADS+GL_TRIANGLES, per-board-type
+  tinting) rendered under every mounted player. **V** cycles the local player's own mount state (dismount ->
+  SPEEDSTER -> TANK -> GLIDER -> dismount), sending the real request -- guarded off while the GFD terminal
+  (`BP_APP_GFD`) has text-input focus, so typing a literal "v" into chat can't also toggle a mount mid-
+  sentence. The client deliberately hardcodes literal board-type ints (1/2/3) for rendering rather than
+  calling `board_speedster()`/etc -- it doesn't link `hoverboard_rules.c` at all, same "client hardcodes a
+  shared id" precedent `PC_PHONE_MESSAGE_TABLE` already established, keeping the client's build dependency
+  surface unchanged.
+
+### Verified, not just compiled
+
+- `bigo_hoverboard_test.c` (new Bazel target, `bazel test //day/packages/...` 32/32 green): board identity/
+  validity, per-board gravity-scale ordering, a real 600-tick/10s momentum-convergence loop per board (each
+  tick asserts velocity never exceeds that board's own `max_speed` cap -- caught and fixed a real friction-
+  model bug this way, see below), friction comparison (SPEEDSTER retains more than TANK), invalid-board no-op.
+- `scripts/build_day.sh` and `scripts/build_client.sh` both clean (fixed one real `-Wcomment` warning: the
+  header's own original doc comment contained a literal `*/`-shaped substring inside prose referencing
+  `*vx`/`*vz`, misparsed as a comment terminator -- fixed by renaming the output params to `out_vx`/`out_vz`
+  and rewording, not suppressing the warning).
+- A real, live integration harness (`hoverboard_verify.c`, scratch, not committed, same `#include main.c`
+  precedent every harness in this thread uses) against the real, unmodified toggle-handler logic and
+  `bigo_hoverboard_tick`/`board_is_valid`/`g_slots[]`: mount request sets `state.mounted_board`, a real 10s
+  tick converges to SPEEDSTER's own real 35.0 max speed, an invalid board (99) is rejected, dismount clears
+  both `mounted_board` and momentum. ASan/UBSan clean, all assertions pass.
+
+### Real bug found and fixed mid-pass
+
+The first friction-model draft applied `friction_x1000/1000` as a flat per-TICK multiplicative decay (no `dt`
+scaling) -- at 60Hz that compounds to almost nothing per real second (a nominal "0.9 retention" constant
+actually became `0.9^60 ~= 0.0018` retained per second), so every board converged to a steady-state speed far
+below its own tuned `max_speed` (SPEEDSTER: ~2.4 u/s against a 35.0 u/s target). Caught by
+`bigo_hoverboard_test.c`'s own real assertion (`final_speed > max_speed * 0.9f`) failing for board 1 -- fixed
+by switching to `powf(friction, dt)` frame-rate-independent exponential decay, reinterpreting `board-friction-
+x1000` as a real per-SECOND retention fraction (documented in the header itself) rather than per-tick.
+
+### Real, honest, deliberately NOT built here
+
+No REFLUX publish for mount/dismount events (same "log/wire-only, no REFLUX subscriber yet" gap every other
+system in this thread's own reverse-port carries). No client-side prediction/interpolation for mounted
+movement -- board position updates arrive the same way on-foot position does, no special smoothing. A real,
+named, NOT-fixed v1 gap: the slide-jump trick's `horiz_speed` gate still reads the on-foot `mx*move_speed`
+formula even while a player is mounted, so a mounted player could still trigger an on-foot-style slide-jump
+speed boost on top of hoverboard momentum -- not exploited or verified either way this pass, just named
+honestly rather than silently ignored or over-engineered away.
+
+session: sess-20260923-1030-4a526255.
+
+## 27. Real GFD integration -- BIG_O joins the live cross-server chat bridge (2026-09-24, EMILY/BACKLOG.md SECTION 536 follow-up)
+
+Founder real-time: "continue with the big_o gfd integration via the phone app." Investigated two real
+paths before building anything (see the two `AskUserQuestion` decisions this pass made, both answered
+by the founder): (1) a real live connection, chosen over reworking the queued §25 list in order; (2) once
+a real, existing, live GFD<->EINHORN_SURVIVAL chat bridge was found
+(`GoblinFoxDragon/docs2/CHAT_BRIDGE_TO_EINHORN_SURVIVAL_SPEC.md`, IDUNA's `POST/GET /api/v1/chat/messages`),
+BIG_O joins THAT bridge as a third real participant rather than opening its own bespoke raw-TCP connection
+into GFD's telnet port -- more consistent with the rest of the monorepo, no bespoke MUD-protocol parsing,
+and it reaches EINHORN_SURVIVAL (the live Minecraft server) too, not just GFD.
+
+### What shipped
+
+- **IDUNA** (`internal/http/handlers/chat_messages.go`): new `sender_source` `"bigo_server"` and channel
+  `"big_o"` (same "own channel, no native taxonomy to reuse" reasoning `einhorn_survival`'s own `"gta7"`
+  channel already established). New real M2M agent, `BIGO-SERVER` (`config/agents.json` +
+  `migrations/truestore/202609240100_bigo_server_agent.sql`) -- no special permission needed, `RequireAuth`
+  (any valid JWT) is the only real gate on this route, same fact `GTA7-SERVER`/`DRAGONSNSHIT-MUD` already
+  rely on. 2 new tests (`bigo_server`/`big_o` accepted; an invalid `sender_source` rejected). Live-verified,
+  not just built: ran `go run ./cmd/bootstrap` against the real running DB (provisioned the secret,
+  confirmed every other agent's own credential was left untouched), rebuilt + restarted the live
+  `iduna.service`, then a real `curl` round trip (auth -> POST -> GET) against the live server succeeded
+  end to end before any BIG_O code touched it.
+- **`day/packages/common/bigo_gfd_bridge.h`** -- new host module. One persistent background poller
+  `pthread` (auth once via `POST /api/v1/auth/agent`, then `GET .../chat/messages?since_id=...` every 5s,
+  matching GFD's own established cadence) plus one short-lived detached `pthread` per outbound send
+  (`POST`, fire-and-forget) -- the server's own single-threaded 60Hz UDP tick loop never blocks on IDUNA,
+  same reason a chat-relay outage can't stall or crash the game the way a bare blocking call on the main
+  thread would. A real, minimal JSON-array walker (`bigo_bridge_next_json_object`, brace-depth + string-
+  literal aware, so a literal `{`/`}` typed into someone's real chat body can't desync it) on top of
+  `http_client.h`'s own existing scalar-field extractors, since IDUNA's response is a JSON *array* of
+  message objects and `http_client.h` only ever finds the first occurrence of a field in a whole buffer.
+  A mutex-protected ring buffer (`BIGO_BRIDGE_QUEUE_CAP` 32, same "shift, don't drop the newest" overflow
+  convention `bigo_phone.h`'s own scrollback/notification queues already use) is the real hand-off between
+  the poller thread and the main tick loop. Relays *everything* not from `bigo_server` itself (`gfd_server`/
+  `einhorn_survival`/`mud`/`battlegrounds` all included, each tagged `[GFD]`/`[MC]`/`[MUD]`/`[BG]`) -- a
+  real, honest reflection of the shared bus this actually is, not a GFD-only pipe. `IDUNA_AGENT_SECRET`
+  unset leaves the whole bridge a real, silent no-op (no thread started, every send a no-op, every drain
+  empty) -- same "no credential, feature quietly off" convention every other IDUNA-agent-backed feature in
+  this monorepo already follows.
+- **`day/apps/server/src/main.c`**: new `--iduna-host`/`--iduna-port` flags (default `127.0.0.1:8080`),
+  `bigo_gfd_bridge_init()` at startup. The existing `PC_PACKET_CHAT_SAY` handler gains one real, additive
+  step -- after its own unchanged local radius broadcast, it also relays the same text onto the bridge,
+  named from the player's own real, stable, IDUNA-backed `player_id` (`"BigO-<6 hex chars>"`, not the slot
+  index, which is ephemeral/reused -- the same real human keeps the same real bridge identity across
+  reconnects). A new `server_tick_gfd_bridge()` drains the ring buffer once per tick and broadcasts each
+  line to every active player as a `PC_PACKET_CHAT_RECV` tagged `BIGO_BRIDGE_SENDER_SLOT` (255, a value
+  `PC_MAX_PLAYERS`=16 never reaches).
+- **`day/apps/client/src/main.c`**: `PC_PACKET_CHAT_RECV`'s existing handler special-cases
+  `sender_slot == 255` (the literal, not the header -- the client deliberately doesn't link
+  `bigo_gfd_bridge.h`/`pthread`/`http_client.h` at all, same "client hardcodes a shared id" precedent the
+  hoverboard render code already established) and renders the already-formatted `"[TAG] name: body"` line
+  as-is, instead of its own normal `"player<N>: ..."` prefix.
+
+### Verified, not just compiled
+
+- `bigo_gfd_bridge_test.c` (new Bazel target, hermetic, no network): the JSON-array walker against a
+  real-shaped multi-object payload including a message body containing a literal `{`/`}` (doesn't desync
+  the scan); source tagging (all four known sources, plus an honest fallback for an unknown one); ring-
+  buffer push/drain order; ring-buffer overflow (oldest evicted, newest kept); a disabled bridge's `send()`
+  is a real no-op. `bazel test //day/packages/...` 33/33 green.
+- Real server+client builds clean (`-lpthread` added to `scripts/build_day.sh`; one real
+  `-Wformat-truncation` false-positive found and fixed properly -- a same-size `memcpy` instead of
+  `snprintf(...,"%s",...)` between two identically-sized, already-NUL-terminated buffers, not suppressed).
+- **A real, live, end-to-end run against the actual running IDUNA** (not a mock): launched the real,
+  freshly-built `bigo_day_server` binary (scratch save-dir, throwaway UDP port, real `worldapi` chunk fetch)
+  with the real `IDUNA_SECRET_BIGO_SERVER` credential. Server log shows real authentication
+  (`[gfd-bridge] authenticated as BIGO-SERVER`), then real, live historical chat correctly polled, parsed,
+  and tagged from all three OTHER real bridge participants already on the bus --
+  `S536-GFD-BRIDGE: relayed "[BG] Test: ..."`, `"[MC] .GarbageMan4147: test"`, `"[MUD] EMILY: hello"` --
+  including surviving adversarial-looking real test content (a literal `` ``` drop al;ll tables `` string,
+  various `%`/`$`/`@` punctuation runs) with zero crashes or parse errors. The earlier `curl`-based
+  self-post (id 46, `sender_source=bigo_server`) was correctly seen and skipped (never relayed back to
+  itself) while still advancing `since_id` past it. Process shut down cleanly on `SIGTERM`.
+
+### Real, honest, deliberately NOT built here
+
+No real in-game player actually typed a message through this end to end (that needs a real, connected
+client with a valid connect ticket -- `PAPERCRAFT_TICKET_SECRET` wasn't set for the scratch verification
+run above, by design, to avoid standing up unrelated live-ticket infrastructure just for this check); the
+outbound POST path itself was verified twice, separately (a raw `curl` round trip, and unit coverage of
+the JSON-building/escaping), just not chained through a real player's own keypress. No rate limiting (the
+underlying bridge's own spec already names this as a real, deliberately deferred, shared gap across all
+participants, not something to solve unilaterally from BIG_O's side alone). No REFLUX publish for bridge
+events. The three still-queued §25 items (SSH keygen, the IDUNA phone app, GFD/BIG_O HTTPS) are unaffected
+and still open.
+
+session: sess-20260923-1030-4a526255.
