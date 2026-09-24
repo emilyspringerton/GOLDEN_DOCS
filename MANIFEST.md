@@ -1,6 +1,6 @@
 # MANIFEST
 
-Generated: 2026-09-24T05:54:18.432Z
+Generated: 2026-09-24T06:14:12.068Z
 
 254 files, sha256 + size for each.
 
@@ -33,7 +33,7 @@ Generated: 2026-09-24T05:54:18.432Z
 | `docs/CarePyre/docs/GOOGLE_VOICE_FEATURES_NORTHSTAR.md` | `58ccae37b9a0b1fc...` | 5209 |
 | `docs/CarePyre/docs/HIPAA_COMPLIANCE_NORTHSTAR.md` | `c3a3a6f8ec18c7fc...` | 13710 |
 | `docs/CarePyre/docs/SIP_QR_ONBOARDING_NORTHSTAR.md` | `cafef9fa52d11251...` | 16058 |
-| `docs/DEADWEIGHT/NORTHSTAR.md` | `fa3aca934b405f79...` | 20365 |
+| `docs/DEADWEIGHT/NORTHSTAR.md` | `d5be33e8dfaa0964...` | 22311 |
 | `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `98513b842ddb0574...` | 16274 |
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
 | `docs/DUNG/NORTHSTAR.md` | `cba57dc3b9e59a59...` | 29395 |
@@ -89,7 +89,7 @@ Generated: 2026-09-24T05:54:18.432Z
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `16e2f3491e545532...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `31633df9bf26d673...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
