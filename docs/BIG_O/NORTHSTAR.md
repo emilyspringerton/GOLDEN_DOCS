@@ -1829,3 +1829,225 @@ The other two items §25 queued alongside the IDUNA app (SSH keygen closed in §
 unaffected and still open (HTTPS).
 
 session: sess-20260923-1030-4a526255.
+
+## 32. MINESTRONE -- 18th food item (2026-09-24, mirrors SHANKPIT's own same-day addition)
+
+Founder real-time: "add ministrone to shankpit and bigo." Same pattern §16 established for FOOD_CAKE (item 17):
+`day/packages/common/bigo_food_items.h`'s `FOOD_ITEM_COUNT` 17 -> 18, new enum/name/points entry (1600 points,
+heal 16, no special-case interaction). `papercraft_protocol.h`'s `PC_ITEM_FOOD_BASE` range 8..24 -> 8..25.
+`PARENA/stdlib/big_o/item_drop_mod.prn`'s `item-drop-food-count` 17 -> 18, regenerated into `item_drop_mod.c` --
+a minimal one-line diff, the WOOD-drop modulo formula itself is already item-count-generic. Same real, honest,
+unchanged gap §16 named: real pickable/stackable cargo, `food_item_heal()` still has no live caller (no health
+field/damage source exists in BIG_O yet). **Note: every "17-item" reference in §16 above describes that section's
+own 2026-09-23 snapshot accurately and is left as-is** -- the food/cargo system is an 18-item system as of this
+section, not a retroactive correction to §16's own historical record.
+
+`bigo_food_items_test.c` (18 distinct items, `FOOD_MINESTRONE` name/points/heal all asserted) and
+`item_drop_mod_test.c` (mod-18 wraparound) both re-verified passing -- the wraparound assertion's own arithmetic
+had a real bug on the first attempt (`35 mod 18 = 17`, not `0` -- fixed to use `36`, an actual multiple of 18)
+caught by actually running the test rather than assuming the edited numbers were correct. `scripts/build_day.sh`
+and `scripts/build_client.sh` both rebuild clean.
+
+session: sess-20260923-1030-4a526255.
+
+## 33. The ARPANET -- a read-only retro terminal app on the phone (2026-09-24)
+
+Founder real-time: "add the arpanet to big_o." Genuinely unscoped as given -- could have meant a lore reference,
+a world prop, a literal networking mechanic, or a phone app. Asked directly rather than guessed: confirmed "a
+retro terminal/BBS app on the phone."
+
+**Real, scoped slice:** `BP_APP_ARPANET`, a 12th phone app, reusing two patterns that already exist rather than
+inventing new ones. Content shape: `BP_APP_NOTES`'s static-string-table precedent (`BP_ARPANET_TITLES`/
+`BP_ARPANET_BODIES`, `day/packages/common/bigo_phone.h`) -- 5 fixed nodes, numbered like the real historical
+ARPANET's own IMP host numbers, not a literal directory. Navigation shape: `BP_APP_MESSAGES`'s own list<->detail
+toggle, reusing the exact same `p->detail` flag and the same BACK-closes-detail-first UX (`bp_wrap`/cursor
+machinery untouched). Deliberately NOT `BP_APP_GFD`'s free-text live chat -- ARPANET is archival, read-only, no
+server round trip, no new wire packet.
+
+Content leans on lore this repo already carries (the Notes app's own pre-populated "the archive is not where you
+think it is" Eastwind Owls briefing, `BP_CONTACT_HANDLES`'s EASTWIND OWL/EMILY OS entries) -- old, pre-corporate
+research-network traffic, unattributed. One node quietly nods to TYLER's own new same-session character (The
+Auditor, `TYLER/characters/the_auditor.md`) without requiring the player to know that canon to make sense on its
+own: a grid-harmonics anomaly log entry, and a mailing-list fragment ending "bring soup, it is always better when
+someone brings soup."
+
+**Real, honest, unchanged limitation:** no Xvfb/real-GL click-through screenshot -- same standing limitation
+every prior BIG_O client change in this repo already carries (no real GL driver in this sandbox). Verified via
+`bigo_phone_test.c`'s extended coverage (list state, SELECT opens detail, BACK closes detail before exiting the
+app -- the exact same three-assertion shape `BP_APP_MESSAGES`'s own test block already uses) and a clean
+`scripts/build_day.sh`/`scripts/build_client.sh` compile, not a rendered frame.
+
+session: sess-20260923-1030-4a526255.
+
+## 34. The lab finally has a real phone screen -- BP_APP_LAB cutover (2026-09-24, closes §30's own client-wiring gap)
+
+§30 shipped the SERVER half of "the lab goes live" (real crew-shared `g_lab`, centrifuge over `PC_PACKET_LAB_CENTRIFUGE`,
+sync over `PC_PACKET_LAB_UPDATE`) and named the client half as the real, biggest remaining gap: `BP_APP_LAB` was still
+its own original, entirely client-local "base/trait/SPLICE/clone list" mockup -- a different, never-built breeding
+concept with zero server round trip, not `core/lab_sim.c`'s real sample pipeline. This closes that gap: a clean cutover
+(same "replace outright" precedent phase 7d already established for orphaned mockup content), not a second, parallel
+lab screen.
+
+### What shipped
+
+- **`day/packages/common/bigo_phone.h`**: the old fake fields (`lab_trait`, `samples[3]`, `clones[]`/`clone_count`/
+  `clone_traits[]`, `BP_BASES`/`BP_TRAITS`, `BP_CLONES`) are gone. `BigoPhone` gains real, host-fed crew sample state
+  (`lab_sample_count` + parallel `lab_contamination`/`lab_purity`/`lab_integrity`/`lab_read_depth`/`lab_generation`/
+  `lab_genetic_drift` arrays, sized `BP_LAB_SAMPLES` -- a new, independent constant mirroring `papercraft_protocol.h`'s
+  own `BIGO_LAB_SAMPLE_MAX_WIRE`, same "no cross-header network dependency" discipline that file's own doc comment
+  already established against `core/lab_sim.h`). `bp_rows(BP_APP_LAB)` now returns the real sample count (1 if empty,
+  matching every other list app's own "always at least one row" convention). New effect `BP_FX_LAB_CENTRIFUGE` (arg =
+  sample index) fires unconditionally once the cursor is on a real row -- same "server is the only real validator, no
+  local gate" precedent `BP_FX_ITEM_USE` already set, since this header carries no purity/contamination copy to
+  validate against locally anyway.
+- **`day/apps/client/src/main.c`**: `draw_bigo_phone`'s `BP_APP_LAB` case now renders the real list (per-sample
+  generation/purity/contamination/integrity, cursor-highlighted, "SELECT to centrifuge" hint) instead of the old
+  base/trait/SPLICE UI. `PHONE_APPLY` gained a `BP_FX_LAB_CENTRIFUGE` arm building a real `PcLabCentrifugePacket` and
+  sending it, same shape every other `BP_FX_*` -> `Pc*Packet` arm in that macro already uses. The incoming-packet
+  switch gained a `PC_PACKET_LAB_UPDATE` case, filling `phone.lab_*` from `PcLabUpdatePacket` field-for-field (a real,
+  whole-crew snapshot, not a delta, same convention `PC_PACKET_INVENTORY_UPDATE`'s own handling already uses).
+- **`day/tools/phone_preview.c`**: seed data updated to the new fields (2 real sample rows with distinct
+  purity/contamination/generation) so the phone-screenshot tool still renders something meaningful for `BP_APP_LAB`.
+
+### Verified, not just compiled
+
+- `bazel test //day/packages/common:bigo_phone_test` -- rewritten lab coverage: empty lab is a real, honest one-row
+  no-op (SELECT fires nothing); seeding 2 samples makes `bp_rows` return 2; SELECT on row 0 fires
+  `BP_FX_LAB_CENTRIFUGE` with `arg == 0`, moving down and re-selecting fires `arg == 1`; a direct
+  `BP_LAB_SAMPLES == BIGO_LAB_SAMPLE_MAX_WIRE` check (added `papercraft_protocol.h` to this test's own includes/BUILD
+  deps for the first time, same precedent `bigo_lab_test.c` already set) guards the two constants from silently
+  drifting apart.
+- `bazel test //...` -- 41/41 green, no regressions anywhere else in the suite.
+- `scripts/build_day.sh` and `scripts/build_client.sh` both clean (one real, caught-and-fixed bug along the way: a
+  first-draft doc comment's own prose -- `wf_*/iduna_*` -- contained a literal `*/`-shaped substring that closed the
+  C comment early, corrupting everything after it into malformed struct members; the exact same bug class §26's own
+  header comment hit, fixed the same way, by rewording rather than suppressing).
+- `scripts/build.sh` (the ASan/UBSan `core/` scenario path) unaffected and still clean: 4619 witness_rules parity
+  vectors, 26 crew-sim scenarios -- confirms this pass never touched anything upstream of the client/phone layer.
+
+### Real, honest, deliberately NOT built here
+
+1. **No live GL screenshot.** Same standing sandbox limitation every prior BIG_O client change already carries (no
+   real GL driver here) -- not attempted, not silently skipped either.
+2. **No live network round trip through the real client.** The wire structs (`PcLabCentrifugePacket`/
+   `PcLabUpdatePacket`) are byte-identical to what §30 already proved round-trips correctly over a real UDP socket
+   server-side (`lab_verify.c`'s own real socket-pair test); the client's decode is a straight `memcpy` into that same
+   type, type-checked by the compiler, following the exact pattern every neighboring case
+   (`PC_PACKET_INVENTORY_UPDATE`, `PC_PACKET_WEAPON_OWNED`) in this same switch already uses. A full connect-ticket
+   handshake (HMAC-signed, minted by IDUNA) was judged not worth building standalone just to re-prove a wire format
+   already proven correct -- named honestly as a real, not-yet-done step rather than assumed away.
+3. **Still only the centrifuge station.** PCR/sequencer/CRISPR-splice/repressor-install/breed/incubate remain real,
+   tested, server-side-only primitives with neither a packet nor a phone screen of their own -- unchanged from §30,
+   not attempted this pass (Principle 19: one station's full client loop closed for real, the rest still named).
+4. **No day-harvest bridge, no persistence, no IDUNA/crew ownership model.** All three unchanged from §30's own
+   already-honest list -- this pass closed the client-UI gap specifically, nothing else.
+
+session: sess-20260923-1030-4a526255.
+
+## 35. Awareness vectors -- real "you've been noticed" feedback (2026-09-24, closes SECTION 536 follow-up queued item 4)
+
+Founder real-time (queued 2026-09-22, one of four asks logged via `emily observe` per Principle 19 rather than
+built blind): "every agent in the system, including the player, can 'feel' when an agent notices them via uniquely
+tracked awareness vectors." Checked first, not guessed at: `server_tick_decorum` (§18 Phase A, closed §8e items 1/3
+in §11) already decides WHETHER a player was just seen (`noticed()`/`conspicuousness()`) and applies a silent Decorum
+penalty -- but nothing told the player WHO noticed them or from which direction. This closes that gap for the player
+side (the wishlist's own "including the player" case); a generic per-NPC "feel" for every agent is a real, separate,
+bigger design (would need every NPC to have its own HUD/consumer, which none currently do) -- named, not silently
+folded in.
+
+### What shipped
+
+- **`day/packages/common/bigo_awareness.h`** (new, pure, no network/GL): `bigo_awareness_direction` (normalizes a
+  raw dx/dz, degrades a zero-length input to north rather than dividing by zero), `bigo_awareness_compass` (8-point
+  N/NE/E/SE/S/SW/W/NW label from a direction -- a real, new, first-of-its-kind compass convention for this repo,
+  checked first that none existed to match: +Z is north, clockwise), `bigo_awareness_intensity` (real 0..100 score,
+  conspicuousness scaled up 15% per extra real witness, capped at 100).
+- **Wire protocol**: `PC_PACKET_AWARENESS_PING` (26, server -> the one noticed player only), `PcAwarenessPingPacket
+  { hdr, dir_x, dir_z, intensity }`.
+- **`day/apps/server/src/main.c`**: `server_tick_decorum` now takes `sock` (matching `server_tick_gfd_bridge`'s own
+  existing convention) and, within the same real zone-entry-driven observe branch that already computes `seen`,
+  tracks the NEAREST real noticing NPC (smallest real distance among everyone who passed `noticed()`) and sends one
+  real `PcAwarenessPingPacket` to that exact player -- an event, not a per-tick stream, same discipline
+  `send_weapon_owned_update` already established.
+- **`day/apps/client/src/main.c`**: new `draw_awareness_indicator` HUD element, bottom-left corner -- the one screen
+  corner none of the existing five HUD elements claim (top-left/top-center/top-right/bottom-right/bottom-center).
+  Shows `! NOTICED (<compass>)  <intensity>%` for 3 real seconds after a real ping arrives, severity-colored (same
+  spirit `draw_ping_indicator`'s own threshold coloring uses, inverted). Incoming-packet switch gained a
+  `PC_PACKET_AWARENESS_PING` case storing `g_awareness_dir_x/z`/`g_awareness_intensity`/`g_awareness_since_ms`.
+
+### Verified, not just compiled
+
+- `bazel test //day/packages/common:bigo_awareness_test` -- 15 real assertions: direction normalization (including
+  the zero-length degenerate case), all 8 compass directions land exactly where the doc comment says, intensity
+  bounds-checking/scaling/capping. `bazel test //...` 42/42 green (up from 41).
+- `scripts/build_day.sh`/`scripts/build_client.sh` both clean.
+- `scripts/build.sh` (the ASan/UBSan `core/` scenario path) unaffected and still clean.
+- **A real, live UDP round trip** (scratch harness, same `#include main.c` + real socket-pair precedent
+  `lab_verify.c`/`hoverboard_verify.c` already used, ASan/UBSan clean, not committed): a real player inside the lab
+  zone in the wrong costume, a real `PC_NPC_ROLE_THE_MEN` NPC 10 units due east, a real `server_tick_decorum` call
+  produced a real `PcAwarenessPingPacket` over an actual loopback socket -- `dir=(1.000, 0.000)`, `compass=E`,
+  `intensity=40` (exactly matching the pure unit test's own math for the same inputs), and the real Decorum penalty
+  fired alongside it, confirming the new feedback path didn't disturb the existing one.
+
+### Real, honest, deliberately NOT built here
+
+1. **Player-only, not "every agent."** The wishlist's literal ask covers every agent in the system; this pass closes
+   the player-facing half, which is the half that actually needs a HUD. NPCs "feeling" noticed has no real, named
+   consumer yet (no NPC has a HUD or a reaction system keyed on this signal) -- a real, separate, bigger design.
+2. **No screen-space directional arrow/3D indicator.** The compass label is text, not a rendered arrow pointing at
+   the actual noticing NPC in view space -- would need real camera/view-matrix projection math, unverifiable without
+   a live GL driver in this sandbox (the same standing limitation every prior BIG_O client change already carries).
+3. **No live GL screenshot** of the new HUD element itself, same standing sandbox limitation.
+4. **Loud (zombie-event) noticing is untouched.** This pass is scoped to the QUIET-observation path
+   (`server_tick_decorum`) only, matching where the founder's own "feel when noticed" framing sits alongside the
+   Attention/Heat system's own quiet-observation half -- the LOUD zombie path (`server_tick_witness`) has its own
+   separate, already-live feedback (a zombie visibly hunting you), not duplicated here.
+
+session: sess-20260923-1030-4a526255.
+
+## 36. Giant alien-bug eggs -- disturbing them hatches more Giant Zombie Bugs (2026-09-24, closes half of SECTION 536 follow-up wishlist item 4)
+
+Founder real-time (queued 2026-09-22): "Giant alien-bug eggs, Godzilla-90s-movie-style, underground -- disturbing
+them spawns more Giant Zombie Bugs (Leeroy-Jenkins-style aggro pull)." Real, narrow slice per Principle 19: the
+"eggs exist and hatching them spawns real bugs" half is genuinely buildable today by reusing already-proven
+primitives; the "Leeroy-Jenkins-style aggro pull" half would need giant bugs to have a movement/player-targeting
+model, which does not exist anywhere in this codebase yet (`server_tick_giant_bugs`'s own doc comment already
+names "no bug movement" as a pre-existing v0 gap for the ALREADY-shipped single bug) -- inventing one here would be
+a real, separate, much bigger feature, not attempted blind.
+
+### What shipped
+
+- **`day/apps/server/src/main.c`**: `BugEgg` (x/y/z + `last_spawn_ms` cooldown timestamp), `g_bug_eggs[2]`, placed
+  near `BIGO_LAB_ZONE` (echoing `giant_bug_values.h`'s own doc comment tying these units to the lab's cloning
+  theme -- "underground" per the ask). `server_tick_bug_eggs`: real proximity check (`bigo_in_range`, same shape
+  `server_tick_decorum`'s own zone-entry check already uses) against every active player; if disturbed and the
+  egg's own 60s cooldown has elapsed, hatches up to 2 new `ServerGiantBug` entries into the SAME array
+  `server_spawn_giant_bugs` already populates, via the same, already-tested `giant_bug_state_init`. **No new wire
+  protocol needed** -- a hatched bug is already visible to every connected client via the existing
+  `giant_bug_active[]`/`giant_bugs[]` snapshot fields (confirmed by reading `main.c`'s own snapshot-build code
+  before writing anything, not assumed).
+
+### Verified, not just compiled
+
+- `scripts/build_day.sh`/`scripts/build_client.sh`/`scripts/build.sh` (ASan/UBSan core path) all clean.
+  `bazel test //...` still 42/42 green (this feature has no pure-math component worth its own unit test -- it's a
+  direct integration of already-unit-tested primitives, same judgment call `server_tick_decorum`'s own integration
+  code made).
+- **A real, live scratch harness** (`#include main.c`, same precedent every prior verification in this thread uses,
+  ASan/UBSan clean, not committed): confirmed no player near an egg spawns nothing; a player standing on an egg
+  hatches exactly `BIGO_BUG_EGGS_PER_DISTURB` (2) real bugs into `g_giant_bugs[]`; standing there through a second
+  tick inside the cooldown window spawns nothing more; a tick past the cooldown hatches 2 more into the remaining
+  free slots (4 total, `BIGO_GIANT_BUG_MAX` is 8, so headroom for one more full disturbance before the array fills).
+
+### Real, honest, deliberately NOT built here
+
+1. **No "Leeroy-Jenkins-style aggro pull."** Hatched bugs behave exactly like the one already-shipped bug: stationary,
+   eat a nearby zombie only if The Men are active to authorize it. No movement, no player-targeting, no attack --
+   naming this rather than guessing at what a from-scratch bug-AI-movement system should look like.
+2. **No visual for the egg itself.** No new geometry/model -- eggs are invisible trigger volumes today, same
+   "logic first, visual later" precedent every mechanic in this repo has used (the hatched bugs themselves DO
+   render, reusing the existing giant-bug visual from §19).
+3. **Only 2 eggs, fixed positions, no persistence.** A real, small v0 population, not the "underground" plural the
+   ask implies at scale -- easy to grow `BIGO_BUG_EGG_MAX` later once the mechanic itself is proven live.
+
+session: sess-20260923-1030-4a526255.

@@ -677,6 +677,9 @@ Currently enrolled in the Tides protagonist's school. Believes she's on an excha
 
 She notices everything. She has been noticing things her entire life and has been told it's a gift. It is a trained operative skill that was developed in her from childhood by a 2,000-year-old archival institution. She will find out in Act Two. Her reaction will not be anger. It will be something more complicated that takes three scenes to resolve.
 
+### The Auditor (The Uncompromised — see characters/the_auditor.md)
+Senior Grid Compliance Inspector, Regional Energy Authority, by day. Convener of the Uncompromised — a guild of academics, engineers, and public employees who independently found fragments of the Field through their own rigorous work and refuse to let any faction own what they found — by the same day, worn in plain sight. Amateur astronomer, real Unix systems administrator, makes minestrone in a pot too large for the room. He found the Amon/Beleth/Vassago/Zagan/Stolas frequency table (§III) in his own compliance data years before The Field went public. Not a faction in README.md §IV, deliberately — he's the door that opens for a protagonist without a toll attached.
+
 ---
 
 ## X. ACT OUTLINES
