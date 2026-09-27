@@ -170,7 +170,7 @@ Generated: 2026-09-25T13:40:31.791Z
 | `docs/LO/LO_Formal_Grammar_Phase_0_Complete.md` | `e63ef4ee425f0460...` | 18963 |
 | `docs/LO/NORTHSTAR.md` | `7893cac92fe8eace...` | 16285 |
 | `docs/LO/QI_NORTHSTAR.md` | `e97142d2a1e27137...` | 9245 |
-| `docs/MIXFORGE/NORTHSTAR.md` | `ab64c561bc50a676...` | 20543 |
+| `docs/MIXFORGE/NORTHSTAR.md` | `210a057b568e69e2...` | 22578 |
 | `docs/MJOLNIR/docs/APPLES_INTEGRATION.md` | `8d8fdd24e1e6dd99...` | 4069 |
 | `docs/MJOLNIR/docs/NORTHSTAR.md` | `0b3017312e55f300...` | 7435 |
 | `docs/MJOLNIR/docs/PUSH_NOTIFICATIONS.md` | `b435891822ea4331...` | 5484 |
