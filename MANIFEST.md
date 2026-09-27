@@ -12,7 +12,7 @@ Generated: 2026-09-25T13:40:31.791Z
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `f87b39b24a94e05c...` | 51284 |
 | `context/full-system-context.md` | `b22ebcaf04492323...` | 46268 |
-| `context/golden-docs-index.md` | `90edc873f3b805ba...` | 259733 |
+| `context/golden-docs-index.md` | `b045c9de9580bcfe...` | 260144 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -136,7 +136,7 @@ Generated: 2026-09-25T13:40:31.791Z
 | `docs/IDUNA/docs/EMILY_INFRASTRUCTURE_PLAY_NORTHSTAR.md` | `2c86018706a2c0e3...` | 12450 |
 | `docs/IDUNA/docs/IDUNA_NOTEBOOK_NORTHSTAR.md` | `8172006e2be962dd...` | 6346 |
 | `docs/IDUNA/docs/MULTI_KANBAN_NORTHSTAR.md` | `b6d8088dab88f88c...` | 6166 |
-| `docs/IDUNA/docs/NOCK_CHARACTER_PIPELINE_NORTHSTAR.md` | `aaf6c935b2d20994...` | 12720 |
+| `docs/IDUNA/docs/NOCK_CHARACTER_PIPELINE_NORTHSTAR.md` | `05e257a08dc85a26...` | 15619 |
 | `docs/IDUNA/docs/NOCK_NORTHSTAR.md` | `005fc80d758be6f4...` | 23959 |
 | `docs/IDUNA/docs/NORTHSTAR.md` | `49ed3ba320214504...` | 4406 |
 | `docs/IDUNA/docs/NORTHSTAR_INVENTORY.md` | `d4f71d0adb9b0348...` | 9611 |
