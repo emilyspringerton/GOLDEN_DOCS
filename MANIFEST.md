@@ -1,6 +1,6 @@
 # MANIFEST
 
-Generated: 2026-09-25T13:40:31.791Z
+Generated: 2026-09-25T13:40:31.791Z, partially resynced 2026-09-27 (only docs/IDUNA/docs/NOCK_NORTHSTAR.md and NOCK_CHARACTER_PIPELINE_NORTHSTAR.md -- the two golden docs touched by this pass; other entries may be stale from unrelated work, not re-verified here)
 
 258 files, sha256 + size for each.
 
@@ -136,8 +136,8 @@ Generated: 2026-09-25T13:40:31.791Z
 | `docs/IDUNA/docs/EMILY_INFRASTRUCTURE_PLAY_NORTHSTAR.md` | `2c86018706a2c0e3...` | 12450 |
 | `docs/IDUNA/docs/IDUNA_NOTEBOOK_NORTHSTAR.md` | `8172006e2be962dd...` | 6346 |
 | `docs/IDUNA/docs/MULTI_KANBAN_NORTHSTAR.md` | `b6d8088dab88f88c...` | 6166 |
-| `docs/IDUNA/docs/NOCK_CHARACTER_PIPELINE_NORTHSTAR.md` | `aaf6c935b2d20994...` | 12720 |
-| `docs/IDUNA/docs/NOCK_NORTHSTAR.md` | `005fc80d758be6f4...` | 23959 |
+| `docs/IDUNA/docs/NOCK_CHARACTER_PIPELINE_NORTHSTAR.md` | `05e257a08dc85a26...` | 15619 |
+| `docs/IDUNA/docs/NOCK_NORTHSTAR.md` | `07f6993260bd2e71...` | 26313 |
 | `docs/IDUNA/docs/NORTHSTAR.md` | `49ed3ba320214504...` | 4406 |
 | `docs/IDUNA/docs/NORTHSTAR_INVENTORY.md` | `d4f71d0adb9b0348...` | 9611 |
 | `docs/IDUNA/docs/NORTHSTAR_KIKORYU.md` | `f864b7aa20f23663...` | 5581 |
