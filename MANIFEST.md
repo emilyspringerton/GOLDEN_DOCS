@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: 2026-09-25T13:40:31.791Z
+Generated: 2026-09-27T11:11:46.000Z
 
-258 files, sha256 + size for each.
+260 files, sha256 + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -12,7 +12,7 @@ Generated: 2026-09-25T13:40:31.791Z
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `f87b39b24a94e05c...` | 51284 |
 | `context/full-system-context.md` | `b22ebcaf04492323...` | 46268 |
-| `context/golden-docs-index.md` | `90edc873f3b805ba...` | 259733 |
+| `context/golden-docs-index.md` | `f337205c462fdb20...` | 260732 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -38,6 +38,7 @@ Generated: 2026-09-25T13:40:31.791Z
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
 | `docs/DEADWEIGHT_2/NORTHSTAR.md` | `f306a7c35d7726aa...` | 20469 |
 | `docs/DEADWEIGHT_2/docs/COMBAT_REDESIGN.md` | `9a0b2f2c3d44f932...` | 16472 |
+| `docs/DEADWEIGHT_2/docs/LO_CANNON_PROGRAMMING.md` | `16b57f9f4ba8d49e...` | 15701 |
 | `docs/DUNG/NORTHSTAR.md` | `cba57dc3b9e59a59...` | 29395 |
 | `docs/ECOWAR/docs/ARENA_API.md` | `87e271cd126e4ab9...` | 8446 |
 | `docs/ECOWAR/docs/NORTHSTAR_LIVING_MAP.md` | `1c1a72555f0c17b6...` | 41751 |
@@ -103,6 +104,7 @@ Generated: 2026-09-25T13:40:31.791Z
 | `docs/EmilyOS/docs/NORTHSTAR_DISTRO.md` | `959f561c61f62589...` | 36854 |
 | `docs/EmilyOS/docs/POSTURE.md` | `4a8de3bab6fb6e93...` | 4142 |
 | `docs/GOLDENBAND/format/GBAND_FORMAT.md` | `35d8f842a20139c1...` | 5833 |
+| `docs/GOLDENBAND/format/GROBOT_FORMAT.md` | `50dd13a154461e2f...` | 7388 |
 | `docs/GTA7/docs/NORTHSTAR.md` | `c153562884e62b59...` | 16399 |
 | `docs/GoblinFoxDragon/docs/NORTHSTAR.md` | `96351dcd0295561c...` | 7279 |
 | `docs/GoblinFoxDragon/docs2/BATTLEGROUNDS_MIGRATION_NORTHSTAR.md` | `55215dcce2e2b402...` | 7047 |
@@ -231,7 +233,7 @@ Generated: 2026-09-25T13:40:31.791Z
 | `docs/SHANKPIT/docs2/NORTHSTAR.md` | `887fd9715fa60546...` | 22791 |
 | `docs/SHANKPIT/docs2/NORTHSTAR_TYLER_TEACHES_TYPING.md` | `8b6db1d5b5335304...` | 11882 |
 | `docs/SHANKPIT/docs2/PARTY_STORES.md` | `2e4d14a1ba163b14...` | 6556 |
-| `docs/SHANKPIT/docs2/RAGDOLL_ORIENTATION_NORTHSTAR.md` | `86d9bbf4caf255e5...` | 12864 |
+| `docs/SHANKPIT/docs2/RAGDOLL_ORIENTATION_NORTHSTAR.md` | `3d886adedeacab49...` | 15598 |
 | `docs/SHANKPIT/docs2/SHANKPIT_AI_ARCHITECTURE.md` | `258e9c37d5b99385...` | 11923 |
 | `docs/SHANKPIT/docs2/TRAPX_NEIGHBORHOOD_PERSONALITIES.md` | `95d636549a965dc4...` | 6457 |
 | `docs/SHANKPIT/docs2/TRAPX_NORTHSTAR.md` | `5235267851c8ec34...` | 38005 |
