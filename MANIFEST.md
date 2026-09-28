@@ -12,7 +12,7 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `b0ce2462777df9bf...` | 53055 |
 | `context/full-system-context.md` | `95a998a0a3f384ed...` | 46359 |
-| `context/golden-docs-index.md` | `8efc3dc368e8a44a...` | 262428 |
+| `context/golden-docs-index.md` | `57a3d7ed1c12897e...` | 262931 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -35,9 +35,9 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `docs/CarePyre/docs/SIP_QR_ONBOARDING_NORTHSTAR.md` | `cafef9fa52d11251...` | 16058 |
 | `docs/DEADWEIGHT/NORTHSTAR.md` | `d5be33e8dfaa0964...` | 22311 |
 | `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `a38d1fb831fa63c8...` | 17081 |
-| `docs/DEADWEIGHT/docs/NATIVE_WASM_CLIENT_NORTHSTAR.md` | `134bdd1200bb51f3...` | 11775 |
+| `docs/DEADWEIGHT/docs/NATIVE_WASM_CLIENT_NORTHSTAR.md` | `52fae0599303c989...` | 12561 |
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
-| `docs/DEADWEIGHT/docs/WASM_DEPLOY_NORTHSTAR.md` | `613dc8f6171c1d37...` | 11513 |
+| `docs/DEADWEIGHT/docs/WASM_DEPLOY_NORTHSTAR.md` | `274ce97fd62e329f...` | 11601 |
 | `docs/DEADWEIGHT_2/NORTHSTAR.md` | `f306a7c35d7726aa...` | 20469 |
 | `docs/DEADWEIGHT_2/docs/COMBAT_REDESIGN.md` | `9a0b2f2c3d44f932...` | 16472 |
 | `docs/DEADWEIGHT_2/docs/LO_CANNON_PROGRAMMING.md` | `16b57f9f4ba8d49e...` | 15701 |
@@ -94,7 +94,7 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `d3f15a5d07ad840c...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `253011cff067fb1e...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
