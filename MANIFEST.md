@@ -35,7 +35,7 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `docs/CarePyre/docs/SIP_QR_ONBOARDING_NORTHSTAR.md` | `cafef9fa52d11251...` | 16058 |
 | `docs/DEADWEIGHT/NORTHSTAR.md` | `d5be33e8dfaa0964...` | 22311 |
 | `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `a38d1fb831fa63c8...` | 17081 |
-| `docs/DEADWEIGHT/docs/NATIVE_WASM_CLIENT_NORTHSTAR.md` | `00f43b1bb2e2bd5a...` | 14294 |
+| `docs/DEADWEIGHT/docs/NATIVE_WASM_CLIENT_NORTHSTAR.md` | `b29e002751aa9f01...` | 14874 |
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
 | `docs/DEADWEIGHT/docs/WASM_DEPLOY_NORTHSTAR.md` | `274ce97fd62e329f...` | 11601 |
 | `docs/DEADWEIGHT_2/NORTHSTAR.md` | `f306a7c35d7726aa...` | 20469 |
