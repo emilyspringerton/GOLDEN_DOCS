@@ -439,3 +439,82 @@ Also not done, real and named: multiple video tracks/picture-in-picture, titles/
 speed ramps, color grading, transition types beyond a single equal-power dissolve (`xfade=fade`),
 and live-stream (webcam/getUserMedia) capture — "streams" here means an already-uploaded clip
 playing back in the browser, not a live camera feed; a real, separate future phase if wanted.
+
+## Real UX screenshot testing for /admin/nock (2026-09-28)
+
+Founder real-time: "shankpit levels is down its just a blank screen can we add some ux screenshot
+testing." Investigated live: the `/admin/nock` React app has no `ErrorBoundary` anywhere, so an
+uncaught render error in ANY one tab's component unmounts the WHOLE app, not just that tab — a
+genuinely blank screen with zero console dialog, exactly the reported symptom. Also found and
+fixed along the way: the live `iduna` binary had not been rebuilt since 2026-09-27 23:40 (it
+predated this same day's MIXFORGE EDITOR dist rebuild, and was already running through the
+2026-09-27 22:32 "merge abandoned robot-registry branch" — a real, risky 6-branch abandoned-branch
+merge sweep across SHANKPIT/IDUNA on 2026-09-27, the leading suspect for a transient regression);
+rebuilt from current HEAD (`go build/test ./...` clean) and redeployed via `systemctl --user
+restart iduna.service`.
+
+**Real, live-verified fix, not just a rebuild-and-hope**: this doc's own earlier "deliberately not
+bypassed" limitation (walkthroughs need the founder's own admin cookie) is resolved for automated
+testing purposes — a real, dedicated agent (`SCREENSHOT-CI`, provisioned via the existing, real
+`cmd/create-admin-agent` tool, same mechanism EDDY/HOUSE/BOOTS already use, secret in
+`var/agent-secrets.env`) logs in through the real `/admin/login` form, no bypass, no minted
+cookie. `frontend/nock/scripts/ux_screenshot_test.mjs` (new, real, Playwright-based) drives this
+login, clicks through all 17 real nav tabs, screenshots each, and fails if any tab's `#root`
+renders near-empty or throws an uncaught page error — exactly the class of bug reported. **Run
+live against production just now**: all 17 tabs pass, `SHANKPIT Levels` included (screenshot
+shows the real level list + 3D viewport, not a blank screen) — see
+`frontend/nock/scripts/ux-screenshots/shankpit_levels.png` (gitignored, regenerate by
+re-running). Real, honest limitation: this is a "did it render real content, zero crashes" check,
+not a pixel-diff — a real visual-regression tool is a separate, heavier follow-up, not built here.
+
+Cookie note: the `iduna_session` cookie is scoped `Domain=okemily.com`, so the test must hit a
+real `*.okemily.com` host (`https://okemily.com` in the script's own default), not `localhost` —
+found live when the first run silently failed to log in against `localhost:8080` (login succeeded
+server-side, the cookie itself was never accepted by the browser at all).
+
+A companion, separate surface named "SHANKPIT Levels" also exists natively — `shank_lobby`'s own
+`LOBBY_LEVEL_SELECT` menu tile, an in-game overlay fetching the same live registry
+(`SHANKPIT/apps/lobby/src/main.c` / `packages/world/level_boxes.h`). Investigated and covered too;
+see `SHANKPIT/CHANGELOG.md`'s own 2026-09-28 entry and `SHANKPIT/scripts/ux_screenshot_test.sh`
+for that side (real Xvfb + a synthetic XTEST Enter keypress, no `xdotool` needed) — also currently
+passing, real screenshot proof included.
+
+## Real root cause found: THREE.WebGLRenderer crashes with no ErrorBoundary (2026-09-28, follow-up)
+
+The screenshot test above passed clean — and the founder still saw a blank screen. Asked for their
+actual browser console output, which named the real bug immediately: `Uncaught Error: THREE.
+WebGLRenderer: Error creating WebGL context` (`BindToCurrentSequence failed`, `Sandboxed = yes`) —
+their browser couldn't create a WebGL context (hardware acceleration disabled / a sandboxed
+policy). `new THREE.WebGLRenderer(...)` throws synchronously in that case, and with **no
+ErrorBoundary anywhere in this app**, the throw propagated up through React's own commit phase and
+unmounted the **entire** app, not just the SHANKPIT Levels tab — reproduced for real by launching
+Chromium with `--disable-webgl(2)` against the exact same live server: `#root` went from ~3500
+chars to 0, an uncaught page error, a genuinely blank page.
+
+Six components construct a `WebGLRenderer` the same way: `ShankpitLevelEditor.tsx`,
+`ShankpitWidgets.tsx`, `Robots.tsx`, `Animator.tsx`, `AnimationEditor.tsx`, `AnimationViewer.tsx`.
+Real fix, two layers:
+
+1. **`src/webglSupport.ts`** (new) — `createWebglRenderer(options)` wraps construction in a
+   try/catch, returns `null` on failure instead of throwing. All six call sites now check for
+   `null` and show a real, readable fallback message (`WEBGL_UNAVAILABLE_MESSAGE`) in that
+   component's own existing error-display mechanism (four of the six already had an `error` state
+   for this; the other two — `ShankpitLevelEditor`'s `Viewport3D` and `ShankpitWidgets` — gained a
+   small local `webglUnavailable` state and a fallback render, same shape).
+2. **`src/TabErrorBoundary.tsx`** (new) — a real class-based ErrorBoundary (the only way React
+   supports one) wrapping the whole tab-content switch in `App.tsx`, keyed on `tab` so switching
+   tabs always gets a fresh boundary. This is the real, general defense-in-depth: whatever crashes
+   next, in a tab nobody's individually guarded, now takes down only that tab's content — the
+   header/nav stay live so a founder can just click a different tab instead of getting a fully
+   blank page needing a hard reload.
+
+**Live-verified, not just built**: rebuilt + redeployed `iduna.service` with the fix, then
+reproduced the founder's exact scenario against production with WebGL disabled — `SHANKPIT Levels`
+now renders the full level list + inspector panels with a real, readable "This 3D view needs
+WebGL..." message in place of the 3D viewport, zero uncaught errors, and switching to another tab
+afterward still works. `scripts/ux_screenshot_test.mjs` now runs the entire 17-tab sweep **twice**
+— once with WebGL available (the original, insufficient version of this test) and once with
+`--disable-webgl(2)` (the pass that actually would have caught this) — 34/34 checks pass. The
+first version of this test's real, honest gap: it used Playwright's default Chromium, which has
+WebGL enabled, so it never exercised the actual failure condition — named here so the lesson
+isn't lost, not glossed over.

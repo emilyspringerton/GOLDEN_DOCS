@@ -284,6 +284,183 @@ Still open, named: BPM/key detection (Phase 3 — BPM is typed in today), keyloc
 (Phase 4), wiring the mixer into the room (a DJ's master out → room listeners, Phase 5 streaming),
 and a test with a physical MIDI controller (only headless Chromium + synthetic MIDI so far).
 
+## Phase 5 scoping (2026-09-27): real architecture for synchronized room playback
+
+Founder real-time, routed via `emily observe` before this pass started: confirmed after finding
+that queuing a song in the live multiplayer room (`multiplayer.html`) does nothing but broadcast
+a log line — real seats/turns/authorization all work, no audio plays for anyone. Asked to scope
+Phase 5 (the thing every prior update above named as the real remaining blocker) rather than
+patch around it.
+
+**Real, load-bearing finding: `stdlib/media/stream.prn` is the wrong tool for this job.** Its own
+resolved design (`PARENA/STDLIB.md` §28, "media/stream") exists for a different, differently-shaped
+problem — one native process publishing ONE outbound stream to MULTIPLE external destinations
+(`connect-destination`/`publish` fan-out to a `Vec StreamDest`, the founder's own stated motivation
+being "dual stream to multiple services... for overhead and security reasons," i.e. a Twitch/
+YouTube-style multi-destination relay). The room's actual need is the reverse shape: get several
+already-connected BROWSER TABS to play the SAME already-downloaded file at (roughly) the same
+position. Those aren't the same problem, and `media/stream.prn` is still design-only regardless
+(zero `.prn` source exists) — waiting on it would be blocking real, buildable work behind an
+unrelated, unbuilt dependency. **Same pattern this repo already lived through once**: the 2026-09-27
+4-deck mixer update above shipped real two-deck-and-beyond crossfade entirely on Web Audio +
+PARENA-WASM DSP, without ever needing `media/audio.prn` (also still design-only) — a native PARENA
+audio stdlib turned out not to be the actual dependency once the real browser-native primitive was
+looked at directly. The same reframe applies here: **the room doesn't need a new PARENA stdlib
+domain to play synchronized audio; it needs a small, real, host-side/browser-native design.**
+
+### Real architecture
+
+Two real gaps close this, both buildable on infrastructure that already exists:
+
+1. **Server-side download-on-queue, reusing the already-shipped import pipeline.** When a seated
+   DJ's `queue_song` message is accepted (existing authorization check in `room_server.mjs`
+   already gates this), the room server shells out to the real, already-built `mixforge` CLI
+   (`mixforge import <url>` — `MF-CORE-12441`, real and compiled today) into a room-scoped cache
+   directory, the same "shell out to the real compiled tool" pattern this monorepo already uses
+   everywhere else (PITVIPER, `git.prn`, `import.prn`'s own `yt-dlp` call) rather than
+   reimplementing the download logic a second time in JavaScript. This is genuinely new
+   `room_server.mjs` work (a `child_process` call + a completion message), not new PARENA work.
+2. **Client-side synchronized start, pure Web Audio, no server-side audio processing at all.**
+   Once the file is cached server-side, nginx already knows how to serve a static file from a
+   directory (exactly the pattern this session's own MIME-type fix just proved out) — no new
+   streaming server needed, an HTTP file is enough since these are finite downloaded tracks, not
+   an open-ended live feed. Each client `fetch()`s the same URL and decodes it locally via
+   `AudioContext.decodeAudioData` (the same API `engine.mjs` already uses for the sampler). The
+   server then broadcasts one `{type: "play", url, startsAtServerTimeMs}` message; each client
+   estimates clock offset via a real, minimal round-trip ping (send a timestamp, server echoes it
+   back with its own clock reading, offset = server_time - (t0 + rtt/2) — the same math NTP/every
+   game-netcode clock-sync scheme already uses, nothing PARENA-specific to invent), converts the
+   target wall-clock start into a `ctx.currentTime` offset, and calls `source.start(when)` —
+   Web Audio's own sample-accurate scheduling primitive does the actual synchronized playback;
+   this needs no new PARENA capability, no new native audio stack, and no `media/stream.prn`.
+
+### Real, honest simplifications for a buildable V0 (named, not silently dropped)
+
+- **A real, user-visible delay between "queued" and "playing"** — downloading via `yt-dlp` takes
+  real seconds, unlike Turntable.fm's own live-relay model. The room UI needs a `downloading...`
+  state; this is a real, new UX cost this architecture accepts rather than hides.
+- ~~**No mid-song late join**~~ — **fixed 2026-09-28** (founder real-time: "can we make the coplay
+  stuff actually function in mixforge it doesnt actually work if i open 2 tabs it says connected
+  but the room music doesnt play in tab 2" — this WAS the bug, reproduced live before fixing:
+  a fresh two-tab test against production showed the *first* tab wasn't even reliably getting
+  `currentTurn`, because of the second, related bug below). `room_server.mjs`'s connection handler
+  now unicasts a real `{type:"play",...}` to a joining client whenever `room.nowPlaying` is set
+  (previously that info only reached `room_state`'s inert text field); `multiplayer.html`'s
+  `handlePlay()` now computes how many seconds into the track "now" actually is
+  (`elapsedSec = (Date.now() - localTarget) / 1000`) and seeks there, instead of always restarting
+  from 0 — the same real math that already scheduled synchronized starts, extended to cover a
+  start that's already in the past. If the track already finished by join time, it honestly logs
+  that and waits for the next one rather than replaying stale audio. Real test:
+  `server/room_server_test.mjs`'s "late-join fix" block (a client joins after another has already
+  queued+played, asserts it gets a real `play` message with the original `startAtServerTimeMs`).
+- **Fixed alongside it, found live while reproducing the above**: dead WebSocket peers (a crashed
+  tab, a dropped network, a laptop sleep — anything that skips a clean close frame) used to occupy
+  their seat forever, since nothing but a clean `close` event ever freed one; if that seat held
+  `currentTurn`, no one could ever queue again. A real two-tab Playwright repro against the live
+  production room hit exactly this: seats were already stuck occupied from earlier testing before
+  any new tab connected. Fixed with the standard `ws` heartbeat pattern — `room_server.mjs` pings
+  every client every 30s (configurable via `startServer`'s 4th arg, used to keep
+  `room_server_test.mjs`'s "heartbeat fix" test fast) and `terminate()`s anyone who didn't pong
+  since the last ping, which fires the existing `close` handler (seat-free + turn-handoff), no
+  separate cleanup path.
+- **Each client downloads its own copy** — fine at the real 4-seat/small-room scale this repo
+  targets; a true single-relay-fan-out (closer to what `media/stream.prn` was actually designed
+  for) is a real, later option if room sizes ever grow, not needed for V0.
+- **Licensing stakes, already named in the multiplayer-pivot section above, go up again**: this
+  design adds a real, server-side cached copy of downloaded audio (not just a hobbyist's own local
+  file), serving it to multiple listeners over HTTP. Still explicitly, knowingly deferred per this
+  doc's own standing "cruise ship / international waters" stance — named again here because a
+  shared server-side cache is a materially bigger fact than Phase 1's own single-user local
+  download, same honesty standard the Turntable.fm/ASCAP-BMI note above already set.
+
+### Phased build order (not started — this section is the scoping pass only)
+
+1. **5a** — `room_server.mjs` shells `mixforge import` on an accepted `queue_song`, caches under a
+   room-scoped directory, replaces today's fire-and-forget `track_queued` broadcast with a real
+   `downloading` → `ready` state machine.
+2. **5b** — nginx (or the room server itself) serves the cached file statically; verify Range-
+   request support (needed for `decodeAudioData`/seek, not just sequential playback).
+3. **5c** — client round-trip clock sync + `AudioContext`-scheduled synchronized `start(when)`.
+4. **5d (deferred, named not guessed)** — late-join seek-to-current-position; true single-relay
+   fan-out if room sizes grow past a handful of listeners.
+
+### Implemented (2026-09-27, same day as the scoping above) — real, live, working
+
+Founder real-time: "unify the dj interface and the multiplayer room and make it so it actually
+works", then mid-build: "it needs to show the waveforms in the cdjs... bpm detection and key
+detection" and "it still needs to let you open files and sample off of either the file you opened
+or the youtube 'stream' you opened". Built and live-verified, not just scoped:
+
+- **`web/room.html`** — the real unification: the full 4-deck mixer/sampler from `dj.html` plus
+  the room from `multiplayer.html`, in one page. Deck 1 is the room's shared deck (loads whatever
+  the room is currently playing); decks 2-4 stay local. The sampler needed zero new code to
+  satisfy "sample off either source" — `capturePad` already samples off whatever's loaded into a
+  deck, source-agnostic, so a room-sourced deck 1 and a locally-opened deck 2-4 work identically.
+- **`server/room_server.mjs`** — real download-on-queue (`yt-dlp -f bestaudio/best`, no ffmpeg),
+  caches under `web/room-cache/` (served by the existing static `location /`, no nginx change
+  needed), broadcasts a near-future `play` timestamp; clients round-trip clock-sync (`ping`/`pong`)
+  and schedule `deckParam playing=true` against it. **Correction from the scoping doc above**: not
+  Web Audio's sample-accurate `start(when)` after all — deck playback is a custom per-sample
+  AudioWorklet loop, not a stock `AudioBufferSourceNode`, so this is `setTimeout`-scheduled
+  (typically low tens of ms accuracy), matching NORTHSTAR's own "roughly synchronized" bar, not
+  claiming more than that.
+- **Real waveform display** (`drawWaveform`/`redrawWave` in `room.html`) — a min/max peak overview
+  cached to an offscreen canvas once per load, redrawn cheaply with a live playhead at the
+  existing ~30Hz UI tick.
+- **Real, basic BPM estimate** (`web/bpm.mjs`) — energy-envelope autocorrelation, pure JS, no new
+  dependency, per the founder's own explicit choice ("basic JS heuristic now" over building the
+  full aubio pipeline). Labeled an estimate in the UI and log, never presented as ground truth.
+  **No key detection** — that one genuinely has no lightweight equivalent, per the founder's own
+  acknowledgment when choosing this option.
+- **Two real bugs found and fixed via actual two-tab Playwright testing against the live server**,
+  not guessed at: (1) a client's "now playing" display went stale at "downloading..." forever —
+  `room.nowPlaying` was set but no fresh `room_state` broadcast followed to deliver it; (2) if the
+  seat whose turn it is disconnects without queuing, nothing ever called `advanceTurn()` — the
+  room got stuck forever, since every other seat's queue attempt is correctly rejected as "not
+  your turn." Both fixed; the second has a real test (`room_server_test.mjs`) exercising an actual
+  WebSocket close, not a synthetic state mutation.
+- **Real, live-confirmed nuance on the YouTube bot-detection finding above**: it's intermittent,
+  not an absolute wall — a real download of a real video succeeded live during this session's own
+  testing (a 3.4MB WebM, decoded and played with zero errors), while other attempts hit either the
+  bot-detection wall or a separate "requested format is not available" failure. Installed a real
+  Deno binary (`~/.deno/bin/deno`, no sudo) and wired `--js-runtimes deno:<path>` into the
+  download call, since yt-dlp's own startup warning names a missing JS runtime as narrowing
+  available formats/signatures — a real, distinct, likely-more-common failure mode from the bot
+  wall itself, which still needs real cookies (`MIXFORGE_YTDLP_COOKIES`) to reliably get past.
+- **Cookie-export tool, real technical correction made mid-build**: the founder's own two proposed
+  approaches (a VS Code extension hosted at `console.okemily.com`, then "fork our own chrome to
+  defeat the security boundaries") both misjudged where the real boundary is. A remote
+  code-server extension can't reach a local desktop browser's cookie store at all (wrong
+  machine); same-origin policy blocks a *webpage's* JS from reading another origin's cookies, but
+  a browser *extension* with the `cookies` permission scoped to `youtube.com` has sanctioned,
+  official API access to exactly those cookies — no boundary to defeat, no fork needed. Real,
+  minimal Chrome extension built instead (see its own README) — see the monorepo `CLAUDE.md`'s
+  `MIXFORGE_YTDLP_COOKIES` wiring above for where the exported cookies land.
+- **One real retry (jittered), full visibility in the client log**: founder real-time, "can we
+  give a jitter retry like when it denies have it retry have all the logs show in the client what
+  is happening", then "dont have it retry more than once" -- `downloadWithRetry` in
+  `room_server.mjs` does exactly one retry after a random jittered delay (uniform in
+  `[MIXFORGE_RETRY_BASE_MS, MIXFORGE_RETRY_MAX_MS]`, default 1.5-6s), broadcasting a real
+  `download_retry` message for both the failing first attempt and, if it also fails, the final
+  attempt, so the room's log shows the exact real sequence rather than a single opaque
+  `queue_failed`. Live-verified against a real, guaranteed-to-fail `youtube.com` URL.
+- **Found live, not a code bug: the root domain wasn't actually unified.** Founder real-time,
+  "it still doesnt work not unified ensure deploy" -- the DEPLOY was fine (the server was running
+  the latest code, verified), but `mixforge.okemily.com/` still served the original standalone
+  `room.wasm` compiler-pipeline proof as `index.html`, with `room.html` merely one of three links
+  buried below it -- a real UX gap, not a bug in anything shipped so far. Fixed: that original
+  proof page moved to `web/wasm-proof.html` (preserved as-is, still linked from `room.html`),
+  `index.html` is now a plain redirect straight to `room.html`, so the bare domain IS the real,
+  unified room with no extra click.
+
+### Kanban items this resolves
+
+Closes the open triage question in `T48839675`/`T94858758` (both: "resolve room-engine
+architecture question... before Phase 5 scoping starts" / "scope `stdlib/media/stream.prn`") —
+the real resolution is that Phase 5 doesn't need `media/stream.prn` at all; `T46478755`'s own real
+room server already shipped. None of these needed the room-engine-vs-SHANKPIT-OS-app question
+re-litigated — that was already answered 2026-09-22 ("build it with parena wasm").
+
 ## Golden doc registration
 
 Registered in `EMILY/context/golden-docs-index.md` as `MIXFORGE-NORTH` per S205-101's own

@@ -2051,3 +2051,327 @@ a real, separate, much bigger feature, not attempted blind.
    ask implies at scale -- easy to grow `BIGO_BUG_EGG_MAX` later once the mechanic itself is proven live.
 
 session: sess-20260923-1030-4a526255.
+
+## §31: "The Birds" — TYLER reconciliation, avian coalition values (2026-09-25)
+
+Founder real-time ask: "BIG_O add the birds (use TYLER)". §6 and `docs/DESIGN_DIGEST.md`'s Act II
+escalation both already named the avian coalition and both already flagged the same open item:
+"cross-repo canon exists: `TYLER/` already has Hana, 'Bird Correction', Layer 4 / custody;
+reconcile before hardening." This closes that specific reconciliation, not the whole Act II
+chapter (which stays deferred campaign content per §6).
+
+**The TYLER tie-in.** `TYLER/README.md`'s Eastwind Owls are the oldest faction in that universe,
+purely archival ("they are not supernatural... in possession of the most complete timeline
+archive in existence"; "their inability to destroy records is a feature, not a bug"). TYLER's own
+recurring end-log line, "BIRD CORRECTION PENDING" (`TYLER/README.md`, `TYLER/CITY_OF_LIGHT.md`,
+`TYLER/0.md`), is Emily OS's own notation for an unresolved correction the archive is waiting to
+apply. BIG_O's avian coalition is now that same lineage, turned hostile and local: it doesn't
+correct the record quietly, it broadcasts what it's witnessed as a real, live-mechanic acoustic
+beacon that pulls feral hordes onto the crew — the Owls' "distribute it anyway" reflex, made into
+a threat. `docs/DESIGN_DIGEST.md`'s Act II section carries the full in-fiction framing.
+
+**What's real, built and tested this pass:** `core/avian_values.h`/`.c` — the coalition's own
+value vocabulary (vigilance/coordination/exposure, 0.0-1.0), a 4-state mood arc (ROOSTING →
+SCOUTING → SIGNALING → MOBBING), and `avian_beacon_strength()`, a real, tested 0.0-1.0 output that
+is only nonzero in SIGNALING/MOBBING and scales with flock coordination. Same "own math, no shared
+code with sibling value modules" convention `core/zombie_values.h` already established for
+zombies' own hunger/aggression/decay vocabulary — deliberately not a reskinned `NpcBrain` or a
+reskinned `ZombieState`. 8 real behavioral-contract tests in `core/avian_values_test.c` (gcc
+`-Wall -Wextra`, ASan/UBSan-clean pattern matched, `bazel` unavailable in this sandbox so verified
+directly: `gcc -O2 -o /tmp/avian_values_test core/avian_values_test.c core/avian_values.c -lm &&
+/tmp/avian_values_test` — all pass), covering: sane ROOSTING defaults; vigilance's own real
+asymptotic decay (the "can't destroy records" property — approaches but never reaches 0.0); an
+isolated-but-vigilant bird never reaching SIGNALING/MOBBING (the coordination gate genuinely
+holds); a coordinated flock genuinely escalating ROOSTING → SIGNALING → MOBBING; a discrete
+sighting (`avian_get_alerted`) genuinely promoting ROOSTING → SCOUTING; beacon strength zero
+outside SIGNALING/MOBBING and genuinely higher at MOBBING than SIGNALING at equal coordination;
+exposure genuinely rising while signaling and fading once quiet; alertness bounded 0..100 and
+strictly increasing across the mood arc. One real, live bug found and fixed during this pass:
+`avian_get_alerted` originally always pushed its own re-evaluation timer forward on every call, so
+a caller re-alerting a bird every tick (a sustained sighting, the realistic case) silently starved
+`avian_tick`'s own mood re-evaluation forever — fixed to only ever pull the timer earlier, never
+push it later.
+
+**Integration boundary, stated plainly (matching `zombie_values.h`'s own convention):** NOT wired
+into `core/witness_rules.c` or `core/zombie_values.c` yet. `avian_beacon_strength` is a real,
+tested value with a named future consumer (`zombie_get_agitated`, at a future live-wiring pass,
+same shape `core/witness_live.h` already used for zombie↔witness wiring) — not yet a live effect
+on anything else in this repo, and no server-side `ServerAvian` entity exists (no spawn, no
+rendering, no PC snapshot field). The coalition as a playable Act II chapter — server entities,
+client rendering (mannequin-kit precedent from §8a would need a genuinely new bird asset, not the
+shared mannequin rig), the RNA-interference-dart countermeasure, "Glosslighting" dialogue — stays
+real, deferred campaign content, named here rather than silently dropped.
+
+## §32: "Observing the observer" — avian coalition wired into the other AI systems (2026-09-25)
+
+Founder real-time follow-up to §31: "integrate them deeply into the other AI interactions in
+terms of observing the observer." §31 shipped the coalition's own value module in isolation,
+explicitly not wired into anything else yet. This closes that specific gap — not the full Act II
+chapter (server entities, rendering, the RNA-interference countermeasure stay deferred, unchanged
+from §31's own integration-boundary note).
+
+**The real design choice, stated plainly:** the coalition does NOT get its own copy of
+`witness_rules.c`'s `noticed()`/`conspicuousness()` to watch the player directly — that would just
+be a second, redundant witness system wearing bird feathers. Instead, new `core/avian_live.h`
+(pure, header-only glue, same convention as `core/witness_live.h`) wires the coalition to watch
+the OTHER watchers already ticking on this server:
+
+- `bigo_avian_observe_npc_vigilance()` — a Citizen's or The Men's own `npc_brain_effective_
+  vigilance` (`core/npc_archetype.h`) spiking past a real threshold (60/100) is itself a signal
+  worth archiving, independent of whatever caused it.
+- `bigo_avian_observe_witness_state()` — a human's own `witness_state` (`core/witness_rules.h`)
+  escalating past mere `WS_DENIAL` into `WS_COMPROMISED` and beyond is the literal "the coalition
+  archives the archivist" mechanic — the Eastwind Owl doctrine (`TYLER/README.md`) turned into a
+  real trigger.
+- `bigo_avian_observe_zombie_event()` — reuses `core/witness_live.h`'s own `bigo_zombie_is_
+  witnessable_event` HUNTING/FRENZIED gate directly (not re-implemented) so the two systems can
+  never silently drift on what counts as "loud".
+- `bigo_avian_meta_witness_rank()` — a single 0..3 severity rank counting how many of the three
+  channels corroborate at once (an NPC spike alone vs. an NPC spike *and* an active witness *and*
+  a loud zombie event together) — named as the real future input to `avian_beacon_strength`'s own
+  urgency, not yet consumed anywhere.
+
+Each of these is a genuine second-order signal — a signal *about* another AI system's own signal
+— not a restatement of the first-order one; that's the concrete mechanical meaning of "observing
+the observer" here. 8 real tests in `core/avian_live_test.c` (gcc `-std=c99 -Wall -Wextra
+-DPARENA_NO_GRAPHICS`, matching `witness_rules.c`'s own headless-build flag — SDL2 dev headers
+aren't installable in this sandbox, verified directly rather than assumed), including a full,
+real integration test: a bird alerted purely by observing another NPC's own vigilance spike, with
+no direct sighting of anything at all, genuinely reaches SIGNALING once real flock coordination
+supports it — the alert this header produces is not a dead end, it drives the exact same state
+machine `core/avian_values_test.c` already proved.
+
+**One real, found-live correction along the way:** `witness_rules.c`'s own `escalation_rank()`
+looked like the right tool for "has this witness state become a real threat" (a total order over
+`WS_*`), but it isn't one — it's a non-monotonic grouping for decorum-penalty banding where
+`WS_COMPROMISED` and `WS_UNAWARE` share the same rank (0). Checked directly against the generated
+`.c`, not assumed from the header's declaration alone. `avian_live.h` compares the raw `WS_*`
+ordinal instead (which IS declared in real escalation order in `witness_rules.h`'s own enum), with
+the reasoning for the correction left in the header itself so the same mistake isn't made again.
+
+**Integration boundary, unchanged from §31:** still no live `ServerAvian` entity, no wiring into
+an actual server tick loop, no consumption of `bigo_avian_meta_witness_rank` by
+`avian_beacon_strength`. This pass proves the cross-system signal wiring is real and tested;
+spawning/ticking a live coalition population is the next, still-deferred step toward a playable
+Act II slice.
+
+## §33: Live `ServerAvian` population — closing the beacon loop (2026-09-25, continued)
+
+Direct continuation of §31/§32: both named "no live `ServerAvian` entity, no server tick wiring,
+no consumption of `avian_beacon_strength`" as the remaining gap. This closes it — a real, live,
+server-authoritative flock, wired through §32's own `core/avian_live.h` into the existing
+`g_npcs[]` population, that actually closes the Act II beacon loop `docs/DESIGN_DIGEST.md` names
+("acoustic beacons to pull feral hordes onto you").
+
+**What's real and live, `day/apps/server/src/main.c`:** a new `ServerAvian g_avians[BIGO_AVIAN_MAX]`
+(3, a small real flock, deliberately a separate array from `g_npcs[]` — same reason
+`g_giant_bugs[]` is separate: no wire-protocol change, server-side simulation only, matching that
+population's own "no network broadcast yet, prove it live in the log" precedent). `server_spawn_
+avians` places them on a tight 6-unit circle near world origin, close enough to have real
+Citizens/The Men/zombies in range from tick one. `server_tick_avians`, called every real server
+tick after `server_tick_witness`:
+
+1. Runs all three `avian_live.h` observation channels against every active `ServerNpc` within
+   `BIGO_AVIAN_OBSERVE_RADIUS` (25.0, matching `BIGO_WITNESS_DETECTION_RADIUS`) — zombie mood via
+   `bigo_avian_observe_zombie_event`, human vigilance via `bigo_avian_observe_npc_vigilance`
+   (`npc_brain_effective_vigilance`, the real live value, not a placeholder), human witness_state
+   via `bigo_avian_observe_witness_state` (the SAME `witness_state` field `server_tick_witness`
+   just updated this tick).
+2. Counts real, live `nearby_signaling_peers` among the OTHER active birds in `g_avians[]` and
+   calls `avian_tick`, closing the loop back into §31's own coordination mechanic with a genuine
+   flock instead of a synthetic peer count.
+3. **Closes the beacon loop, the first live consumer of `avian_beacon_strength` anywhere in this
+   repo:** once a bird's beacon crosses `BIGO_AVIAN_BEACON_FIRE_THRESHOLD` (0.5), every active
+   zombie within `BIGO_AVIAN_BEACON_RADIUS` (20.0) gets a real `zombie_get_agitated()` call — the
+   same stimulus a thrown pheromone marker gives, but now sourced from the coalition's own
+   witnessed-and-broadcast signal instead of a player action. This is the literal mechanic
+   `docs/DESIGN_DIGEST.md`'s Act II section names.
+
+**Verified:** `scripts/build_day.sh` compiles clean with the new code linked in (`../core/
+avian_values.c` added to the build script's own source list). Mood transitions and beacon fires
+log via `printf` (`S504-BIRDS:` prefix), matching every other population's own "prove it live in
+the log first" precedent. **Real, honest limitation, not silently worked around:** this server
+hard-requires a reachable `worldapi` (`localhost:7070`) at startup (`FATAL: could not load the
+real city chunk grid from worldapi -- refusing to run on fake/empty terrain`) with no bypass flag
+— this sandbox has no such service reachable, so the actual running-server log output (mood
+transitions, beacon fires) could not be captured live this pass, only the clean compile. The exact
+functions `server_tick_avians` calls (`bigo_avian_observe_*`, `avian_tick`, `avian_beacon_
+strength`, `zombie_get_agitated`) are the same ones `core/avian_live_test.c`/`core/avian_values_
+test.c` already exercise and pass — the integration logic is proven, the live server round-trip is
+not, named honestly rather than claimed.
+
+**Still deferred:** no client rendering or wire-protocol presence for the coalition (no
+`PcAvianState`, no visual — matches §31's own note that a genuinely new bird asset, not the shared
+mannequin rig, would be needed); no movement (stationary, same v0 precedent every population here
+started with); the RNA-interference-dart countermeasure and "Glosslighting" dialogue stay real,
+deferred campaign content.
+
+## §34: Real MOBBING movement — birds actually dive (2026-09-25, continued)
+
+§33 left the flock stationary in v0, same precedent every population in this file starts with.
+This closes the one piece of that precedent worth closing immediately: MOBBING was, until now, a
+purely cosmetic mood label — NORTHSTAR.md §6's own "dive-bombing/harassing a marked target"
+framing had no actual movement behind it. ROOSTING/SCOUTING/SIGNALING birds still hold their
+perch (a real, deliberate choice — only the full-commit MOBBING state actually breaks formation).
+
+**What's real:** `server_tick_avians` now finds the nearest witnessable (HUNTING/FRENZIED, reusing
+`witness_live.h`'s own `bigo_zombie_is_witnessable_event` gate) zombie within
+`BIGO_AVIAN_OBSERVE_RADIUS` and, while MOBBING, steps toward it at `BIGO_AVIAN_MOB_SPEED` (7.0
+units/sec — deliberately faster than a pheromone-commanded zombie's own 5.5, matching "dive-bomb"
+urgency, but below the player's own sprint speed so a MOBBING flock is a real threat, not an
+inescapable one) via `pheromone_step_toward` (`day/packages/common/bigo_pheromone.h`'s own real,
+already-proven pure movement primitive — reused directly, not reimplemented). A MOBBING bird with
+no witnessable zombie currently in range holds position rather than wandering, matching zombies'
+own "stationary with no target" default.
+
+**Verified:** `scripts/build_day.sh` still compiles clean with the new movement code. Same real,
+honest limitation as §33: this server's hard `worldapi` startup dependency means the live running
+log couldn't be captured in this sandbox — verified by direct code inspection (the geometry and
+`pheromone_step_toward` call are the same pattern `server_tick_npcs`' own zombie-pheromone-seeking
+movement already uses, live-verified in an earlier pass per that function's own doc comment) plus
+a clean compile, not a live run.
+
+## §37: closing two named gaps in the live Decorum mechanic — gear conspicuousness + two more zones
+(2026-09-25, "start working on the real BIG_O stealth gameplay")
+
+§18 Phase A shipped live Decorum/costume/zone tracking but named two real, honest gaps rather than
+guessing at them: "gear/token are real, honest 0s ... so only `DA_WRONG_COSTUME` can ever fire ...
+never `DA_CARRY_GEAR`," and "`ZONE_EXEC`/`ZONE_GENERATOR`/`ZONE_VAULT` have no live landmark yet."
+This pass closes the `DA_CARRY_GEAR` gap and two of the three missing zones — the direct, next
+buildable slice of the social-stealth core loop, not a new invented mechanic. `ZONE_VAULT` still
+needs a real "stolen token" mechanic `zone_access` already models but nothing here grants — left
+named, not guessed at, same discipline §18 itself used.
+
+**Gear conspicuousness — real, not new design.** Checked `core/sim.c`'s own `sim_observe` first
+(the already-tested abstract reference this live server's Decorum tracking is a port of): it already
+calls `apply_decorum(s, pl, allowed ? DA_CARRY_GEAR : DA_WRONG_COSTUME, ...)` — the exact action-
+selection rule this pass ports to `server_tick_decorum` verbatim, not invented here. What counts as
+"gear" needed one real, checked decision: `papercraft_protocol.h`'s own doc comment names
+`PC_WPN_KNIFE` "the universal baseline every character always has," so `gear = current_weapon !=
+PC_WPN_KNIFE` — any found arsenal slot (Magnum/AR/Shotgun/Sniper/Katana) reads as conspicuous field
+gear, matching `DESIGN_DIGEST.md` §3's own "carrying a portable sequencer" flavor, while the
+baseline knife never trips it. `current_weapon` already lives server-side on every `PlayerSlot`
+(`s->current_weapon`, never broadcast in `PcSnapshotPacket` per that struct's own wire-budget doc
+comment) — zero new packet, zero new state, a real, small wiring change only. Previously, a
+correctly-costumed player carrying a shotgun through `ZONE_EXEC` was invisible to Decorum; now the
+same `noticed()`/`conspicuousness()` math §18 already wired applies, and a hit is correctly logged
+and scored as `DA_CARRY_GEAR` (−15) rather than misattributed to `DA_WRONG_COSTUME` (−20) when the
+costume was actually fine.
+
+**Two more live zones.** `ZONE_EXEC` (`BIGO_EXEC_ZONE_CX/CZ` = (−30, 0)) and `ZONE_GENERATOR`
+(`BIGO_GENERATOR_ZONE_CX/CZ` = (0, −30)) join `ZONE_PUBLIC`/`ZONE_LAB` in `server_player_zone` —
+the exact same "hardcoded circle, no LevelZone/JSON authoring" precedent `ZONE_LAB`'s own landmark
+already established, radius 6.0, both placed well clear of the NPC spawn circle, the lab-delivery
+circle, and the Regulator dispatch point. Per `B1_WITNESS_RULES.md`'s own costume × zone table:
+`ZONE_EXEC` allows `SUIT` only; `ZONE_GENERATOR` allows `JANITOR` only — both already correct in
+`core/witness_rules.c`, unchanged, just now reachable in the live world. 4 of the rules module's 5
+zones are now live; only `ZONE_VAULT` remains unplaced.
+
+**Verified, not just compiled:** a scratch integration harness (same `#include main.c` precedent
+§18/§19/§20/§21 all used, not committed) drives the real, unmodified `server_player_zone`/
+`server_tick_decorum` end to end under ASan+UBSan: a player standing at each new landmark resolves
+to the correct zone; a player in the *correct* costume for `ZONE_EXEC` (`COS_SUIT`) but carrying a
+`PC_WPN_MAGNUM` still takes a real decorum hit, and the exact delta matches `DA_CARRY_GEAR` (80 →
+65), not `DA_WRONG_COSTUME`; the original §18 behavior is unchanged by regression checks — wrong
+costume with only the baseline knife still applies exactly `DA_WRONG_COSTUME` (80 → 60), and correct
+costume with the baseline knife still causes zero loss (`noticed()` never even rolled, `cons` = 0) —
+8/8 real assertions pass. `scripts/build_day.sh` compiles clean (one pre-existing, unrelated
+`strncpy` truncation warning in `load_mods_manifest`, not touched by this pass). `scripts/build.sh`
+(witness-rules oracle/parity tests + the abstract crew-sim scenario suite, neither of which this
+pass touched) re-run clean: 1,520,403 checks / 4,619 parity vectors, 0 failures; 26 scenarios +
+replay determinism + seed sensitivity + bad-script rejection, all OK — zero regressions. Real,
+honest limitation: `bazel`/`bazelisk` are not installed in this sandbox, so `bazel test //...`
+could not be re-run this pass (the day-server code this pass touches isn't part of that build
+graph regardless — `apps/server/src/main.c` is built only via `scripts/build_day.sh`, same as
+every other live-server change in this file); `scripts/build_client.sh` was not re-run since this
+pass touched no client-facing file, wire struct, or shared header. Also found and fixed a real,
+pre-existing doc-comment misplacement while editing this function: the `server_tick_decorum` doc
+comment had drifted to sit above the neighboring `server_tick_bug_eggs` instead (a stale artifact
+of an earlier reordering), silently describing the wrong function — moved back to the function it
+actually documents, and `server_tick_bug_eggs` given its own short, correct one.
+
+**Real, honest, deliberately NOT built here:** `ZONE_VAULT` (needs the stolen-token mechanic,
+genuinely separate scope, not guessed at); any client-visible indication that a carried weapon is
+conspicuous (no HUD change beyond the existing §35 awareness-ping feedback, which already fires
+generically for any noticed hit, gear or costume); tuning whether `DA_CARRY_GEAR`'s -15 vs.
+`DA_WRONG_COSTUME`'s -20 delta feels right in practice (no live playtest in this sandbox, same
+limit every mechanic in this file names); Act I Mission 1's own remaining gaps
+(`docs/A1M1_PLAN.md` items 2-7 — the Sector-2 level, interactables, the shoulder-surf mechanic
+itself, supervisor/peer NPCs, server-authoritative mission state, bot crew slots) — each is its
+own real, separate, larger scope, not attempted blind in this pass per Principle 19.
+
+## §38: the shoulder-surf mechanic — a real, generic stolen-token loop for ZONE_VAULT (2026-09-25,
+continued, "continue")
+
+§37 closed `ZONE_EXEC`/`ZONE_GENERATOR` but left `ZONE_VAULT` deliberately unplaced: it "needs a
+real 'stolen token' mechanic `zone_access` already models but nothing here grants yet." This pass
+closes that gap with `DESIGN_DIGEST.md` §4's own named mechanic — "shoulder-surfing codes and
+PINs" — rather than inventing a different, unrelated way to grant the token, and the same mechanic
+is `docs/A1M1_PLAN.md`'s own gap #4. Built as a real, generic world mechanic (not Act I Mission
+1-specific content), same "the general system before the specific mission" ordering every other
+Decorum-adjacent piece in this file has followed.
+
+**Scope decision, checked first:** `docs/A1M1_PLAN.md`'s own framing ("aim/hold-camera behind the
+supervisor NPC... uses the phone Camera app affordance") describes a *specific mission's* version
+of this mechanic, gated on a dedicated Supervisor NPC and Room 404 terminal object — neither
+exists live yet (no NPC role beyond Citizen/The Men/Zombie, no interactable terminal entities).
+Building either is real, separate, larger scope (the mission's own gap #5/#3). This pass builds the
+generic version instead: any live Citizen or The Men NPC is a valid shoulder-surf target, and
+completing one grants the real `zone_access(...)` token input `ZONE_VAULT` needs — the same real
+simplification precedent `ZONE_EXEC`/`ZONE_GENERATOR`'s own "no dedicated landmark asset, hardcoded
+circle" already used. A1M1's own dedicated Supervisor-only version stays real, deferred, named
+work, not silently conflated with this.
+
+**What shipped:** `PC_BTN_SHOULDER_SURF` (bit 8), the fourth held button in `PcUserCmdPacket`'s own
+`buttons` bitmask, alongside JUMP/CROUCH/SPRINT — bound to **C** on keyboard, **X** on controller
+(both free, checked against every existing binding first). `server_tick_shoulder_surf` (new,
+`day/apps/server/src/main.c`, called each tick ahead of `server_tick_decorum`): while a player holds
+the button AND a live, active Citizen/The-Men NPC (zombies excluded) is within
+`BIGO_SHOULDER_SURF_RADIUS` (4.0 — deliberately tighter than `BIGO_QUIET_OBSERVE_RADIUS`'s 10.0, has
+to actually be standing over the target, not just in the room), a real, absolute-timestamp streak
+(`PlayerSlot.shoulder_surf_started_ms`, same sentinel idiom `pager_buzz_until_ms` already
+established) accumulates; releasing the button OR losing proximity to every valid target resets it
+to 0 — the hold must be one unbroken streak, not a cumulative total, a real, deliberate design
+choice so this can't be done by walking through a room with the button held the whole time.
+Completing `BIGO_SHOULDER_SURF_HOLD_MS` (3000ms, a real, own v1 tuning, not spec'd elsewhere) sets
+`PlayerSlot.has_vault_token`, logged once. `ZONE_VAULT` itself gets the same hardcoded-circle
+landmark treatment as `ZONE_EXEC`/`ZONE_GENERATOR` (`BIGO_VAULT_ZONE_CX/CZ` = (30, 30), radius 6.0,
+checked clear of every other landmark in this world). `server_tick_decorum`'s own `zone_access`
+call now passes `s->has_vault_token` instead of the hardcoded 0 §37 still carried — all 5 of the
+rules module's zones are now live for the first time. No vision-cone/facing requirement on the
+target (matches `B1_WITNESS_RULES.md` §8's own "deliberately not here: vision/hearing geometry"
+scope boundary, the same one every other noticing check in this repo already respects) — named, not
+silently added as new unscoped precision.
+
+**Verified, not just compiled:** a scratch ASan+UBSan integration harness (`#include main.c`
+precedent, not committed) drives the real, unmodified `server_tick_shoulder_surf`/
+`server_player_zone`/`zone_access`/`server_tick_decorum` end to end, 13/13 real assertions: the new
+`ZONE_VAULT` landmark resolves correctly; holding the button with no target in range never starts a
+streak or grants a token; a streak that starts and then has its button released mid-hold resets to
+0, granting nothing; a continuous hold correctly grants no token one ms short of the threshold and
+grants it exactly once the threshold is crossed; the granted token, fed through the real,
+unmodified `zone_access()`, actually unlocks `ZONE_VAULT` for a non-street costume and is still
+correctly denied for `COS_STREET` (matching the B1 table's own "and a non-street costume" clause);
+and a full §37 regression check (correct costume + carried gear still applies `DA_CARRY_GEAR`
+unchanged) confirms this pass didn't disturb the existing gear/zone Decorum path. `scripts/
+build_day.sh` compiles clean. `scripts/build_client.sh` also compiles clean this pass (SDL2/GL dev
+packages were installable in this sandbox this time, unlike some earlier passes) — the new
+`PC_BTN_SHOULDER_SURF` keyboard/controller bindings build without warning, though the actual
+on-screen feel is unverified (no live GL driver / `SDL_CreateWindow` in this sandbox, same limit
+every visual feature in this file already names). `scripts/build.sh` (witness-rules oracle/parity +
+crew-sim scenarios, untouched by this pass) re-run clean: 1,520,403 checks / 4,619 parity vectors, 0
+failures; 26 scenarios OK — zero regressions. `bazel`/`bazelisk` still unavailable in this sandbox
+(the touched files aren't part of that build graph regardless).
+
+**Real, honest, deliberately NOT built here:** any client-side UI/HUD affordance for the
+shoulder-surf hold itself (no progress bar, no "aim/hold-camera" visual — a bare button hold today,
+named as real, separate follow-up); any witness-risk for the act of shoulder-surfing itself (unlike
+carrying gear, there's no `DA_*` action in the rules module for "caught shoulder-surfing" — extending
+`core/witness_rules.c`/its own PARENA `.prn` source to add one is real, separate, out of scope for
+this pass, which deliberately did not touch the generated rules oracle at all); a dedicated
+Supervisor NPC role, Room 404 terminal object, or any other Act I Mission 1-specific content (named
+above, `docs/A1M1_PLAN.md` items 2, 3, 5-7 all still open); token loss/expiry (once stolen, a
+token is permanent for the rest of that life — no cooldown, no re-theft-on-death reset, a real,
+named v1 simplification matching Decorum's own "what a kill resets is undecided design space" cut
+from §18); more than one target-selection nuance (any Citizen/The-Men NPC works today, not
+specifically a "supervisor" — named above as the real, deliberate scope cut, not an oversight).
