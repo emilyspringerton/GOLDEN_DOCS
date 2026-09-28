@@ -35,7 +35,7 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `docs/CarePyre/docs/SIP_QR_ONBOARDING_NORTHSTAR.md` | `cafef9fa52d11251...` | 16058 |
 | `docs/DEADWEIGHT/NORTHSTAR.md` | `d5be33e8dfaa0964...` | 22311 |
 | `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `a38d1fb831fa63c8...` | 17081 |
-| `docs/DEADWEIGHT/docs/NATIVE_WASM_CLIENT_NORTHSTAR.md` | `b29e002751aa9f01...` | 14874 |
+| `docs/DEADWEIGHT/docs/NATIVE_WASM_CLIENT_NORTHSTAR.md` | `7c4ab3b7fd8167ab...` | 17799 |
 | `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
 | `docs/DEADWEIGHT/docs/WASM_DEPLOY_NORTHSTAR.md` | `274ce97fd62e329f...` | 11601 |
 | `docs/DEADWEIGHT_2/NORTHSTAR.md` | `f306a7c35d7726aa...` | 20469 |
@@ -94,7 +94,7 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `9e37384291bafe13...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `c9bf5499d3ab6e38...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
