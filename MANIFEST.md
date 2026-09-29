@@ -48,7 +48,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md` | `2220398e48c0942d...` | 6542 |
 | `docs/ECOWAR/docs/NORTHSTAR_REFLUX.md` | `97879ecac0c9f002...` | 12256 |
 | `docs/ECOWAR/docs/NORTHSTAR_SPHERE_CAMERA.md` | `8ba43497249ec914...` | 11862 |
-| `docs/EDGE.GAME/NORTHSTAR.md` | `094d34fa94180039...` | 23586 |
+| `docs/EDGE.GAME/NORTHSTAR.md` | `953a4161c20978ee...` | 24161 |
 | `docs/EDIS/NORTHSTAR.md` | `adeba9fa008dd126...` | 3230 |
 | `docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md` | `09aa0513558fa19f...` | 7299 |
 | `docs/EDIS/docs/DIS_DNS_NORTHSTAR.md` | `0cb3afc864d4ec53...` | 7158 |
