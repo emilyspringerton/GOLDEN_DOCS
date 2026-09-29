@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: full resync (all files re-hashed), 2026-09-28.
+Generated: full resync (all files re-hashed), 2026-09-29.
 
-262 files, sha256 + size for each.
+263 files, sha256 + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -10,15 +10,15 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `CLAUDE.md` | `0764dd0c2546e50f...` | 4324 |
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
-| `context/MONOREPO_CLAUDE.md` | `b0ce2462777df9bf...` | 53055 |
-| `context/full-system-context.md` | `95a998a0a3f384ed...` | 46359 |
-| `context/golden-docs-index.md` | `57a3d7ed1c12897e...` | 262931 |
+| `context/MONOREPO_CLAUDE.md` | `2d52e1885327091c...` | 55290 |
+| `context/full-system-context.md` | `f6e19a70dfd276dd...` | 46359 |
+| `context/golden-docs-index.md` | `469ecdbbec3609cc...` | 264218 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
 | `docs/APPLES/docs/NORTHSTAR.md` | `6cf03336e9667801...` | 4219 |
 | `docs/APPLES/docs/SCHEMA.md` | `3d3639d27befebfb...` | 2521 |
-| `docs/BIG_O/NORTHSTAR.md` | `2531a966cc1b52c5...` | 204485 |
+| `docs/BIG_O/NORTHSTAR.md` | `f6a7e20a8223274c...` | 210758 |
 | `docs/BRAWLPIT/docs/BP_LEVEL_EDITOR_NORTHSTAR.md` | `70fde9db0ff7a07f...` | 9569 |
 | `docs/BRAWLPIT/docs/BP_LOBBY_MATCHMAKING_NORTHSTAR.md` | `72f512153bd509f0...` | 7965 |
 | `docs/BRAWLPIT/docs/BP_SOCIAL_LOBBY_NORTHSTAR.md` | `82a1f3fec2371d43...` | 9179 |
@@ -48,6 +48,7 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `docs/ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md` | `2220398e48c0942d...` | 6542 |
 | `docs/ECOWAR/docs/NORTHSTAR_REFLUX.md` | `97879ecac0c9f002...` | 12256 |
 | `docs/ECOWAR/docs/NORTHSTAR_SPHERE_CAMERA.md` | `8ba43497249ec914...` | 11862 |
+| `docs/EDGE.GAME/NORTHSTAR.md` | `ab0a50d134287a96...` | 13999 |
 | `docs/EDIS/NORTHSTAR.md` | `adeba9fa008dd126...` | 3230 |
 | `docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md` | `09aa0513558fa19f...` | 7299 |
 | `docs/EDIS/docs/DIS_DNS_NORTHSTAR.md` | `0cb3afc864d4ec53...` | 7158 |
@@ -94,7 +95,7 @@ Generated: full resync (all files re-hashed), 2026-09-28.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `9ba54317fca3b7b2...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `6dd1190398711a70...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
