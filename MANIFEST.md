@@ -10,8 +10,8 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `CLAUDE.md` | `0764dd0c2546e50f...` | 4324 |
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
-| `context/MONOREPO_CLAUDE.md` | `2d52e1885327091c...` | 55290 |
-| `context/full-system-context.md` | `f6e19a70dfd276dd...` | 46359 |
+| `context/MONOREPO_CLAUDE.md` | `60f1d12744f65acd...` | 56123 |
+| `context/full-system-context.md` | `023f87e24bef5662...` | 46567 |
 | `context/golden-docs-index.md` | `469ecdbbec3609cc...` | 264218 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
@@ -48,7 +48,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md` | `2220398e48c0942d...` | 6542 |
 | `docs/ECOWAR/docs/NORTHSTAR_REFLUX.md` | `97879ecac0c9f002...` | 12256 |
 | `docs/ECOWAR/docs/NORTHSTAR_SPHERE_CAMERA.md` | `8ba43497249ec914...` | 11862 |
-| `docs/EDGE.GAME/NORTHSTAR.md` | `953a4161c20978ee...` | 24161 |
+| `docs/EDGE.GAME/NORTHSTAR.md` | `56db7ef0c71c3a1e...` | 33452 |
 | `docs/EDIS/NORTHSTAR.md` | `adeba9fa008dd126...` | 3230 |
 | `docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md` | `09aa0513558fa19f...` | 7299 |
 | `docs/EDIS/docs/DIS_DNS_NORTHSTAR.md` | `0cb3afc864d4ec53...` | 7158 |
@@ -95,7 +95,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `6dd1190398711a70...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `7418765ec5c2de70...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
@@ -188,7 +188,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/PAPERCRAFT/docs/NORTHSTAR_PAPER_ENGINE.md` | `179ed043655cf4cd...` | 28541 |
 | `docs/PAPERCRAFT/docs/NORTHSTAR_WEB_CLIENT.md` | `8628f4cb3af5ad3b...` | 12826 |
 | `docs/PARENA/NORTHSTAR.md` | `16a6013c5da3402d...` | 171263 |
-| `docs/PARENA/docs/AVR_ARDUINO_NORTHSTAR.md` | `995f894b5084eb34...` | 13812 |
+| `docs/PARENA/docs/AVR_ARDUINO_NORTHSTAR.md` | `bf98acd600567d3a...` | 19096 |
 | `docs/PARENA/docs/BYTES_NORTHSTAR.md` | `44c8bf8c6af08f08...` | 9447 |
 | `docs/PARENA/docs/DCGAN_PRIMITIVES_NORTHSTAR.md` | `94e5a7addf111956...` | 13301 |
 | `docs/PARENA/docs/EXPR_POSITION_BINDING_FORMS_NORTHSTAR.md` | `00e93db5cebc8240...` | 9840 |
