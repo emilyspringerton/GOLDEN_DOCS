@@ -48,11 +48,11 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md` | `2220398e48c0942d...` | 6542 |
 | `docs/ECOWAR/docs/NORTHSTAR_REFLUX.md` | `97879ecac0c9f002...` | 12256 |
 | `docs/ECOWAR/docs/NORTHSTAR_SPHERE_CAMERA.md` | `8ba43497249ec914...` | 11862 |
-| `docs/EDGE.GAME/NORTHSTAR.md` | `7c3aa60514f8a3ad...` | 40821 |
+| `docs/EDGE.GAME/NORTHSTAR.md` | `9ef3f08463063062...` | 42101 |
 | `docs/EDIS/NORTHSTAR.md` | `adeba9fa008dd126...` | 3230 |
 | `docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md` | `09aa0513558fa19f...` | 7299 |
 | `docs/EDIS/docs/DIS_DNS_NORTHSTAR.md` | `0cb3afc864d4ec53...` | 7158 |
-| `docs/EDITOR.GAME/NORTHSTAR.md` | `1592cd7cd6d1a7d1...` | 4356 |
+| `docs/EDITOR.GAME/NORTHSTAR.md` | `e153a7945cdb76f9...` | 7555 |
 | `docs/EINHORN_SURVIVAL/CLAUDE.md` | `e7d7cfd9f3e45bfa...` | 9511 |
 | `docs/EMILY/GOLDEN.md` | `227398ad72b08e72...` | 3244 |
 | `docs/EMILY/HQ-SPEC-PRIME-097-fixed-points.md` | `20ab0a0b54ce2d39...` | 13066 |
@@ -95,7 +95,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `7ea442b20bc1c18a...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `24116d6f28d7b806...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
