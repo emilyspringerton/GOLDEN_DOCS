@@ -12,7 +12,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `abdfdbcd3607f555...` | 58794 |
 | `context/full-system-context.md` | `30239691aeb570f0...` | 46567 |
-| `context/golden-docs-index.md` | `469ecdbbec3609cc...` | 264218 |
+| `context/golden-docs-index.md` | `a95981f0ea17d900...` | 265938 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -95,7 +95,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `c619d39648b3a21e...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `fa3a1f928f7918f1...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
