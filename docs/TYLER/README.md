@@ -1119,6 +1119,8 @@ APPROVED (TEMPORARY)
 **In Tyler scenes:**
 Emily OS is never seen. She is felt. The room tightening. The UI spacing becoming less forgiving. The end log reading *BIRD CORRECTION PENDING* — which is her notation, not the documentary crew's. They don't know what it means. Tyler does. He finds it funny.
 
+*(VALHANNA, `episodes/vh01_valhanna_coldopen.md`: the one time the record shows the correction had a real door and Tyler chose not to walk through it — Iceland, 1986, at Hana's request. Every PENDING line above and below this one is downstream of that refusal. He still finds it funny. That's part of why he finds it funny.)*
+
 The CAST stream annotation — *head-2 independent / invisible reconnect enabled* — appears in the pilot cold open. It is not explained. It is not the Jiangshi crew's annotation. Writers should know whose it is.
 
 **In Tides scenes:**

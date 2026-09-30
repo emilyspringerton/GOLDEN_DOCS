@@ -1,6 +1,6 @@
 # MANIFEST
 
-Generated: full resync (all files re-hashed), 2026-09-29.
+Generated: full resync (all files re-hashed), 2026-09-30.
 
 263 files, sha256 (truncated to 16 hex chars) + size for each.
 
@@ -11,7 +11,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `abdfdbcd3607f555...` | 58794 |
-| `context/full-system-context.md` | `023f87e24bef5662...` | 46567 |
+| `context/full-system-context.md` | `30239691aeb570f0...` | 46567 |
 | `context/golden-docs-index.md` | `469ecdbbec3609cc...` | 264218 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
@@ -95,7 +95,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `817402aa5cf65b3a...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `c619d39648b3a21e...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
@@ -255,7 +255,7 @@ Generated: full resync (all files re-hashed), 2026-09-29.
 | `docs/TIPJAR-wiki/Product-Core-Acceptance.md` | `cac741f900f2461f...` | 9961 |
 | `docs/TYLER/HQ-CANON-TYLER-105-EPOCH-EXTINCTION.md` | `f96885888663882a...` | 10284 |
 | `docs/TYLER/HQ-SPEC-LORE-104-QUEEN-SALLY-DOCTRINE.md` | `3a938fd7efcae201...` | 12563 |
-| `docs/TYLER/README.md` | `e764df21cc6045f2...` | 121202 |
+| `docs/TYLER/README.md` | `3b369a99f86d4c99...` | 121531 |
 | `docs/TYLER/engine/broadway_spec.md` | `31a3a669a800e1cc...` | 24609 |
 | `docs/TYLER/just_a_duck.md` | `95c53a5e7378f248...` | 992 |
 | `docs/TYLER/multiverse_heroes.md` | `169869e86060b833...` | 94533 |
