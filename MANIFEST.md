@@ -2,7 +2,7 @@
 
 Generated: full resync (all files re-hashed), 2026-09-30.
 
-263 files, sha256 (truncated to 16 hex chars) + size for each.
+264 files, sha256 (truncated to 16 hex chars) + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -11,7 +11,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `abdfdbcd3607f555...` | 58794 |
-| `context/full-system-context.md` | `30239691aeb570f0...` | 46567 |
+| `context/full-system-context.md` | `cd410dd5f217ae97...` | 46774 |
 | `context/golden-docs-index.md` | `a95981f0ea17d900...` | 265938 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
@@ -95,7 +95,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `fa3a1f928f7918f1...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `9313520e52246996...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
@@ -249,6 +249,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md` | `af28c362c1e86f00...` | 9395 |
 | `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
 | `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
+| `docs/SHANKPIT/docs2/specs/TYLER_VALHANNA_MODE_NORTHSTAR.md` | `8563287f6d6afc4b...` | 15323 |
 | `docs/SHANKPIT/docs2/specs/WEAKNIGHT_VS0_ACCEPTANCE_CRITERIA.md` | `dab7177a5b153bf9...` | 7218 |
 | `docs/SLOWBOT_LEAGUE/NORTHSTAR.md` | `c1f2e76be36fefca...` | 16081 |
 | `docs/SPIDERBEETLE/NORTHSTAR.md` | `fafa1fba572ce86c...` | 4264 |
