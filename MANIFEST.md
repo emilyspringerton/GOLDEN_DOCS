@@ -1,17 +1,17 @@
 # MANIFEST
 
-Generated: full resync (all files re-hashed), 2026-09-30.
+Generated: full resync (all files re-hashed), 2026-10-02.
 
 264 files, sha256 (truncated to 16 hex chars) + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
 | `.github/workflows/construct.yml` | `43659ec4927de503...` | 2398 |
-| `CLAUDE.md` | `0764dd0c2546e50f...` | 4324 |
+| `CLAUDE.md` | `f8772fd6620dabe7...` | 5705 |
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `390690ce9efbaac0...` | 60175 |
-| `context/full-system-context.md` | `cd410dd5f217ae97...` | 46774 |
+| `context/full-system-context.md` | `e52b08c88376b66f...` | 46774 |
 | `context/golden-docs-index.md` | `a95981f0ea17d900...` | 265938 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
@@ -53,7 +53,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md` | `09aa0513558fa19f...` | 7299 |
 | `docs/EDIS/docs/DIS_DNS_NORTHSTAR.md` | `0cb3afc864d4ec53...` | 7158 |
 | `docs/EDITOR.GAME/NORTHSTAR.md` | `e153a7945cdb76f9...` | 7555 |
-| `docs/EINHORN_SURVIVAL/CLAUDE.md` | `e7d7cfd9f3e45bfa...` | 9511 |
+| `docs/EINHORN_SURVIVAL/CLAUDE.md` | `f2dcaf9090422d36...` | 10892 |
 | `docs/EMILY/GOLDEN.md` | `227398ad72b08e72...` | 3244 |
 | `docs/EMILY/HQ-SPEC-PRIME-097-fixed-points.md` | `20ab0a0b54ce2d39...` | 13066 |
 | `docs/EMILY/claire.md.txt` | `237faa82d3de8a45...` | 1628 |
@@ -61,7 +61,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `docs/EMILY/docs/COMPANY_VALUES.md` | `d74ff39c88d6e1c6...` | 6595 |
 | `docs/EMILY/docs/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `docs/EMILY/docs/EOSUI_NORTHSTAR.md` | `17e2a42cfd0c19af...` | 9126 |
-| `docs/EMILY/docs/KUBERNETES_SERVICE_MIGRATION_NORTHSTAR.md` | `19321d3259a26de0...` | 15581 |
+| `docs/EMILY/docs/KUBERNETES_SERVICE_MIGRATION_NORTHSTAR.md` | `f164fd91cc26383c...` | 21971 |
 | `docs/EMILY/docs/MONOREPO_PRODUCT_AUDIT_2026-09-12.md` | `569ec391fe8879fd...` | 21912 |
 | `docs/EMILY/docs/NORTHSTAR.md` | `8782cb997c5f11d5...` | 7930 |
 | `docs/EMILY/docs/NORTHSTAR_BABY_ERP.md` | `bce7abcf7f234114...` | 7711 |
@@ -95,7 +95,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
 | `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
 | `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `9313520e52246996...` | 7125 |
+| `docs/EMILY/emily-memory/cycle-log.md` | `04992daac7a8cf62...` | 7125 |
 | `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
 | `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
 | `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
@@ -249,7 +249,7 @@ Generated: full resync (all files re-hashed), 2026-09-30.
 | `docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md` | `af28c362c1e86f00...` | 9395 |
 | `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
 | `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
-| `docs/SHANKPIT/docs2/specs/TYLER_VALHANNA_MODE_NORTHSTAR.md` | `8563287f6d6afc4b...` | 15323 |
+| `docs/SHANKPIT/docs2/specs/TYLER_VALHANNA_MODE_NORTHSTAR.md` | `6a4ab7b8015b68fd...` | 15319 |
 | `docs/SHANKPIT/docs2/specs/WEAKNIGHT_VS0_ACCEPTANCE_CRITERIA.md` | `dab7177a5b153bf9...` | 7218 |
 | `docs/SLOWBOT_LEAGUE/NORTHSTAR.md` | `c1f2e76be36fefca...` | 16081 |
 | `docs/SPIDERBEETLE/NORTHSTAR.md` | `fafa1fba572ce86c...` | 4264 |
