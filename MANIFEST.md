@@ -10,7 +10,7 @@ Generated: full resync (all files re-hashed), 2026-10-02.
 | `CLAUDE.md` | `f8772fd6620dabe7...` | 5705 |
 | `README.md` | `5560216a48edecad...` | 1650 |
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
-| `context/MONOREPO_CLAUDE.md` | `390690ce9efbaac0...` | 60175 |
+| `context/MONOREPO_CLAUDE.md` | `c801ce5432f4ef8e...` | 61637 |
 | `context/full-system-context.md` | `e52b08c88376b66f...` | 46774 |
 | `context/golden-docs-index.md` | `a95981f0ea17d900...` | 265938 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
