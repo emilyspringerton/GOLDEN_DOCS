@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: full resync (all files re-hashed), 2026-10-04.
+Generated: full resync 2026-10-04; targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only).
 
-265 files, sha256 (truncated to 16 hex chars) + size for each.
+266 files, sha256 (truncated to 16 hex chars) + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -12,7 +12,7 @@ Generated: full resync (all files re-hashed), 2026-10-04.
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `c801ce5432f4ef8e...` | 61637 |
 | `context/full-system-context.md` | `720c192cb39b9322...` | 46774 |
-| `context/golden-docs-index.md` | `fb59a23d7ec7fd55...` | 266214 |
+| `context/golden-docs-index.md` | `1adeccf82197731e...` | 267645 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -263,6 +263,7 @@ Generated: full resync (all files re-hashed), 2026-10-04.
 | `docs/TYLER/multiverse_heroes.md` | `169869e86060b833...` | 94533 |
 | `docs/TYLER/universe_engine.md` | `b3f734c7f3df8daf...` | 20676 |
 | `docs/WEAKNIGHT_BEDROCK_RACERS/docs/NORTHSTAR.md` | `6a226b013e21d2d5...` | 21527 |
+| `docs/WOTAN/HEARTHSTONE_NORTHSTAR.md` | `7da24cd446880238...` | 12860 |
 | `docs/WOTAN/NORTHSTAR.md` | `a622d62e87c2a2ea...` | 11099 |
 | `docs/emily.cli/docs/NORTHSTAR.md` | `20f94d1febf365a8...` | 4797 |
 | `docs/gpt2-alpine-c/NORTHSTAR.md` | `f5398dcca6f61790...` | 15152 |
