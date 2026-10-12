@@ -84,8 +84,6 @@ These are standalone repos not in `go.work`:
 | `SLOWBOT_LEAGUE` | Go/C (planned) | New repo (2026-09-22), NORTHSTAR only, local repo (no upstream yet — founder creates it) — an Elo/PFSP "slow bot league" spin-off of SHANKPIT: humans play against, and train, a persistent PFSP bot pool seeded from SHANKPIT's own live active training checkpoint (gen-0 = checkpoint 578, Elo 1564, confirmed live via `GET /api/v1/shankpit-checkpoints/active`), lives-based ("last player standing" per round) rather than continuous-respawn, on its own server process separate from the live queue. Real capability audit found most of the "totally separate IDUNA tenant" ask already exists and is generic: `IDUNA/internal/games/games.go`'s `Registry` (one new row + a migration, not a new subsystem), guest-auth/Claim Account (`game_online.go`, already `game`-parameterized), and `SHANKPIT/scripts/rl_league.py`'s own game-agnostic PFSP+Elo math (ported verbatim from BRAWLPIT already). Real, genuinely new work named: a lives-based native SHANKPIT game mode (`MODE_QUEUE` today is continuous-respawn FFA, no elimination mode exists), a second server process, and a WOTAN leaderboard-section pattern that doesn't exist yet for ANY game including DEADWEIGHT (built once in Phase 3, reused twice). One real, named ambiguity in the founder's own lives-assignment spec (skill-handicap direction vs. fixed slot order) left open rather than guessed at. See `SLOWBOT_LEAGUE/NORTHSTAR.md`'s own phased plan and three open questions. |
 | `IDUNA.GAME` | Go (SDL2, forked from PITVIPER) | New repo (2026-09-22) — founder real-time, redirected mid-build twice ("we need to build an IDUNA SHANKPIT_OS app... open pages in the IDUNA brand affordances" → "not a browser a true port of iduna affordances into sdl 2" → "have it be a reskin of pitviper into solarized light with a text based prompt system" → "build in REFLUX"): a real fork of `PITVIPER` (its own real engine — PTY/SSH/MUD, vterm, GPU glyph atlas — kept exactly as-is, same "new fork, not rewrite-in-place" precedent `SAND` already set against PITVIPER), reskinned to real, canonical Solarized Light, with a text-based prompt (`cmd/idunagame/iduna_prompt.go`) that shows IDUNA's real honor code (bundled verbatim from `IDUNA/internal/honorcode/honorcode.go`) and walks the user through IDUNA's real device-auth login flow (`/auth/device/start`→poll→exchange) against a live IDUNA instance — never embedded Google OAuth directly (a real platform constraint, not a gap). Found and documented, not worked around: a real, confirmed ES256-vs-HS256 token-namespace mismatch between the web ceremony's core-IAM endpoints and the device-auth bridge's own kikoryu-scoped exchange token. New `internal/reflux/` — a native Go port of `SHANKPIT/packages/reflux/reflux_runtime.c`'s own pub/sub ring-buffer (same API/ABI), dispatching real milestones with no subscriber yet, by design. Live-verified via a real headless (Xvfb) screenshot: real honor-code text, real Solarized colors, a real live device code on screen. Wired into `SHANKPIT/apps/lobby` as a third launchable app. Real, named follow-up: PARENA editor font rendering (`stdlib/editor/render.prn`, same cgo-FFI pattern `internal/scrollmod/vterm_mod.prn` already proves) isn't wired in yet — this app still renders through PITVIPER's own existing Go font stack. See `IDUNA.GAME/NORTHSTAR.md`. |
 | `EDITOR.GAME` | C (forked from PARENA) | New repo (2026-09-22) — founder real-time: "can we add the parena editor as a stand alone game in SHANKPIT_OS? EDITOR.GAME repo same affordances it currently has for saving a file." A real, standalone fork of `PARENA/examples/editor_main.c` + the real `stdlib/editor/*.prn` modules it drives (buffer, TextMate syntax highlighting, render, widget, split, spotlight) — same real save affordances PARENA's editor already has (F2, hover-reveal Save button, auto-format-on-save for `.prn` files), not reimplemented, just packaged as its own launchable SHANKPIT OS app. `gen/editor_stdlib_gen.c` is PARENA-generated, checked in as the real source of truth (same convention `PITVIPER/internal/scrollmod/vterm_mod.c` already established) — `make regenerate` needs a sibling `../PARENA` checkout. Verified for real: reproduced PARENA's own real `make editor-demo` build first (clean), then this fork's own `-Werror`-clean standalone build, then a real headless (Xvfb) run with a real `.prn` file as `argv[1]`, screenshotted showing genuine TextMate syntax-highlighted rendering, not a blank window. Wired into `SHANKPIT/apps/lobby` as a fifth launchable app. See `EDITOR.GAME/NORTHSTAR.md`. |
-| `DEADWEIGHT_2` (being renamed to **D2**) | C (SDL2) | New repo (2026-09-25), upstream pre-created by the founder empty — founder real-time: "build DEADWEIGHT_2 (upstream repo created) — find the backpack battler plans in the founding deadweight docs." The backpack battler ("Dark Sector: Hold Battles" VS1 mechanic, `DEADWEIGHT/NORTHSTAR.md`) spun into its own repo since DEADWEIGHT itself shipped the unrelated card-mode VS0 game first (`DEADWEIGHT/docs/VS0_SCOPING.md`'s own build-order call). **Rename in progress** (founder real-time: "just call it D2, disambiguate it from DEADWEIGHT, D2 is the official studio name" — confirmed: rename the actual repo, not just branding): IDUNA's game slug/agent already renamed (`d2.play`/`d2.match.write`, `D2-SERVER` agent, `IDUNA@c5b16dc`); the GitHub repo itself is still named `DEADWEIGHT_2` (matching this row's own key) — **blocked**, the `GITHUB_TOKEN` in `EMILY/var/emily-secrets.env` shows `admin: true` in the repo's own permissions object but `PATCH .../DEADWEIGHT_2 {"name":"D2"}` is rejected ("Resource not accessible by personal access token") — needs either the founder renaming it directly or a token scoped for repo administration; local dir/remote-URL rename held until then so push/pull never breaks. Phase D1 (local-only core loop) and D2 (`dw2_server` — server-authoritative TCP 1v1, embedded FIFO matchmaking, no separate matchmaker binary; `dw2_client` — a real interactive client over the actual wire protocol, folded into D2 rather than a separate D3) both built and live-verified: 6x6 triple-bitmask grid, 7-item V0 catalog, energy routing (one-to-many via Splitter, many-to-one inert), Back-EMF closed-loop meltdown, live mid-fight Panic Cut, `tests/test_core_loop.c` (headless ASan+UBSan, 53 checks, hand-derived numbers), a real loadout beating an empty grid in a hand-derivable 21 ticks over the real wire protocol. CI (`.github/workflows/ci.yml`) generates a Principle 21 CONSTRUCT snapshot on every run, bundled into each client's own zip (SHANKPIT's own pattern) plus standalone `.zip`/`.gz`, collision-safe `build_<run>_<sha>`-tagged filenames. **Auto-release now live (SECTION 551, 2026-09-25)**: every green `main` push auto-bumps a MINOR version tag and publishes a real GitHub Release (`dw2_server`/`dw2_client`/`dw2_local` + `D2_CONSTRUCT.txt`, `_linux_x86_64`-suffixed) — live-verified, `v0.1.0` at `github.com/emilyspringerton/DEADWEIGHT_2/releases/tag/v0.1.0`, 4 real assets. Same job GPG-signs each binary and publishes to IDUNA's app-release registry (`app_slug="d2"`), matching DEADWEIGHT's own step — degrades to a clean no-op until its two GitHub Actions secrets are provisioned on this repo (verified: the CI log shows the expected skip message, not a silent failure), same current state as DEADWEIGHT. **Windows client added to releases (2026-09-25, founder real-time: "can we add windows client to deadweight 2 artifact releases" then "bundle it like deadweight 1 with sdl2 and everything")**: a new CI `windows` job cross-compiles `dw2_client.exe` via mingw and attaches `dw2_client_windows.zip` — a flat zip (exe + `SDL2.dll` + `PLAY.bat`, no folder prefix) confirmed byte-for-byte the same layout as DEADWEIGHT's own real, live `dw_gui_windows.zip` — to every release alongside the three Linux binaries; simpler than DEADWEIGHT's own Windows build since D2's `http.h` is plain-HTTP-only, no mbedTLS cross-build needed. Two real bugs found and fixed live the same day: the first CI run failed outright (missing native `libsdl2-dev`, masked by this sandbox already having it from unrelated prior work), and the first working version shipped the exe and `SDL2.dll` as two separate loose release assets instead of one zip, before being corrected to match DEADWEIGHT's own bundling exactly. Server/local stay Linux-only (scoped to the literal "client" ask). See `docs/WINDOWS_CLIENT_BUILD.md`. Real, named simplifications: a fixed hand-authored dummy opponent for local play (not a bot — D4's job), no real client art/EOSUI chrome yet, no PARENA integration yet (D5). Licensing deliberately left unresolved — explicit founder instruction not to add the Unlicense here, unlike `SKULDMARK`/`SPIDERBEETLE`'s own convention. See `NORTHSTAR.md`'s "Deferred" section for the remaining phased plan. |
-| `EDGE.GAME` | C/SDL2 + PARENA (Windows client) + native PARENA+C (relay server) + Kotlin/Compose (planned, Android production arm) | New repo (2026-09-29), local repo (no upstream yet — founder creates it) — a real arcade cabinet: an online game whose server flashes physical lights on the cabinet. Founder real-time, redirected mid-scoping: ruled out Claude Code Remote Control on the Windows machine ("no remote control we make the binary here package it as a game for the interface... i run the game and then the game gives you access... the game connects to the server you run commands through the server") — the resolved access model is a Windows binary built here, downloaded/run by the founder, that opens an outbound connection to a server; debugging happens through that server, never literal remote control. Real physical topology from a founder-pasted design (a Gemini transcript, reviewed critically rather than transcribed — its own `.prn` code did not compile as given): Windows PC + Adafruit Feather (confirmed 32u4) + Raspberry Pi + Arduino Nano wired through a logic-level shifter. `PARENA/stdlib/edge_game/traffic_router.prn` (hardware fan-out routing decision logic) is real, built, tested (`make test-traffic-router`, 4/4 strict-clean) — corrected from the pasted tutorial's own invalid syntax, plus a found-live compiler DX gap (zero-field `defenum` variant call-form, named not fixed). **Phase 1 real, built, tested**: originally `server/relay.js` (NDJSON relay) + `client/edge_client.c` — `make test-e2e`, 6/6 checks pass, no hardware needed. **Second parallel arm added 2026-09-29**: founder pasted an Android-tablet kiosk-payment tutorial, then clarified real-time it's a genuine second component, not separate: "its a separate component of EDGE.GAME we have an android tablet that is actually talks to the whole system too... the android is going to handle the main brain of the actual kiosk - the windows environment is our dev platform the android platform is our execution platform the feather will be the interface to either usb to the windows computer or usb OTG adapter to the android tablet" — plus 2 Raspberry Pis as an "edge node" layer (kubernetes framing, literal-vs-informal left open) and 1-2 more Arduino slave boards. `MJOLNIR` is the real Android-skeleton precedent (Kotlin/Compose/Hilt) but, like `SPIDERBEETLE` already found, has no Android SDK/`gradlew` in this sandbox — Android work here is written, not built/run, until the founder's machine or a real CI runner is in the loop. Payment processing (Stripe/Square/PayPal/Tap-to-Pay) is named but deliberately **not scoped into code yet** — real money, gated on its own explicit founder go-ahead and processor choice. **Relay rewritten in native PARENA+C, Node.js removed entirely (2026-09-29, Phase 1.5)**: founder caught the mistake mid-build — "write it in PARENA in what world are we using node for any part of this stack?" → "parena really needs to just emit the fucking llvm code for the server... we eat that tech debt." Real, new PARENA compiler capability added to get there: `src/emit_llvm.c` had **zero FFI mechanism at all** before this (its own LLVM target could not call anything external) — a new `#target {:llvm (inline-llvm "...")}` hatch + `llvm-extern` declarations were added (19 new tests, 71/71 pass; `make test`: 347/347, zero regressions), live-verified end to end (`parena build` → real `llc -mtriple=x86_64-pc-linux-gnu` → linked via `clang` → executed, correct result). `build/edge_relay` now links real object code compiled from `stdlib/reflux/reflux.prn` (REFLUX's real, multi-repo cross-mod pub/sub log, same API/ABI as SHANKPIT's/IDUNA.GAME's own ports) and a new `stdlib/net/tcp_llvm.prn` (raw socket lifecycle), plus a thin hand-written C host for the select()/NDJSON plumbing that target's v0 can't express. Both wire-protocol ports are now plain TCP+NDJSON (the old HTTP operator API is gone). New buffered+live-streaming events channel answers "i need you to be able to tell me if the pi booted" (`pi/boot_announce.sh`, live-verified). Also found and named, not fixed: the embeddable-editor-widget lifecycle (needed for the still-unbuilt Phase 2 IDE feedback loop) exists only in `EDITOR.GAME`'s own fork, not PARENA's — the two forks have diverged. **Fork merged (2026-09-29):** ported PARENA's current-file/board-profile-aware AVR upload fix onto `EDITOR.GAME`'s widget-refactored `editor_main.c` (delegating the actual AVR build+flash to a sibling `../PARENA` checkout since `EDITOR.GAME` carries no AVR toolchain of its own), live-verified headless via a real injected Upload-button click (`EDITOR.GAME@0f7bca5`) — closes the real Phase 2 prerequisite. **CI/auto-release pipeline written (2026-09-29, Phase 7):** `.github/workflows/ci.yml` ported from `DEADWEIGHT_2`'s proven pattern — builds+tests on Linux, cross-compiles `edge_client.c` for Windows via mingw (new `client-windows` Makefile target, `-Wall -Wextra -pedantic -Werror` clean, real verified PE32+ output), bundles a flat `edge_client_windows.zip` (exe + `PLAY.bat`, no `SDL2.dll` since the client has no SDL2 dependency yet — a real scope fork resolved via AskUserQuestion rather than guessed), auto-tags/releases on green `main`. Genuinely blocked from actually running: this repo still has no GitHub remote, and the one available `GITHUB_TOKEN` returns HTTP 403 on a real repo-creation attempt (read-only scope) — creating the upstream remains the founder's own step. Open questions (exact "regular arduino" model, what the Pi(s) run, git remote shape, literal-vs-informal kubernetes, payment processor/timing — transport was resolved this pass) named at `EDGE.GAME/NORTHSTAR.md`'s own end. |
 
 ---
 
@@ -126,6 +124,70 @@ These are standalone repos not in `go.work`:
 **Apples are the audit trail.** Every meaningful cycle outcome is a filed Apple. The git repo `APPLES/` is the durable backup, committed automatically by `emily sync --apples-git-dir`.
 
 **The RSI loop is the product.** Emily Prime (EMILY) plans and triages. Claude Code implements. Observation-watcher dispatches. The loop is: observe → direct task → implement → Apple → repeat.
+
+---
+
+## Kubernetes Operations (standing, monorepo-wide — supersedes local-systemd/localhost assumptions)
+
+**Everything in this stack runs in Kubernetes now, not as local systemd services on `localhost`.**
+Confirmed live, 2026-10-08: GKE cluster `gke_project-d24a71e9-2daf-4b2d-917_us-central1_prrject-fatbaby`,
+every service deployed into the **`emily` namespace**, images pushed to
+`us-central1-docker.pkg.dev/project-d24a71e9-2daf-4b2d-917/emily/<image>:<tag>` (Artifact
+Registry — `K8S-CD-01` auto-bumps tags from the newest push, see `EMILY/gitops`). The
+architecture diagram above and any doc describing a repo's port as a local `:NNNN` bind are
+still correct for **how each process listens inside its own pod** — they are wrong about how to
+*reach* it from outside the cluster. There is no ingress for most of these; reach a ClusterIP
+service with `kubectl port-forward -n emily svc/<name> <local-port>:<pod-port>` and point the
+usual env var (`IDUNA_BASE_URL`, etc.) at `localhost:<local-port>`.
+
+**Live service map** (`kubectl get svc -n emily` / `kubectl get deploy -n emily`, names match
+`CLAUDE.md`'s own repo table except where noted):
+
+| k8s Service | Repo | Ports | Notes |
+|---|---|---|---|
+| `iduna` | IDUNA | 8080, 8443, 80 | Central trust authority — see below, every other agent needs this one reachable first |
+| `fatbaby-core` | PRRJECT_FATBABY | 8082, 9091 | |
+| `fatbaby-signals` | PRRJECT_FATBABY | 9091 | |
+| `shankpit` (`shankpit-udp` LB) | SHANKPIT | 6968, 6969/UDP | |
+| `gfd-core` (`gfd-core-udp` LB) | GoblinFoxDragon | 2323, 2222, 7171, 7070, 7071, 6970/UDP | |
+| `gfd-wsrelay` | GoblinFoxDragon | 8081 | WS↔UDP relay |
+| `deadweight` | DEADWEIGHT / DEADWEIGHT_2 | 8765, 7180, 8081 | image `deadweight:v1` + `dwlogs:v2` sidecar |
+| `einhorn-survival` (`einhorn-survival-udp` LB) | EINHORN_SURVIVAL | 25565, 19133/UDP | |
+| `redgarden-rnd` / `redgarden-stable` (`*-udp` LBs) | REDGARDEN | 7778+/UDP, 8778+/UDP (large UDP port ranges) | two tracks, not one |
+| `wotan` | WOTAN | 80 | |
+| `mixforge` | MIXFORGE | 80 | `mixforge-room` + `mixforge-web` images |
+| `carepyre` | CarePyre | 80 | `carepyre-pro` + `carepyre-web` images |
+| `collections-server` | EMILY (collections feature) | 8087 | |
+| `tcp-edge` (LB, 2 replicas) | shared TCP edge/multiplexer, ops-level, not one repo | 2323, 2222, 7171, 7070, 8443, 7180, 25565 | |
+
+**Secrets have moved too.** `IDUNA/var/agent-secrets.env` (and any repo's own local copy of it)
+is a **local bootstrap artifact and goes stale** — the live source of truth is the running pod's
+own `/app/var/agent-secrets.env` (confirmed 2026-10-08: the checked-in local file under-reported
+`IDUNA_SECRET_EMILY_PRIME` vs. the live cluster value) plus the `iduna-env` K8s Secret
+(`kubectl get secret iduna-env -n emily`, server config: JWT secret, HEC token, port, etc. — not
+per-agent M2M secrets). To get a current agent secret: `kubectl exec -n emily deploy/iduna -- cat
+/app/var/agent-secrets.env` (or the equivalent `grep` for one agent), not the local file.
+
+**Practical pattern for any CLI/script/agent that needs to reach IDUNA (or another
+in-cluster service) from outside the cluster:**
+```bash
+kubectl port-forward -n emily svc/iduna 18080:8080 &
+export IDUNA_BASE_URL=http://localhost:18080
+export IDUNA_AGENT_NAME=<AGENT-NAME>
+export IDUNA_AGENT_SECRET=$(kubectl exec -n emily deploy/iduna -- sh -c 'grep IDUNA_SECRET_<AGENT_NAME> /app/var/agent-secrets.env' | cut -d= -f2)
+```
+This replaces the old assumption throughout this monorepo's docs that `emily start --iduna`
+(`systemctl --user start iduna.service`) + `IDUNA_BASE_URL=http://localhost:8080` is how you get
+an agent talking to IDUNA. That path is for local-only dev sandboxes that never touch the cluster;
+production and this sandbox's own live state are both in GKE now.
+
+**Known doc debt (real, not yet closed):** most per-repo `CLAUDE.md`/`README.md` files in this
+monorepo (and `emily.cli/docs/COMMANDS.md`, `EMILY/docs/REBOOT_RUNBOOK.md`, and others) still
+describe the pre-Kubernetes systemd/localhost operating model as if it were current. This section
+is the authoritative correction; per-repo docs get updated opportunistically (see `EMILY/BACKLOG.md`
+SECTION 601) rather than all at once, same reasoning as the GOLDEN_DOCS manual-sync precedent above
+— don't block on a full sweep, do correct a doc the moment you're working in that repo and notice
+it's stale.
 
 ---
 
@@ -180,14 +242,6 @@ from every commit message despite Apples/CHANGELOG already carrying it).
 **7. Multi-repo changes** — Commit each repo independently in dependency order. Reference sibling commits in messages. Update `EMILY/BACKLOG.md` last.
 
 **8. Always commit and push — standing instruction, do not wait to be asked.** When a unit of work is complete (tests pass, feature works, docs updated), commit and push immediately. This is the default behavior in every repo in this monorepo, not an exception that needs re-requesting each session. Only hold off if the user explicitly says to pause on committing for that specific piece of work.
-
-**9. Kanban in the loop — standing instruction, all repos** (founder real-time, 2026-10-02). After the founder-observation step (1a), work is driven from the kanban (IDUNA `/api/v1/kanban/cards`, board at `/admin/kanban`), not picked ad hoc:
-- **Always work from the kanban.** Only work cards in the **priority** queue.
-- **New founder request → intake into BACKLOG.md, then move a card into priority before working.** Order is: observe → backlog intake → card into priority → work. Never start work on a request that has no priority card.
-- **Large or planning-heavy task → plan it, don't just start.** Write the plan, create the cards it needs, put them in priority, then work through all of them **in the same turn/sprint**. Same when the founder places a large card in priority: when processing the priority queue, plan the cards it requires, put them in priority, and complete them in that sprint.
-- **Pending lane (new).** As each card is finished, move it to the **pending** queue — not straight to done. At sprint end, check everything in pending into **done** in one pass (`PATCH {"queue":"done"}` — archives the BACKLOG.md line and files the completion Apple, so rule 2 still holds).
-- **Large sprint → check in incrementally:** check cards into done as they enter pending rather than waiting for the end.
-- Rules 1–8 are unchanged: founder direction still always lands in BACKLOG.md, Apple before done, commit and push as you go.
 
 ---
 
@@ -355,9 +409,17 @@ When adding CONSTRUCT generation to a repo:
 
 ```
 ANTHROPIC_API_KEY        — required for emily-agent, obs-watcher, emily backlog promote
-IDUNA_BASE_URL           — default: http://localhost:8080
-IDUNA_AGENT_NAME         — e.g. EMILY_PRIME, mjolnir-emily
-IDUNA_AGENT_SECRET       — M2M credential (auto-loaded from IDUNA/var/agent-secrets.env)
+IDUNA_BASE_URL           — in-cluster: http://iduna.emily.svc.cluster.local:8080
+                           from outside the cluster: http://localhost:<port> after
+                           `kubectl port-forward -n emily svc/iduna <port>:8080`
+                           (old default http://localhost:8080 only applies to a
+                           local-only sandbox with no cluster — see "Kubernetes
+                           Operations" above)
+IDUNA_AGENT_NAME         — e.g. EMILY-PRIME, mjolnir-emily
+IDUNA_AGENT_SECRET       — M2M credential. Get the CURRENT value from the live pod:
+                           `kubectl exec -n emily deploy/iduna -- cat /app/var/agent-secrets.env`
+                           — the local `IDUNA/var/agent-secrets.env` goes stale against the
+                           cluster's own copy, do not trust it blindly
 APPLES_GIT_DIR           — /home/fatbaby/APPLES (triggers auto-sync after each Apple POST)
 FCM_PROJECT_ID           — Firebase project for MJOLNIR push notifications
 ```
@@ -424,22 +486,3 @@ structural/systemic pattern it's one instance of — one level of abstraction up
 lens during planning/triage/judgment calls. Use it to spot the general case behind a specific
 ask. It augments judgment, it does not replace doing the work: direct, concrete execution of
 the literal task asked for still happens every time.
-
-## Core Deps Are PARENA-First (standing, monorepo-wide)
-
-Founder real-time, 2026-10-01: *"always implement core deps in PARENA — when core deps are missing
-always implement the core deps in PARENA first."*
-
-- **When a core dependency is missing** (a codec, a protocol client, an inference engine, a
-  parser, a data structure — anything this repo's own functionality stands on), implement it in
-  PARENA (`PARENA/stdlib/...`) **first**, before building the feature that needs it. Deps first,
-  feature second.
-- **If PARENA itself can't express the dep yet**, that gap is the real first task: fix or extend
-  PARENA (compiler, emitter, or stdlib), with tests, then build the dep on top. Don't route around it.
-- **Third-party tools/binaries are stopgaps, not the answer.** Shelling out to or FFI-binding an
-  existing tool is allowed only to unblock a demo, and must be labeled as a stopgap in the code and
-  in `EMILY/BACKLOG.md` with a PARENA replacement item. (Example: Piper via subprocess for
-  MODE_TYLER TTS, 2026-10-01 — stopgap; the PARENA-native synthesis stack is the real work.)
-- **Not a license to reimplement the OS.** Core deps = what the product's own behavior depends on.
-  Compilers, kernels, system libraries and the like stay as-is; a repo's own CLAUDE.md may record a
-  considered, specific exception (same standard as the LZ4 compression convention).
