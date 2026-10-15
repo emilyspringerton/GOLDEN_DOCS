@@ -1,6 +1,6 @@
 # MANIFEST
 
-Generated: full resync 2026-10-04; targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
+Generated: full resync 2026-10-04; targeted update 2026-10-15 (PELLEGRINO-NORTH: protocol ladder rung 4, HTTP/3 built; no full resync -- source repos not checked out here); targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
 
 268 files, sha256 (truncated to 16 hex chars) + size for each.
 
@@ -205,7 +205,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-15 (V16-JS-ENGINE-NOR
 | `docs/PARENA/docs/SPI_NORTHSTAR.md` | `101f2a1c99ac4e8f...` | 6844 |
 | `docs/PARENA/docs/UART_SERIAL_NORTHSTAR.md` | `79e55313f4fd4baa...` | 6280 |
 | `docs/PARENA/docs/V16_NORTHSTAR.md` | `5277859c598de2e5...` | 17342 |
-| `docs/PELLEGRINO/NORTHSTAR.md` | `89aa6d5db5ab3405...` | 8669 |
+| `docs/PELLEGRINO/NORTHSTAR.md` | `536c4b0e897594f6...` | 8938 |
 | `docs/PITVIPER/docs/NORTHSTAR.md` | `eef5f561f6d07d79...` | 14412 |
 | `docs/PRRJECT_FATBABY/docs/COMPETITOR_WEST_NORTHSTAR.md` | `2710c5fef3146548...` | 4302 |
 | `docs/PRRJECT_FATBABY/docs/CONTENT_TYPE_TAXONOMY.md` | `07f361f76154d32f...` | 7950 |
