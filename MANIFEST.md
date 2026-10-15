@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: full resync 2026-10-04; targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
+Generated: full resync 2026-10-04; targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
 
-267 files, sha256 (truncated to 16 hex chars) + size for each.
+268 files, sha256 (truncated to 16 hex chars) + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -12,7 +12,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-09 (HEARTHSTONE-NORTH
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `d6b87cd7a160cec9...` | 53812 |
 | `context/full-system-context.md` | `720c192cb39b9322...` | 46774 |
-| `context/golden-docs-index.md` | `a4d0263cbfcdc411...` | 269594 |
+| `context/golden-docs-index.md` | `32ba6326d02019e3...` | 271057 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -204,7 +204,8 @@ Generated: full resync 2026-10-04; targeted update 2026-10-09 (HEARTHSTONE-NORTH
 | `docs/PARENA/docs/SIP_TWILIO_GATEWAY_NORTHSTAR.md` | `8be3920b50b66037...` | 11156 |
 | `docs/PARENA/docs/SPI_NORTHSTAR.md` | `101f2a1c99ac4e8f...` | 6844 |
 | `docs/PARENA/docs/UART_SERIAL_NORTHSTAR.md` | `79e55313f4fd4baa...` | 6280 |
-| `docs/PARENA/docs/V16_NORTHSTAR.md` | `b465beba6ee8c17c...` | 12362 |
+| `docs/PARENA/docs/V16_NORTHSTAR.md` | `5277859c598de2e5...` | 17342 |
+| `docs/PELLEGRINO/NORTHSTAR.md` | `89aa6d5db5ab3405...` | 8669 |
 | `docs/PITVIPER/docs/NORTHSTAR.md` | `eef5f561f6d07d79...` | 14412 |
 | `docs/PRRJECT_FATBABY/docs/COMPETITOR_WEST_NORTHSTAR.md` | `2710c5fef3146548...` | 4302 |
 | `docs/PRRJECT_FATBABY/docs/CONTENT_TYPE_TAXONOMY.md` | `07f361f76154d32f...` | 7950 |
