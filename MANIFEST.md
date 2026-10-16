@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: full resync 2026-10-04; targeted update 2026-10-15 (PELLEGRINO-NORTH: protocol ladder rung 4, HTTP/3 built; no full resync -- source repos not checked out here); targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
+Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NORTH added -- BRAWLPIT web shipped, hat worn by default -- plus golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-15 (PELLEGRINO-NORTH: protocol ladder rung 4, HTTP/3 built; no full resync -- source repos not checked out here); targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
 
-268 files, sha256 (truncated to 16 hex chars) + size for each.
+270 files, sha256 (truncated to 16 hex chars) + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -12,7 +12,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-15 (PELLEGRINO-NORTH:
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `d6b87cd7a160cec9...` | 53812 |
 | `context/full-system-context.md` | `720c192cb39b9322...` | 46774 |
-| `context/golden-docs-index.md` | `32ba6326d02019e3...` | 271057 |
+| `context/golden-docs-index.md` | `385c18f20e53e793...` | 274011 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -22,6 +22,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-15 (PELLEGRINO-NORTH:
 | `docs/BRAWLPIT/docs/BP_LEVEL_EDITOR_NORTHSTAR.md` | `70fde9db0ff7a07f...` | 9569 |
 | `docs/BRAWLPIT/docs/BP_LOBBY_MATCHMAKING_NORTHSTAR.md` | `72f512153bd509f0...` | 7965 |
 | `docs/BRAWLPIT/docs/BP_SOCIAL_LOBBY_NORTHSTAR.md` | `82a1f3fec2371d43...` | 9179 |
+| `docs/BRAWLPIT/docs/BP_WASM_WOTAN_NORTHSTAR.md` | `5f549d493c879cfe...` | 5865 |
 | `docs/BRAWLPIT/docs/RL_TRAINING_NORTHSTAR.md` | `4e222407ba8e50b5...` | 26328 |
 | `docs/BRAWLPIT/docs/TIPJAR_ROADMAP.md` | `2d2809624d44efba...` | 3333 |
 | `docs/BRAWLPIT/docs/WOTAN_HAT_STORE_NORTHSTAR.md` | `8bde98849293f81e...` | 19882 |
