@@ -1,0 +1,169 @@
+# FORGEDINFACE — the character builder
+
+**Status (2026-11-03): v0 rig core, morph targets, and the GLB/VRM container walk are real, built,
+and tested.** `stdlib/forgedinface/rig.prn`
+compiles with `parena build`, and `make test-forgedinface` builds it under
+`gcc -std=c99 -Wall -Wextra -pedantic -Werror` and runs 41 hand-derived assertions in eight checks (skeleton, skinning, proportions, GLB container,
+morphs, GLB binary chunk, humanoid remap, JSON chunk -> text), all passing.
+Nothing renders yet — there is no mesh importer past the GLB header, no host, and no editor.
+
+Founder framing that started this: free VTuber avatars have no web-based builder like VRoid
+Studio; build one in PARENA; start with a full bone rig while staying low poly so an agent can
+handle the geometry; support standard VRoid files; full face and body customization; in-game
+clothing creation later ("the sewa dress simulator"); parlay it into the online game's avatar
+pipeline.
+
+## What v0 actually is
+
+| Piece | Real in v0 | Not yet |
+|---|---|---|
+| Skeleton | canonical 20-bone flat map, parent index < child index | fingers, toes, twist bones |
+| Pose | bind translation + unit quaternion + per-bone scale | animation clips, IK |
+| FK | one flat forward pass, world matrices as 16 F64 per bone | rotation from angles (quats only, see below) |
+| Skinning | linear blend, 2 influences, weights sum to 1 | 4-influence, dual quaternions |
+| Customization | masc/fem bias + shoulder/hip/limb scalars over ONE topology | per-bone twist/roll helpers |
+| Morph targets | weighted per-vertex deltas (blend shapes), folded into the skinning pass | expression presets, `morph/ready?` enforced at call sites |
+| Import | GLB/VRM container walk, binary chunk offset, JSON chunk as text | JSON node/skin/mesh decode, accessor reads |
+| Bone remap | glTF/VRM humanoid names -> the 20-bone map (`rig/humanoid-index`) | automatic use during load |
+| Output | cooked vertex positions in arena memory | any renderer, any export format |
+
+Run it: `cd PARENA && make test-forgedinface`.
+
+### Why quaternions and not Euler angles
+
+The real `math` package has `cos`, `sqrt`, `log` — **no `sin`** (`stdlib/math/math.prn`). A
+quaternion→matrix conversion needs no trig at all, so bone rotation is expressed as a unit
+quaternion `(x y z w)` supplied by the caller. That is also what dual-quaternion skinning would
+need later, so the representation does not have to change to get there.
+
+### The 20-bone map (locked, index = hierarchy contract)
+
+```
+0 Root   1 Pelvis   2 Spine   3 Chest   4 Neck   5 Head   6 Jaw   7 L_Eye   8 R_Eye
+9 L_Clavicle  10 L_UpperArm  11 L_Forearm  12 R_Clavicle  13 R_UpperArm  14 R_Forearm
+15 L_Thigh  16 L_Calf  17 R_Thigh  18 R_Calf  19 Weapon_Slot
+```
+
+Every parent has a strictly lower index than its children. That single invariant is what makes
+`rig/solve` one flat loop instead of a recursive pointer tree, and it is why an agent can rewrite
+the whole vertex buffer every frame without any traversal state.
+
+## Corrections to the design transcript this came from
+
+The thread that led here proposed code that does not compile in the real language. Recorded so
+nobody re-derives it:
+
+- `(defstruct CharacterConfig (hair_style i32) ...)` — fields need `:`, and the scalar types are
+  `I32`/`F64`/`Bool`/`String`. There is no `F32` on the C target and no `(Array F32 3)` field type;
+  fixed-size numeric arrays are `(Vec F64)` field buffers or `alloc` into an `Arena`.
+- `js/call "Math.sqrt"`, `set-data`, `@ core`, `dotimes` — not the real surface. Host calls are
+  `#target {:c (inline-c "...")}` (or the TS/Lua equivalents), struct fields are `get-field`, and
+  the loop forms are `loop`/`recur` and `when`.
+- `(match a ((Lit s) ...))` on an `I32`-payload `defenum` — a real, already-documented emitter gap
+  (`stdlib/base4/pattern.prn`); v0 avoids it by using plain `I32` fields.
+- "Zero-copy 8MB Wasm boundary with WebGL" — not reachable today: there is no `defn main` → C
+  `int main` convention, no wasm32 host wiring for this, and no renderer. v0 outputs cooked
+  positions in arena memory, which is what any host (C, TS, wasm) would read.
+
+## Real compiler constraints this module had to work around
+
+Found live while building it, all in the same family the stdlib already documents:
+
+1. `Unit` only resolves as a return type when the body is a `#target` form. Non-`#target` helpers
+   return `I32` instead.
+2. A `#target` call returning void cannot be bound in a `let` (`void _0 = ...`). The push helpers
+   are comma-expressions returning `1`.
+3. A `loop` cannot be a `let` binding (emits an uninitialized temp → `-Werror=uninitialized`); it
+   has to be a `let` *body* statement, the shape `linalg.prn`'s own `matmul` uses.
+4. A single `let` with ~60 bindings loses its later bindings ("unknown identifier"). `self-test` is
+   split into four small checks for exactly that reason.
+5. `and` wants binary nesting for long chains (`stdlib/base4/pattern.prn` already does this).
+6. `short` is a C keyword — a let binding named `short` emits `Vec short = ...` and fails.
+7. Name resolution is single-pass: a function or struct must be defined before its first *reference*
+   in file order (a forward reference reports the callee as an "unknown identifier" at the caller).
+8. `and`/`or` need at least two operands — a one-operand `(and x)` is a hard emit error, so a chain
+   should be rebuilt when entries are removed rather than left with a dangling single operand.
+9. Importing `string` means the module is a two-file build: `parena build stdlib/string.prn
+   stdlib/forgedinface/rig.prn` (the same multi-file shape `make test-json` already uses).
+
+## Phases after v0
+
+1. **Morph targets — DONE (2026-11-03).** `MorphSet` + `morph/new`/`add-delta!`/`add-weight!`/`ready?`,
+   applied inside `skin/deform-morphed` in the same loop that skins, so a slider move costs one
+   pass and no intermediate buffer. Face customization is now real at the data layer.
+2. **GLB body decode — partially done (2026-11-03).** `glb/bin-chunk-offset` / `glb/bin-chunk-length`
+   locate the geometry bytes, and `rig/humanoid-index` maps the standard VRM humanoid vocabulary onto
+   the 20-bone map (hands/fingers/toes return -1 on purpose — a low-poly rig has nowhere honest to
+   put them; `upperChest` folds into `chest`). Still missing: the JSON chunk parsed into
+   accessors/nodes/skins, and the vertex/index reads themselves. Then the old line: **GLB body decode** — accessors/bufferViews/nodes/skins, so a VRoid export actually loads;
+   then the VRoid→20-bone remap, with decimation for VRoid's high-poly hair.
+3. **Host** — one renderer (C/SDL2 first, matching SHANKPIT's lineage) drawing cooked vertices.
+4. **Clothing** — flat 2D panel pattern + seam relaxation + capsule push-out, per the transcript's
+   own sewing design, all before any networking.
+5. **Net sync** — quantized slider state + panel/seam recipe; the sewing sim is deterministic, so
+   peers re-simulate rather than transfer vertices.
+6. **Export** — a `.gfd`-shaped binary, reusing `stdlib/gfd` rather than inventing a container.
+
+FORGEDINFACE is intended to become its own repo; until that upstream exists, this directory is the
+real source of truth for its core.
+
+---
+
+## 2026-11-03 — Phase 2 progress + a renderer that can be verified
+
+**GLB JSON is decoded.** The chunk stops being opaque bytes: `glb/count-at` reports how many
+nodes / skins / meshes / accessors a document declares, parsed by the real `stdlib/json.prn`
+(so a `"nodes"` inside a mesh name is not counted). `json/array-len-at` exists for exactly this
+and returns -1 (absent / not an array) or -2 (not JSON) rather than an Option, because an Option
+payload is a `void *` and cannot be handed onward without a real gap being closed first.
+
+**The renderer is software, deliberately.** A pinhole projection plus edge-function
+rasterisation with a z-buffer, writing an arena pixel buffer (`Frame`). No display exists on this
+box, so an SDL2 window could not be opened or verified; this can be, pixel by pixel. Phase 3's
+presenter is a thin layer over `Frame`, not a second renderer.
+
+Still the honest gap: **the JSON counts are counts.** Accessors, bufferViews, nodes and skins are
+not read yet, so a real VRoid export still cannot load. That is the next slice, and it is the one
+that turns `count-at` into an actual scene.
+
+Two constraints added to the list this pass: a `let`/`loop` cannot sit in an `if` branch, and two
+modules in one build collide on shared helper names — which is why the renderer lives in
+`rig.prn` rather than beside it.
+
+---
+
+## Blocker found 2026-11-03: accessor decode needs one emitter gap closed first
+
+Attempted the next slice — reading real vertex data (accessor -> bufferView -> floats) — and
+stopped rather than shipping it half-built. The JSON reads needed are below, and one of them is
+not expressible today:
+
+* **Works:** `parse` + `get` + `match` on an `Option` **by value** (`array-len-at` proves it), and
+  `match` on a **parameter** of a `defenum` type (`array-len`, `get`).
+* **Does not:** `match` on `Option<&T>` — the shape `vec/get` returns for an element of a
+  `(Vec JsonValue)`. The emitter reports `scrutinee's own type resolved to 'JsonValue *'`, because
+  the `Option`'s payload type leaks through as the scrutinee type in C.
+* **Also not:** `match` on a `deref`'d payload (`(deref x)` where `x` came out of a variant binds a
+  pointer). Routing through a parameter works, which is why `number-of`/`array-len` had to exist.
+
+So `accessors[i].componentType` — i.e. "element *i* of the array at this key, then a field of it" —
+cannot be written yet without either an emitter fix for `Option<&enum>` matching or a json-side
+API that returns primitives per path (which is the same code, blocked at the same line).
+
+No half-built path was left in `json.prn`/`rig.prn`: the attempted code was reverted and both
+suites re-run green. The next attempt should start by fixing the emitter (a small, contained change
+to the `match` scrutinee type resolution), because every richer JSON consumer will hit this same
+shape — it is not glTF-specific.
+
+## Population bodies (2026-11-03) — `citizen.prn`
+
+`stdlib/forgedinface/citizen.prn` is this directory's second module and the first consumer of the
+proportion rig that is not a mesh: a citizen's body and wardrobe as a total integer function of the
+persona SHANKPIT's `citizen_life.h` already rolled (five traits, one of five paths, its own seed).
+It exists because the population had personalities and one shared mannequin.
+
+Kept deliberately separate from `rig.prn` and integer-only: SHANKPIT consumes it as generated C
+(`make regen-citizen-avatar`) inside the simulation layer, which cannot carry an arena or a mesh. The
+next real slice is the one this makes possible rather than replaces — emit an actual low-poly body
+through `stdlib/forgedlevel/mesh.prn`'s face-culled paths, sized by these permilles, once the
+renderer that would draw it can be compiled outside the founder's machine.

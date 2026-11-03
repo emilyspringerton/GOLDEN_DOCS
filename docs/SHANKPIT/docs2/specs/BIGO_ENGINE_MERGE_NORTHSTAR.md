@@ -624,6 +624,44 @@ own verification window. The underlying pipeline's correctness is not in questio
 isolation by `world_alert_bridge_test.c`, unchanged) — what's unverified is specifically the new
 `draw_string`/`glRectf` call rendering the way intended, a real, named gap, not glossed over.
 
+## 2p. Unification pass (2026-10-16, founder real-time: "we really need to unify shankpit and BIG_O ... the missing affordances added to shankpit zombies - the phone all the subsystems all of it")
+
+Audited every `BIG_O/day/packages/common/bigo_*.h` and `BIG_O/core/*` module against SHANKPIT; what was
+missing and is now ported, each with its BIG_O tests (`make test-bigo-merge`, all pass):
+
+- **Phone apps merged** into `packages/common/phone.h` (additive; SHANKPIT's own ORB app, food cargo, local
+  clone lab and shadow-war Elo are kept): `BP_APP_GFD` (free-text terminal, `phone_term_*`,
+  `BP_FX_CHAT_SEND`), `BP_APP_IDUNA` (device-auth stage state, `BP_FX_IDUNA_START/POLL`), `BP_APP_ARPANET`
+  (17-node archive), `BP_APP_TECHTREE` (`phone_set_tech`), and `BP_FX_COSTUME_SET` on WARDROBE select.
+  `apps/lobby` draws all four, routes SDL text input to the GFD terminal (Backspace edits, `P` types
+  instead of closing), and echoes a sent line into the chat pane. **Honest gaps:** IDUNA SELECT shows
+  "use IDUNA.GAME app" (the lobby has no in-process device-auth HTTP job); GFD "say" is local echo +
+  chat pane, not the networked say channel; BIG_O's server-authoritative lab fields were *not* merged
+  (SHANKPIT's local clone lab/shadow war stays; reconciling the two lab models is its own decision).
+- **Party** (`party.h`, `party_rules.c` from `PARENA/stdlib/shankpit/party_rules.prn`), **say-chat**
+  (`chat_say.h`, `chat_rules.c`), **hoverboard** (`hoverboard.h`, `hoverboard_rules.c`).
+- **Mission** (`mission.{h,c}`): Act I Mission 1 tracker over `WitnessSim`; replays BIG_O scenarios 20/21/22.
+  Needed `witness_sim_snoop` + `DA_CAUGHT_SNOOPING`, and `witness_rules.prn` re-synced from BIG_O (it had
+  drifted: `snoop-conspicuousness`).
+- **Avian live glue** (`avian_live.h`): the birds "observe the observer" over citizens/The Men/zombies.
+
+**Wired into the lobby (same day, "wire it all into the gameplay")** -- ZOMBIES/LAB sandbox and MODE_STORY play:
+- **Hoverboards:** `H` cycles none/speedster/tank/glider; board momentum (`hoverboard_tick`) glides the hero on top
+  of on-foot movement and is collision-resolved by `resolve_collision`. Glider's gravity scale is *not* applied.
+- **Party XP:** every AI kill (zombie 10 / citizen 5 / The Men 25) is split by `party_xp_split` among the
+  hero + other active non-AI local players within 60 m; XP shows in STATUS and the chat pane. Local play only --
+  no networked party, and with no allies the party is just the hero.
+- **Mission:** MODE_STORY play auto-starts Act I Mission 1 against `witness_ai`'s live `WitnessSim`
+  (`witness_ai_sim()`); phone MISSION app rows perform the steps (zone travel is abstracted to a row), ticks 1
+  mission-minute per 2 s, completion/failure reported in chat, +500 XP on win.
+- **GFD terminal say:** gated by `chat_say_len_ok`; local echo + chat pane (not a networked say, no range effect).
+- **Avian live glue:** `witness_ai.c` already runs the full 3-channel coalition inline (its own comment says so), so
+  `avian_live.h` stays a tested, redundant reference -- nothing to wire.
+Verified: lobby TUs and all LOBBY_SRC compile and link without duplicate symbols against real SDL2 headers; the
+binary was **not run** (no GL/display), so none of the above has been seen live.
+Still unported: `bigo_npc_visual.h`
+(needs `papercraft_protocol.h`), `bigo_lab.h`/server-authoritative lab, `bigo_gfd_bridge.h`.
+
 ## 3. Not landed this pass — named, phased into `EMILY/BACKLOG.md` SECTION 536
 
 The founder's own follow-up messages during this pass ("the shaders the way the sun and moon look
@@ -675,9 +713,26 @@ additional scope beyond the sky/clock/REFLUX slice above. None of the below is b
   needed for one whole minute at this repo's 1:1 rate) -- this clock had likely never actually
   advanced in real gameplay at all before this fix, in any mode. See `CHANGELOG.md` 2026-09-25
   for the full account.
-- **`retro_lighting.c` weather integration.** §2b's sky visuals are real and weather-aware, but
-  `RETRO_LIGHTING_DYNAMIC`'s scene ambient/sun/moon/fog still reads the OLD `retro_sky_eval_*`
-  functions, unaware of weather. A storm currently darkens the sky dome but not the walls.
+- ~~**`retro_lighting.c` weather integration.**~~ **Closed 2026-10-08** (EMILY/BACKLOG.md SECTION
+  536 follow-up, "continue full game"). New `sky_weather_light_state(const SkyWeather *, 
+  RetroLightingState *)` (`packages/render/sky_weather.{h,c}`) adjusts the already-evaluated
+  `RetroLightingState` in place using `SkyWeather`'s own already-smoothed `cover`/`storm`
+  (dims ambient/sun/moon, never to full black) and `fog_wash`/`visibility`/`fog[3]` (blends world
+  fog toward the sky's own real weather-matched colour and tightens draw distance) — the exact
+  same numbers that already made the dome/clouds/precip weather-aware, reused rather than
+  re-derived. Called once, unconditionally, right after `retro_tune_world_fog` in
+  `apps/lobby/src/main.c` (lighting isn't story-only, matching `SHANKPIT/CLAUDE.md`'s own "levels
+  are never story-mode-only" instinct applied to lighting too). Plain host C, not PARENA — matches
+  this exact file's own `retro_lighting_eval_surface_rgb` (the SUN_SKY_FILL/MOON_SKY_FILL term)
+  and `sky_weather.c`'s own update/draw math: continuous atmosphere blending, not a discrete
+  decision. **Real, honest, not build-verified**: `sky_weather.h`/`.c` need `<SDL2/SDL_opengl.h>`
+  to even parse (the `SkyWeather` struct itself holds `GLuint` fields), and this sandbox has no
+  SDL2 dev headers at all — the same pre-existing, blanket limitation every GL-touching change in
+  this family already carries, not something this pass introduced or could route around. Verified
+  instead by a careful, field-by-field hand cross-check against both structs' real, current
+  definitions (every field name/type this function reads or writes confirmed to exist exactly as
+  used) — the same bar `lab_sim.c`'s own float-heavy, RNG-using functions already accepted before
+  any GL/display harness existed for them either.
 - **BIG_O's own `core/reflux_runtime.c` divergence.** Confirmed real and different from SHANKPIT's
   (`diff` non-empty) — BIG_O's own REFLUX never gets PARENA-powered by this pass; only SHANKPIT's
   does. Out of scope here since BIG_O isn't the target repo for this merge.
