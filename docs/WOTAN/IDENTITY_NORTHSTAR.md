@@ -39,7 +39,7 @@ a generic name; those are accepted as `unverified_tag` and routed `private` only
 | `battlenet` | Competitive identity, upload-key issuance, rank match | yes (primary) | yes (multiple) | `sub` |
 | `google` | Accessibility / social | yes (exists) | yes | `sub` (verified email only) |
 | `iduna_local` | Email/password | yes (exists) | n/a | player row |
-| `twitch` | Streamer layer: display name, live flag, later chat bot | yes (IQ-2, 2026-10-12; zero scopes) | yes (one per player) | Twitch `sub`/user id |
+| `twitch` | Streamer layer: display name, live flag, later chat bot | **no** (settings only, per chat) | yes (one per player) | Twitch `sub`/user id |
 
 Rules (non-negotiable):
 - **Link only from an authenticated session**; OAuth `state` is bound to that session's `player_id` + a nonce
@@ -157,13 +157,7 @@ best-of and per-region lines.
 
 ## 10. Open questions (provisional)
 - **IQ-1** Grace window for existing club creators/uploaders: 30 days (provisional).
-- **IQ-2** ~~Should Twitch be allowed as a *login* door later? Provisional: no, per chat; revisit with streamer demand.~~
-  **Resolved 2026-10-12** (founder real-time, confirmed via IDUNA task): yes — Twitch is now a real
-  login door (`loginDoorProviders` in `IDUNA/internal/http/handlers/identity.go`), same shape as
-  Battle.net/Google (mints a session JWT via `finishLogin`). Still zero OAuth scopes either way —
-  I8 (never the stream key, never email) is unaffected by the door being open. `IDUNA/main.go`'s
-  `SSOLoginHandler` now also has a `TwitchEnabled` button, gated the same way as Google/Battle.net
-  on `TWITCH_CLIENT_ID`/`TWITCH_CLIENT_SECRET`. See `EMILY/BACKLOG.md` SECTION 610 `IDENT-06`.
+- **IQ-2** Should Twitch be allowed as a *login* door later? Provisional: no, per chat; revisit with streamer demand.
 - **IQ-3** Self-serve player merge vs operator-assisted only? Provisional: operator-assisted in v1.
 - **IQ-4** Show BattleTag publicly ever? Provisional: opt-in only.
 - **IQ-5** Region for Battle.net OAuth endpoint: single global (`oauth.battle.net`) provisional; CN excluded.
@@ -177,82 +171,3 @@ uplink; MySQL. Code is tested through injectable exchange/userinfo seams exactly
 - **Contract as built:** link results return as URL **fragment** `#linked=<provider>` / `#link_error=<code>` (front end accepts query or fragment); link-start accepts `?access_token=` (302) or Bearer (JSON `authorize_url`); errors `{error, code}`; gate failures `403 battlenet_required`.
 - **Deviations from this doc:** grandfathered unlinked uploaders in grace keep pre-identity ingest; grace in `player_identity_grace`; extra `identity_audit_log` and `hs_games.unverified_tag`; shared auth also refuses `hs-live-upload` / `iduna-oauth-state` tokens; merge also refuses exclusive-club conflicts.
 - **Not built:** IDENT-03 rank-verification job. **Not verified:** real OAuth round trips, Twitch empty `scope=`, MySQL, PowerShell, browser.
-
-## 13. Next steps (actionable, 2026-10-12)
-
-Code for Battle.net OAuth (login + link) is done and merged (§12). Everything below is what's
-actually left — tracked as `EMILY/BACKLOG.md` SECTION 610 `IDENT-03`/`IDENT-04`/`IDENT-05`; this
-section is the single concrete runbook for them so nobody has to reconstruct it from the backlog
-prose.
-
-### IDENT-04 — register the real Battle.net (and Twitch) OAuth apps — human-only, blocks everything else real
-
-1. Go to **develop.battle.net**, create an OAuth client ("Game Connections" / API client — not
-   the "Game Data APIs" flow, which is a different product). This needs a real human with a
-   Battle.net account and, for anything beyond a dev-tier client, business/contact details —
-   Claude Code cannot do this step.
-2. Redirect URI to register: **`https://iam.okemily.com/api/v1/auth/sso/battlenet/callback`**
-   — not `https://okemily.com/...`. `BNET_REDIRECT_URI` defaults to `BASE_URL +
-   /api/v1/auth/sso/battlenet/callback` (`IDUNA/main.go:1403`) and the live `BASE_URL` is
-   `https://okemily.com`, which is the *wrong* host for the hosted SSO page
-   (`iam.okemily.com`) — this is the exact same gotcha `SSO-GOOGLE-02` already hit for Google,
-   confirmed in that same env. Don't rely on the default: set `BNET_REDIRECT_URI` explicitly to
-   the `iam.okemily.com` URL below rather than trying to change `BASE_URL` globally.
-3. Scope requested is `openid` only — nothing to configure on Blizzard's side beyond enabling
-   the OIDC/OAuth client; do not request `wow.profile`/`sc2.profile` (I1).
-4. Same pattern for Twitch, if/when wanted: dev.twitch.tv console, redirect
-   `https://iam.okemily.com/api/v1/auth/sso/twitch/callback`, **no scopes** (identity-only; I8).
-5. Set in the live cluster's `iduna-env` Secret (not the local `IDUNA/var/agent-secrets.env`,
-   which drifts — see root `CLAUDE.md`'s "Kubernetes Operations"):
-   ```
-   kubectl -n emily patch secret iduna-env --type merge -p '{"stringData":{
-     "BNET_CLIENT_ID":"<from develop.battle.net>",
-     "BNET_CLIENT_SECRET":"<from develop.battle.net>",
-     "BNET_REDIRECT_URI":"https://iam.okemily.com/api/v1/auth/sso/battlenet/callback"
-   }}'
-   kubectl -n emily rollout restart deploy/iduna
-   ```
-   (Add `TWITCH_CLIENT_ID`/`TWITCH_CLIENT_SECRET`/`TWITCH_REDIRECT_URI` the same way if Twitch is
-   wanted now too — it's independent of Battle.net and can land later.)
-6. Verify the provider actually turned on: `GET https://iam.okemily.com/api/v1/auth/sso/login`
-   should now render a Battle.net button; `GET .../battlenet/start?redirect_uri=https://wotan.okemily.com/account/`
-   should 302 to `oauth.battle.net/authorize` instead of 404 `provider_not_configured`.
-7. Do one real sign-in end to end from a browser (new player creation via Battle.net login) and
-   one real **link** from an already-signed-in session (`&mode=link`) — neither path has ever
-   run against the real Blizzard IDP; everything to date is tested through the injectable
-   exchange/userinfo seam (`sso_google.go`'s pattern), never the live network call.
-8. Confirm this doesn't regress with `CLUBS-07` (deploy IDUNA with migration `202610120001` +
-   `202610130001` together, verify on MySQL if prod uses it, deploy WOTAN via `wotan-deploy.sh`).
-
-### IDENT-03 — rank-verification job (unblocks CLUBS-08, §6 of this doc)
-
-Not built yet. Needs, as a new IDUNA cron (not request-path):
-1. A fetcher for Blizzard's **public** Hearthstone leaderboard API (per region × format/season —
-   no OAuth needed, it's a public endpoint) — confirm the current real shape first, since this
-   doc's §6 was written without having pulled a live response.
-2. Match each leaderboard row's `accountid` against the **name part** of every player's linked
-   BattleTag(s) (`player_identities` where `provider='battlenet'`); exact match → upsert
-   `hs_player_rank{verified=1, source='leaderboard', region, rank, season}`; ambiguous (more than
-   one player's tag name-part matches) → leave unverified, queue for Back Office review rather
-   than guessing.
-3. Wire the result into the existing "Leaderboard-matched" badge wording (I3) — the UI copy for
-   this already exists per the doc, this job is the only missing piece.
-4. Smurf bundling is free once this lands: each linked BattleTag matches independently, so a
-   player's profile can show a best-of line per region without extra logic.
-
-### IDENT-05 — confirm the provisional open questions with the founder (§10)
-
-Still provisional, not re-confirmed since first written:
-- IQ-1: 30-day grace window for existing club creators/uploaders — keep, or change the number?
-- IQ-2: **resolved 2026-10-12**, see §10 — Twitch is now a login door, built in IDUNA.
-- IQ-3: self-serve player merge vs. operator-assisted-only in v1 — still operator-assisted-only?
-- IQ-4: ever show BattleTag publicly — still opt-in only?
-- IQ-5: single global `oauth.battle.net` endpoint (CN excluded) — still fine?
-
-### Order of operations
-
-IDENT-04 (steps 1-2 only — registering the app and getting real client creds) is the hard
-blocker: nothing else in this section can be *verified* without it, though IDENT-03 and IDENT-05
-can be worked in parallel since they don't depend on a live OAuth round trip. Once IDENT-04 is
-fully done (through step 8), close out `CLUBS-07`/`CLUBS-08` together rather than separately —
-they share the same deploy+verify pass.

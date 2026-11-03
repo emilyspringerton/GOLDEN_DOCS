@@ -1,8 +1,8 @@
 # MANIFEST
 
-Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NORTH added -- BRAWLPIT web shipped, hat worn by default -- plus golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-15 (PELLEGRINO-NORTH: protocol ladder rung 4, HTTP/3 built; no full resync -- source repos not checked out here); targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
+targeted update 2026-11-03 (HF-SPACE-DEPLOY added -- IDUNA's Hugging Face Space deploy doc -- plus golden-docs-index and MONOREPO_CLAUDE; the 111 docs an over-eager full resync deleted in 99f9e9e are restored here, from that commit's parent; still no full resync, several source repos are not checked out on this machine); full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NORTH added -- BRAWLPIT web shipped, hat worn by default -- plus golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-15 (PELLEGRINO-NORTH: protocol ladder rung 4, HTTP/3 built; no full resync -- source repos not checked out here); targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
 
-270 files, sha256 (truncated to 16 hex chars) + size for each.
+278 files, sha256 (truncated to 16 hex chars) + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -59,6 +59,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NOR
 | `docs/EMILY/HQ-SPEC-PRIME-097-fixed-points.md` | `20ab0a0b54ce2d39...` | 13066 |
 | `docs/EMILY/claire.md.txt` | `237faa82d3de8a45...` | 1628 |
 | `docs/EMILY/docs/ARCHETYPE_ENGINE_NORTHSTAR.md` | `4533b8543b4e6035...` | 20808 |
+| `docs/EMILY/docs/BRAWLPIT_MOD_API_NORTHSTAR.md` | `b30adfe0c93acc36...` | 14917 |
 | `docs/EMILY/docs/COMPANY_VALUES.md` | `d74ff39c88d6e1c6...` | 6595 |
 | `docs/EMILY/docs/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `docs/EMILY/docs/EOSUI_NORTHSTAR.md` | `17e2a42cfd0c19af...` | 9126 |
@@ -140,6 +141,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NOR
 | `docs/IDUNA/docs/APP_RELEASE_SIGNING.md` | `c62aa6cd862bd777...` | 6099 |
 | `docs/IDUNA/docs/EMILY_FOR_BUSINESS_NORTHSTAR.md` | `6697dd30981847da...` | 37772 |
 | `docs/IDUNA/docs/EMILY_INFRASTRUCTURE_PLAY_NORTHSTAR.md` | `2c86018706a2c0e3...` | 12450 |
+| `docs/IDUNA/docs/HF_SPACE_DEPLOY.md` | `58b96029da558292...` | 10919 |
 | `docs/IDUNA/docs/IDUNA_NOTEBOOK_NORTHSTAR.md` | `8172006e2be962dd...` | 6346 |
 | `docs/IDUNA/docs/MULTI_KANBAN_NORTHSTAR.md` | `b6d8088dab88f88c...` | 6166 |
 | `docs/IDUNA/docs/NOCK_CHARACTER_PIPELINE_NORTHSTAR.md` | `05e257a08dc85a26...` | 15619 |
@@ -206,6 +208,8 @@ Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NOR
 | `docs/PARENA/docs/SPI_NORTHSTAR.md` | `101f2a1c99ac4e8f...` | 6844 |
 | `docs/PARENA/docs/UART_SERIAL_NORTHSTAR.md` | `79e55313f4fd4baa...` | 6280 |
 | `docs/PARENA/docs/V16_NORTHSTAR.md` | `5277859c598de2e5...` | 17342 |
+| `docs/PARENA/stdlib/forgedinface/NORTHSTAR.md` | `20ca1881150fe10b...` | 11065 |
+| `docs/PARENA/stdlib/forgedlevel/NORTHSTAR.md` | `cc6e8206a1f1551f...` | 12339 |
 | `docs/PELLEGRINO/NORTHSTAR.md` | `536c4b0e897594f6...` | 8938 |
 | `docs/PITVIPER/docs/NORTHSTAR.md` | `eef5f561f6d07d79...` | 14412 |
 | `docs/PRRJECT_FATBABY/docs/COMPETITOR_WEST_NORTHSTAR.md` | `2710c5fef3146548...` | 4302 |
@@ -230,6 +234,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NOR
 | `docs/REDGARDEN/docs/RANKED_MATCHMAKING.md` | `02efa7d59ea06ba0...` | 6210 |
 | `docs/SHANKPIT/docs/ANTICHEAT_NORTHSTAR.md` | `c9d6e33806513f5a...` | 10290 |
 | `docs/SHANKPIT/docs/BOT_TRAINING_NORTHSTAR.md` | `654a39f9584fd742...` | 33173 |
+| `docs/SHANKPIT/docs/DEADWEIGHT_IN_SHANKPIT_NEXT_STEPS.md` | `ebcdfdf582939ebd...` | 20490 |
 | `docs/SHANKPIT/docs/HUMANNESS_NORTHSTAR.md` | `33957d43c061122f...` | 15018 |
 | `docs/SHANKPIT/docs/SHANKPIT_OS_NORTHSTAR.md` | `902a8360238013c7...` | 10579 |
 | `docs/SHANKPIT/docs/STORY_SYSTEM_NORTHSTAR.md` | `811b9b9c574aa18e...` | 26938 |
@@ -241,6 +246,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NOR
 | `docs/SHANKPIT/docs2/PARTY_STORES.md` | `2e4d14a1ba163b14...` | 6556 |
 | `docs/SHANKPIT/docs2/RAGDOLL_ORIENTATION_NORTHSTAR.md` | `3d886adedeacab49...` | 15598 |
 | `docs/SHANKPIT/docs2/SHANKPIT_AI_ARCHITECTURE.md` | `258e9c37d5b99385...` | 11923 |
+| `docs/SHANKPIT/docs2/SHARED_ENGINE_NORTHSTAR.md` | `4b2e5e3d83459abf...` | 11288 |
 | `docs/SHANKPIT/docs2/TRAPX_NEIGHBORHOOD_PERSONALITIES.md` | `95d636549a965dc4...` | 6457 |
 | `docs/SHANKPIT/docs2/TRAPX_NORTHSTAR.md` | `5235267851c8ec34...` | 38005 |
 | `docs/SHANKPIT/docs2/specs/AI_SCRIPTED_ANIMATION_NORTHSTAR.md` | `994bb3f23265fe8e...` | 11377 |
@@ -250,6 +256,7 @@ Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NOR
 | `docs/SHANKPIT/docs2/specs/BEDWARS_SPEC.md` | `5908dfc64545c5bd...` | 6627 |
 | `docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md` | `3d917e1630425455...` | 56375 |
 | `docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md` | `af28c362c1e86f00...` | 9395 |
+| `docs/SHANKPIT/docs2/specs/PELLEGRINO_PHONE_BROWSER_STATUS.md` | `67efdc3b25e9c117...` | 10731 |
 | `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
 | `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
 | `docs/SHANKPIT/docs2/specs/TYLER_VALHANNA_MODE_NORTHSTAR.md` | `6a4ab7b8015b68fd...` | 15319 |
@@ -266,8 +273,9 @@ Generated: full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NOR
 | `docs/TYLER/universe_engine.md` | `b3f734c7f3df8daf...` | 20676 |
 | `docs/WEAKNIGHT_BEDROCK_RACERS/docs/NORTHSTAR.md` | `6a226b013e21d2d5...` | 21527 |
 | `docs/WOTAN/CLUBS_NORTHSTAR.md` | `d0bfebc7f6cf669a...` | 30487 |
-| `docs/WOTAN/IDENTITY_NORTHSTAR.md` | `4dbaafc0121cff29...` | 15983 |
 | `docs/WOTAN/HEARTHSTONE_NORTHSTAR.md` | `7da24cd446880238...` | 12860 |
+| `docs/WOTAN/IDENTITY_NORTHSTAR.md` | `4dbaafc0121cff29...` | 15983 |
+| `docs/WOTAN/NOCK_SOCIAL_NORTHSTAR.md` | `6dd2669c6edda699...` | 12288 |
 | `docs/WOTAN/NORTHSTAR.md` | `a622d62e87c2a2ea...` | 11099 |
 | `docs/emily.cli/docs/NORTHSTAR.md` | `20f94d1febf365a8...` | 4797 |
 | `docs/gpt2-alpine-c/NORTHSTAR.md` | `f5398dcca6f61790...` | 15152 |

@@ -74,6 +74,16 @@ cp EMILY/docs/ECOSYSTEM_CONTINUITY_REPORT.md GOLDEN_DOCS/context/
 Then regenerate `MANIFEST.md` (sha256 + size per file — see this file's own generation script in
 this repo's git history, commit `2d3a931`, for the exact one-liner), commit, and push.
 
+## Never `rmtree` the snapshot on a partial checkout
+
+One sync on 2026-11-03 deleted 111 docs (APPLES, MJOLNIR, EmilyOS, PITVIPER, GoblinFoxDragon, EMPIRE, ...)
+because the documented procedure removes `docs/` and re-copies everything from
+`EMILY/context/golden-docs-index.md` — and on a box where those source repos are not checked out, "everything"
+is whatever happens to be present. The copy step must skip missing sources, and a sync that finds missing
+sources must be a targeted update (copy the paths that exist, add the new one, leave the rest alone), which is
+what every entry in this repo's `Generated:` line has actually been. Restored in the next commit; the rule is
+now: verify `find docs -type f | wc -l` before and after, and never let it shrink.
+
 ## The standing instruction
 
 The monorepo's own root `CLAUDE.md` carries a standing instruction (added 2026-09-21) telling
