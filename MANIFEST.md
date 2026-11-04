@@ -2,7 +2,7 @@
 
 targeted update 2026-11-03 (HF-SPACE-DEPLOY added -- IDUNA's Hugging Face Space deploy doc -- plus golden-docs-index and MONOREPO_CLAUDE; the 111 docs an over-eager full resync deleted in 99f9e9e are restored here, from that commit's parent; still no full resync, several source repos are not checked out on this machine); full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NORTH added -- BRAWLPIT web shipped, hat worn by default -- plus golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-15 (PELLEGRINO-NORTH: protocol ladder rung 4, HTTP/3 built; no full resync -- source repos not checked out here); targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
 
-targeted update 2026-11-04 (GFD-FRONTEND-VS0 + TRAPX-URBAN-FARMING + ONGOING-2026-11-04 added, plus golden-docs-index; no full resync -- several source repos are not checked out on this machine); 278 281 281 files, sha256 (truncated to 16 hex chars) + size for each.
+targeted update 2026-11-04 (GFD-FRONTEND-VS0 + TRAPX-URBAN-FARMING + ONGOING-2026-11-04 added, plus golden-docs-index; no full resync -- several source repos are not checked out on this machine); 278 281 281 281 files, sha256 (truncated to 16 hex chars) + size for each.
 
 | path | sha256 | bytes |
 |---|---|---|
@@ -12,7 +12,7 @@ targeted update 2026-11-04 (GFD-FRONTEND-VS0 + TRAPX-URBAN-FARMING + ONGOING-202
 | `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
 | `context/MONOREPO_CLAUDE.md` | `d6b87cd7a160cec9...` | 53812 |
 | `context/full-system-context.md` | `720c192cb39b9322...` | 46774 |
-| `context/golden-docs-index.md` | `e36ff083a2d17fab...` | 284828 |
+| `context/golden-docs-index.md` | `a5c965f73b78b995...` | 285106 |
 | `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
 | `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
 | `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
@@ -236,11 +236,11 @@ targeted update 2026-11-04 (GFD-FRONTEND-VS0 + TRAPX-URBAN-FARMING + ONGOING-202
 | `docs/SHANKPIT/docs/BOT_TRAINING_NORTHSTAR.md` | `654a39f9584fd742...` | 33173 |
 | `docs/SHANKPIT/docs/DEADWEIGHT_IN_SHANKPIT_NEXT_STEPS.md` | `ebcdfdf582939ebd...` | 20490 |
 | `docs/SHANKPIT/docs/HUMANNESS_NORTHSTAR.md` | `33957d43c061122f...` | 15018 |
-| `docs/SHANKPIT/docs/ONGOING_DEVELOPMENT_REPORT_2026-11-04.md` | `3006a5bc72081635...` | 16907 |
+| `docs/SHANKPIT/docs/ONGOING_DEVELOPMENT_REPORT_2026-11-04.md` | `8fe325a5ea57a541...` | 17381 |
 | `docs/SHANKPIT/docs/SHANKPIT_OS_NORTHSTAR.md` | `902a8360238013c7...` | 10579 |
 | `docs/SHANKPIT/docs/STORY_SYSTEM_NORTHSTAR.md` | `811b9b9c574aa18e...` | 26938 |
 | `docs/SHANKPIT/docs2/CLIENT_PREDICTION_SPEC.md` | `08c756b9c5c53114...` | 5975 |
-| `docs/SHANKPIT/docs2/GFD_FRONTEND_VS0_NORTHSTAR.md` | `03cbb84cd58b292a...` | 8747 |
+| `docs/SHANKPIT/docs2/GFD_FRONTEND_VS0_NORTHSTAR.md` | `c2e44c232a95caaf...` | 10060 |
 | `docs/SHANKPIT/docs2/MESH_EDITING_NORTHSTAR.md` | `6089dfcd51d85569...` | 5692 |
 | `docs/SHANKPIT/docs2/NETCODE_CONTRACT_SPEC.md` | `20b16d1eef900edb...` | 7157 |
 | `docs/SHANKPIT/docs2/NORTHSTAR.md` | `887fd9715fa60546...` | 22791 |
