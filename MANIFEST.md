@@ -1,289 +1,215 @@
-# MANIFEST
-
-targeted update 2026-11-03 (HF-SPACE-DEPLOY added -- IDUNA's Hugging Face Space deploy doc -- plus golden-docs-index and MONOREPO_CLAUDE; the 111 docs an over-eager full resync deleted in 99f9e9e are restored here, from that commit's parent; still no full resync, several source repos are not checked out on this machine); full resync 2026-10-04; targeted update 2026-10-16 (BP-WASM-WOTAN-NORTH added -- BRAWLPIT web shipped, hat worn by default -- plus golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-15 (PELLEGRINO-NORTH: protocol ladder rung 4, HTTP/3 built; no full resync -- source repos not checked out here); targeted update 2026-10-15 (V16-JS-ENGINE-NORTH + PELLEGRINO-NORTH + golden-docs-index; no full resync -- source repos not checked out here); targeted update 2026-10-09 (HEARTHSTONE-NORTH + golden-docs-index only); targeted update 2026-10-12 (WOTAN-IDENTITY-NORTH + WOTAN-CLUBS-NORTH + golden-docs-index + MONOREPO_CLAUDE; a full resync was NOT run -- most golden-doc source repos are not checked out on this machine).
-
-targeted update 2026-11-04 (GFD-FRONTEND-VS0 + TRAPX-URBAN-FARMING + ONGOING-2026-11-04 added, plus golden-docs-index; no full resync -- several source repos are not checked out on this machine); 278 281 281 281 files, sha256 (truncated to 16 hex chars) + size for each.
-
-| path | sha256 | bytes |
-|---|---|---|
-| `.github/workflows/construct.yml` | `43659ec4927de503...` | 2398 |
-| `CLAUDE.md` | `ddd793ed6339e370...` | 6469 |
-| `README.md` | `5560216a48edecad...` | 1650 |
-| `context/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
-| `context/MONOREPO_CLAUDE.md` | `d6b87cd7a160cec9...` | 53812 |
-| `context/full-system-context.md` | `720c192cb39b9322...` | 46774 |
-| `context/golden-docs-index.md` | `a5c965f73b78b995...` | 285106 |
-| `context/golden-docs-sprawl-memo-2026-06-12.md` | `a3d547231109d6b5...` | 12588 |
-| `context/golden-repos.json` | `47b413ae0b0daba1...` | 1627 |
-| `context/mjolnir-context.md` | `26d4de6378382731...` | 1204 |
-| `docs/APPLES/docs/NORTHSTAR.md` | `6cf03336e9667801...` | 4219 |
-| `docs/APPLES/docs/SCHEMA.md` | `3d3639d27befebfb...` | 2521 |
-| `docs/BIG_O/NORTHSTAR.md` | `f6a7e20a8223274c...` | 210758 |
-| `docs/BRAWLPIT/docs/BP_LEVEL_EDITOR_NORTHSTAR.md` | `70fde9db0ff7a07f...` | 9569 |
-| `docs/BRAWLPIT/docs/BP_LOBBY_MATCHMAKING_NORTHSTAR.md` | `72f512153bd509f0...` | 7965 |
-| `docs/BRAWLPIT/docs/BP_SOCIAL_LOBBY_NORTHSTAR.md` | `82a1f3fec2371d43...` | 9179 |
-| `docs/BRAWLPIT/docs/BP_WASM_WOTAN_NORTHSTAR.md` | `5f549d493c879cfe...` | 5865 |
-| `docs/BRAWLPIT/docs/RL_TRAINING_NORTHSTAR.md` | `4e222407ba8e50b5...` | 26328 |
-| `docs/BRAWLPIT/docs/TIPJAR_ROADMAP.md` | `2d2809624d44efba...` | 3333 |
-| `docs/BRAWLPIT/docs/WOTAN_HAT_STORE_NORTHSTAR.md` | `8bde98849293f81e...` | 19882 |
-| `docs/BRAWLPIT/docs/net_plan.md` | `f00b7c568c4cc0af...` | 851 |
-| `docs/BURROW/NORTHSTAR.md` | `4e36d84e17d7b8f7...` | 34571 |
-| `docs/CarePyre/docs/BROWSER_PHONE_NORTHSTAR.md` | `9ce52dfe4f72455f...` | 4488 |
-| `docs/CarePyre/docs/CAREPYRE_CONSOLE_NORTHSTAR.md` | `077ce764958b14a3...` | 10181 |
-| `docs/CarePyre/docs/COMMUNITY_TOOLS_RESUME_NORTHSTAR.md` | `e09dab019f7e0ead...` | 39302 |
-| `docs/CarePyre/docs/GOOGLE_VOICE_FEATURES_NORTHSTAR.md` | `58ccae37b9a0b1fc...` | 5209 |
-| `docs/CarePyre/docs/HIPAA_COMPLIANCE_NORTHSTAR.md` | `c3a3a6f8ec18c7fc...` | 13710 |
-| `docs/CarePyre/docs/SIP_QR_ONBOARDING_NORTHSTAR.md` | `cafef9fa52d11251...` | 16058 |
-| `docs/DEADWEIGHT/NORTHSTAR.md` | `d5be33e8dfaa0964...` | 22311 |
-| `docs/DEADWEIGHT/docs/BRAND_STYLE_GUIDE.md` | `a38d1fb831fa63c8...` | 17081 |
-| `docs/DEADWEIGHT/docs/NATIVE_WASM_CLIENT_NORTHSTAR.md` | `78ca21c1ea98cc77...` | 30983 |
-| `docs/DEADWEIGHT/docs/VS0_SCOPING.md` | `1510a5a9aa97d240...` | 10558 |
-| `docs/DEADWEIGHT/docs/WASM_DEPLOY_NORTHSTAR.md` | `274ce97fd62e329f...` | 11601 |
-| `docs/DEADWEIGHT_2/NORTHSTAR.md` | `f306a7c35d7726aa...` | 20469 |
-| `docs/DEADWEIGHT_2/docs/COMBAT_REDESIGN.md` | `9a0b2f2c3d44f932...` | 16472 |
-| `docs/DEADWEIGHT_2/docs/LO_CANNON_PROGRAMMING.md` | `16b57f9f4ba8d49e...` | 15701 |
-| `docs/DUNG/NORTHSTAR.md` | `cba57dc3b9e59a59...` | 29395 |
-| `docs/ECOWAR/docs/ARENA_API.md` | `87e271cd126e4ab9...` | 8446 |
-| `docs/ECOWAR/docs/NORTHSTAR_LIVING_MAP.md` | `1c1a72555f0c17b6...` | 41751 |
-| `docs/ECOWAR/docs/NORTHSTAR_MAP_EDITOR.md` | `4a168f7c906c2865...` | 10753 |
-| `docs/ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md` | `2220398e48c0942d...` | 6542 |
-| `docs/ECOWAR/docs/NORTHSTAR_REFLUX.md` | `97879ecac0c9f002...` | 12256 |
-| `docs/ECOWAR/docs/NORTHSTAR_SPHERE_CAMERA.md` | `8ba43497249ec914...` | 11862 |
-| `docs/EDGE.GAME/NORTHSTAR.md` | `91b3219ebd5454e8...` | 45301 |
-| `docs/EDIS/NORTHSTAR.md` | `adeba9fa008dd126...` | 3230 |
-| `docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md` | `09aa0513558fa19f...` | 7299 |
-| `docs/EDIS/docs/DIS_DNS_NORTHSTAR.md` | `0cb3afc864d4ec53...` | 7158 |
-| `docs/EDITOR.GAME/NORTHSTAR.md` | `e153a7945cdb76f9...` | 7555 |
-| `docs/EINHORN_SURVIVAL/CLAUDE.md` | `f2dcaf9090422d36...` | 10892 |
-| `docs/EMILY/GOLDEN.md` | `227398ad72b08e72...` | 3244 |
-| `docs/EMILY/HQ-SPEC-PRIME-097-fixed-points.md` | `20ab0a0b54ce2d39...` | 13066 |
-| `docs/EMILY/claire.md.txt` | `237faa82d3de8a45...` | 1628 |
-| `docs/EMILY/docs/ARCHETYPE_ENGINE_NORTHSTAR.md` | `4533b8543b4e6035...` | 20808 |
-| `docs/EMILY/docs/BRAWLPIT_MOD_API_NORTHSTAR.md` | `b30adfe0c93acc36...` | 14917 |
-| `docs/EMILY/docs/COMPANY_VALUES.md` | `d74ff39c88d6e1c6...` | 6595 |
-| `docs/EMILY/docs/ECOSYSTEM_CONTINUITY_REPORT.md` | `9a14a0292f1f9678...` | 10782 |
-| `docs/EMILY/docs/EOSUI_NORTHSTAR.md` | `17e2a42cfd0c19af...` | 9126 |
-| `docs/EMILY/docs/KUBERNETES_SERVICE_MIGRATION_NORTHSTAR.md` | `f164fd91cc26383c...` | 21971 |
-| `docs/EMILY/docs/MONOREPO_PRODUCT_AUDIT_2026-09-12.md` | `569ec391fe8879fd...` | 21912 |
-| `docs/EMILY/docs/NORTHSTAR.md` | `8782cb997c5f11d5...` | 7930 |
-| `docs/EMILY/docs/NORTHSTAR_BABY_ERP.md` | `bce7abcf7f234114...` | 7711 |
-| `docs/EMILY/docs/NORTHSTAR_INDEX.md` | `2275abbecdd364cf...` | 5666 |
-| `docs/EMILY/docs/NORTHSTAR_MOLTBOOK_INTEGRATION.md` | `931992fe990620a2...` | 9629 |
-| `docs/EMILY/docs/NORTHSTAR_OPENCLAW_INTEGRATION.md` | `3798cc48af3123de...` | 5764 |
-| `docs/EMILY/docs/NORTHSTAR_PROMPT_O_VERSE.md` | `d7c6d24b0bee0812...` | 35201 |
-| `docs/EMILY/docs/NORTHSTAR_STINKIES.md` | `85c0abb80ed804e6...` | 7480 |
-| `docs/EMILY/docs/NORTHSTAR_SUPPLY_CHAIN.md` | `dfa5fa26c10e7754...` | 6297 |
-| `docs/EMILY/docs/PARENACLOUD_NORTHSTAR.md` | `55939a29a4770bf7...` | 17210 |
-| `docs/EMILY/docs/PARENACLOUD_OPS_NORTHSTAR.md` | `a96cc32bdd5f5c97...` | 14418 |
-| `docs/EMILY/docs/PARENGINE_NORTHSTAR.md` | `48c1cca0a2173d7c...` | 16485 |
-| `docs/EMILY/docs/SAGA_SYSTEM_AUDIT_2026-07-18.md` | `1bf0ff088432fc7b...` | 24703 |
-| `docs/EMILY/docs/THE_EMILY_WAY.md` | `61c03dbcbd5fbb65...` | 30416 |
-| `docs/EMILY/docs/THE_FIELD.md` | `96607ddac3396d1f...` | 9436 |
-| `docs/EMILY/docs/TRAINING_PIPELINE.md` | `8aa4ab5eee2fe08e...` | 5377 |
-| `docs/EMILY/docs/api.yaml` | `52d168938c00c27d...` | 43056 |
-| `docs/EMILY/docs/emily-agent-framework.md` | `1acb18bcb611ea1f...` | 16358 |
-| `docs/EMILY/docs/emily-agent-protocol.md` | `e2459781bdbedd82...` | 7793 |
-| `docs/EMILY/docs/emily-complete-system-integration.md` | `eb6db24c4bc65eb1...` | 18691 |
-| `docs/EMILY/docs/emily-cron-autonomous-evolution.md` | `ec86237560a76acd...` | 47033 |
-| `docs/EMILY/docs/emily-prime-agent-tools-spec.md` | `0518c3af18155e3f...` | 5121 |
-| `docs/EMILY/docs/emily-rsi-engine-spec.md` | `42927318cfac00ce...` | 11749 |
-| `docs/EMILY/docs/emiree-over-agent-spec.md` | `8c8ccc3806545452...` | 6238 |
-| `docs/EMILY/docs/hq-specs/HQ-SPEC-AI-103-fable-model-line.md` | `b6c1f2be6bca16e7...` | 11073 |
-| `docs/EMILY/docs/hq-specs/HQ-SPEC-DOC-102-saga-curation-lifecycle.md` | `bc167d55599c5932...` | 12115 |
-| `docs/EMILY/docs/hq-specs/HQ-SPEC-FIN-098-accounting-northstar.md` | `a91c778010a20e23...` | 8989 |
-| `docs/EMILY/docs/hq-specs/HQ-SPEC-FIN-099-einhorn-ledger-platform.md` | `76815e711379257e...` | 17458 |
-| `docs/EMILY/docs/hq-specs/HQ-SPEC-INFRA-105-fates-dns.md` | `47d756213d06e37b...` | 16915 |
-| `docs/EMILY/docs/hq-specs/HQ-SPEC-PRIME-101-norn-loop-kernel.md` | `4d833c2a5f44089c...` | 12322 |
-| `docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md` | `b7b104e76384553c...` | 14449 |
-| `docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md` | `84a7364185fbcd08...` | 5255 |
-| `docs/EMILY/docs/iam-integration-spec.md` | `f9162a1076b6200a...` | 7190 |
-| `docs/EMILY/emily-memory/cycle-log.md` | `b1baa4b3384563f2...` | 7125 |
-| `docs/EMILY/emily-memory/world-state.md` | `309f204cc396c0cb...` | 13536 |
-| `docs/EMILY/emily-prime-spec.md` | `e793613baefd4d5d...` | 14570 |
-| `docs/EMILY/emiree-emily-fatbaby.md` | `99fff42dbe22e3e4...` | 5744 |
-| `docs/EMILY_FOR_BUSINESS/docs/UNIVERSAL_UI_NORTHSTAR.md` | `5d7675c03c555d51...` | 16597 |
-| `docs/EmilyOS/docs/ARCHITECTURE.md` | `51df3c073ce1a9b1...` | 9129 |
-| `docs/EmilyOS/docs/EMILY_PRIME_MEMO.md` | `41d6e652ab789875...` | 7004 |
-| `docs/EmilyOS/docs/FS_ACL_COORDINATION.md` | `f4b42027aa819981...` | 6286 |
-| `docs/EmilyOS/docs/KIOSK_BOOT.md` | `deb1f62efb233161...` | 14652 |
-| `docs/EmilyOS/docs/NORTHSTAR.md` | `f2f8765512f7a0d3...` | 6664 |
-| `docs/EmilyOS/docs/NORTHSTAR_DISTRO.md` | `959f561c61f62589...` | 36854 |
-| `docs/EmilyOS/docs/POSTURE.md` | `4a8de3bab6fb6e93...` | 4142 |
-| `docs/GOLDENBAND/format/GBAND_FORMAT.md` | `35d8f842a20139c1...` | 5833 |
-| `docs/GTA7/docs/NORTHSTAR.md` | `c153562884e62b59...` | 16399 |
-| `docs/GoblinFoxDragon/docs/NORTHSTAR.md` | `96351dcd0295561c...` | 7279 |
-| `docs/GoblinFoxDragon/docs2/BATTLEGROUNDS_MIGRATION_NORTHSTAR.md` | `55215dcce2e2b402...` | 7047 |
-| `docs/GoblinFoxDragon/docs2/CHAT_BRIDGE_TO_EINHORN_SURVIVAL_SPEC.md` | `aaa5875403c70730...` | 13927 |
-| `docs/GoblinFoxDragon/docs2/DRAGONSNSHIT_TWO_BACKENDS_AUDIT.md` | `92b8008b582cf68e...` | 17265 |
-| `docs/GoblinFoxDragon/docs2/DUNGEON_HAT_DROPS_NORTHSTAR.md` | `5011bc42b141a3a9...` | 6153 |
-| `docs/GoblinFoxDragon/docs2/DUNGEON_NORTHSTAR.md` | `75f0bd459de858b6...` | 29863 |
-| `docs/GoblinFoxDragon/docs2/EDUCATION_CURRICULUM_NORTHSTAR.md` | `ccf5d92b08d7e9c8...` | 7508 |
-| `docs/GoblinFoxDragon/docs2/GOLDENBAND_INTEGRATION_NORTHSTAR.md` | `67856ce01bbf7fe4...` | 17077 |
-| `docs/GoblinFoxDragon/docs2/HEADLESS_SESSION_NORTHSTAR.md` | `a704dda6df1ac04d...` | 8763 |
-| `docs/GoblinFoxDragon/docs2/HERO_BRIDGE_PREREQUISITES.md` | `4fdd745e59d3f4f2...` | 4646 |
-| `docs/GoblinFoxDragon/docs2/HERO_CONTENT_FRAMEWORK.md` | `438fe30410c0e4b0...` | 11014 |
-| `docs/GoblinFoxDragon/docs2/INVENTORY_EQUIPMENT_NORTHSTAR.md` | `fe80280f3f951b83...` | 14511 |
-| `docs/GoblinFoxDragon/docs2/INVENTORY_PERSISTENCE_NORTHSTAR.md` | `91fe37ac17ba3f4d...` | 7337 |
-| `docs/GoblinFoxDragon/docs2/ITEM_BUILDER_NORTHSTAR.md` | `36e8000df77ae3e6...` | 16374 |
-| `docs/GoblinFoxDragon/docs2/JOB_SPELL_SYSTEM_NORTHSTAR.md` | `35ff1d1ff39548ae...` | 25309 |
-| `docs/GoblinFoxDragon/docs2/JUNGLE_CAMPS_NORTHSTAR.md` | `99ba455c322d7f7d...` | 22376 |
-| `docs/GoblinFoxDragon/docs2/MMO_NORTHSTAR.md` | `9d2fa2670f6ac420...` | 11276 |
-| `docs/GoblinFoxDragon/docs2/MOB_SPAWN_NORTHSTAR.md` | `52de399f47063322...` | 6294 |
-| `docs/GoblinFoxDragon/docs2/MOD_SURFACE_NORTHSTAR.md` | `611cb5fc67cc7c12...` | 22643 |
-| `docs/GoblinFoxDragon/docs2/PER_JOB_LEVELS_NORTHSTAR.md` | `ede1ce0af3a8345f...` | 4634 |
-| `docs/GoblinFoxDragon/docs2/REDGARDEN_GUI_NORTHSTAR.md` | `194bbcfd2e68ccaf...` | 32721 |
-| `docs/GoblinFoxDragon/docs2/RENDERING_QUALITY_NORTHSTAR.md` | `0d87cf051df3d649...` | 8856 |
-| `docs/GoblinFoxDragon/docs2/SMOOTH_TERRAIN_NORTHSTAR.md` | `f20768a3d609e4b7...` | 27419 |
-| `docs/GoblinFoxDragon/docs2/SSH_TRANSPORT_IDENTITY_NORTHSTAR.md` | `9755ed4d3e98ec6a...` | 27986 |
-| `docs/GoblinFoxDragon/docs2/STACK_CONTINUITY_REPORT.md` | `a4a290007c6495bb...` | 14819 |
-| `docs/GoblinFoxDragon/docs2/specs/REDGARDEN_MUD_BRIDGE_SPEC.md` | `9d19d178c55a6761...` | 9826 |
-| `docs/IDUNA.GAME/NORTHSTAR.md` | `bbfdc0edfad07f5c...` | 11611 |
-| `docs/IDUNA/docs/APP_RELEASE_SIGNING.md` | `c62aa6cd862bd777...` | 6099 |
-| `docs/IDUNA/docs/EMILY_FOR_BUSINESS_NORTHSTAR.md` | `6697dd30981847da...` | 37772 |
-| `docs/IDUNA/docs/EMILY_INFRASTRUCTURE_PLAY_NORTHSTAR.md` | `2c86018706a2c0e3...` | 12450 |
-| `docs/IDUNA/docs/HF_SPACE_DEPLOY.md` | `58b96029da558292...` | 10919 |
-| `docs/IDUNA/docs/IDUNA_NOTEBOOK_NORTHSTAR.md` | `8172006e2be962dd...` | 6346 |
-| `docs/IDUNA/docs/MULTI_KANBAN_NORTHSTAR.md` | `b6d8088dab88f88c...` | 6166 |
-| `docs/IDUNA/docs/NOCK_CHARACTER_PIPELINE_NORTHSTAR.md` | `05e257a08dc85a26...` | 15619 |
-| `docs/IDUNA/docs/NOCK_NORTHSTAR.md` | `16c80762f3e1384f...` | 41148 |
-| `docs/IDUNA/docs/NORTHSTAR.md` | `49ed3ba320214504...` | 4406 |
-| `docs/IDUNA/docs/NORTHSTAR_INVENTORY.md` | `d4f71d0adb9b0348...` | 9611 |
-| `docs/IDUNA/docs/NORTHSTAR_KIKORYU.md` | `f864b7aa20f23663...` | 5581 |
-| `docs/IDUNA/docs/NORTHSTAR_PASSWORD_MANAGER.md` | `323762e62b409d9f...` | 6700 |
-| `docs/IDUNA/docs/PROJECT_TAGS_NORTHSTAR.md` | `c00c22de1bb97e73...` | 4237 |
-| `docs/IDUNA/docs/VS_REALITY_AUDIT.md` | `79467225bd1abb75...` | 23855 |
-| `docs/IDUNA/docs/kikoryu/FRONT_DOOR_FUNNEL.md` | `2b8d48f654397d0f...` | 28503 |
-| `docs/IDUNA/docs/kikoryu/VS0_IDENTITY_GATE.md` | `e6ebe97eac481b1e...` | 4578 |
-| `docs/IDUNA/docs/kikoryu/VS10_SCOREBOARDS.md` | `6dd43f0f4a4fe929...` | 3140 |
-| `docs/IDUNA/docs/kikoryu/VS11_TYLER_SYNDICATION.md` | `be2d7a440ec685f4...` | 1480 |
-| `docs/IDUNA/docs/kikoryu/VS12_CRAFTING.md` | `0670ba499d54582b...` | 1585 |
-| `docs/IDUNA/docs/kikoryu/VS13_MATERIAL_LINEAGE.md` | `60670a71251597d6...` | 1661 |
-| `docs/IDUNA/docs/kikoryu/VS1_IAM_MODERATION.md` | `2833918b6f99087b...` | 4346 |
-| `docs/IDUNA/docs/kikoryu/VS2_TOURNAMENTS.md` | `38d2df8726ad2e0c...` | 5419 |
-| `docs/IDUNA/docs/kikoryu/VS3_MARKET_GAME.md` | `4a307ef6bb388c25...` | 1218 |
-| `docs/IDUNA/docs/kikoryu/VS4_ARCHIVE_INTAKE.md` | `2fb7a1906aa55dbc...` | 1386 |
-| `docs/IDUNA/docs/kikoryu/VS5_TRADE_TAPE.md` | `5a696f54e6870578...` | 1366 |
-| `docs/IDUNA/docs/kikoryu/VS6_LICENSING.md` | `76a4cf6426905d27...` | 1689 |
-| `docs/IDUNA/docs/kikoryu/VS7_AGENT_AUTHORITY.md` | `591b34cd496c0395...` | 4378 |
-| `docs/IDUNA/docs/kikoryu/VS8_AURABORIALIS.md` | `ff0b6664a93eed29...` | 1486 |
-| `docs/IDUNA/docs/kikoryu/VS9_REPUTATION.md` | `08919571d8cd8f54...` | 3858 |
-| `docs/IDUNA/golden.md` | `4b00192a4dd0c32b...` | 9325 |
-| `docs/IDUNA_PRO/docs/MULTI_TENANCY_NORTHSTAR.md` | `13de3cd805e86772...` | 17937 |
-| `docs/IDUNA_PRO/docs/SOC2_READINESS_NORTHSTAR.md` | `5cb209e1897d1ac4...` | 7242 |
-| `docs/JEWEL/docs/NORTHSTAR_SARENA_NOTEBOOK.md` | `fea884e05ad80652...` | 11756 |
-| `docs/KARAMBIT/NORTHSTAR.md` | `a04a8208712b543c...` | 7666 |
-| `docs/LO/FRAMEWORK_NORTHSTAR.md` | `22b9a70bd28549da...` | 20135 |
-| `docs/LO/GRAMMAR.md` | `7fa314ab4c6e51a8...` | 38292 |
-| `docs/LO/LO_2D_NORTHSTAR.md` | `14c07ba7f0d9c232...` | 26659 |
-| `docs/LO/LO_Formal_Grammar_Phase_0_Complete.md` | `e63ef4ee425f0460...` | 18963 |
-| `docs/LO/NORTHSTAR.md` | `7893cac92fe8eace...` | 16285 |
-| `docs/LO/QI_NORTHSTAR.md` | `e97142d2a1e27137...` | 9245 |
-| `docs/MIXFORGE/NORTHSTAR.md` | `72a0daf665d7ec15...` | 37231 |
-| `docs/MJOLNIR/docs/APPLES_INTEGRATION.md` | `8d8fdd24e1e6dd99...` | 4069 |
-| `docs/MJOLNIR/docs/NORTHSTAR.md` | `0b3017312e55f300...` | 7435 |
-| `docs/MJOLNIR/docs/PUSH_NOTIFICATIONS.md` | `b435891822ea4331...` | 5484 |
-| `docs/MJOLNIR/docs/SPEC.md` | `1c8a628788e78fc7...` | 5679 |
-| `docs/OpenExecutive/NORTHSTAR.md` | `f90d337bb0d2ad8d...` | 30494 |
-| `docs/PAPERCRAFT/MODDING.md` | `f606630ebf4f96c3...` | 26365 |
-| `docs/PAPERCRAFT/NORTHSTAR.md` | `db1bdad034ec6709...` | 106497 |
-| `docs/PAPERCRAFT/docs/NORTHSTAR_MODULAR_BUILDING.md` | `2eeeda199b066423...` | 25316 |
-| `docs/PAPERCRAFT/docs/NORTHSTAR_NORMAL_MAPS.md` | `d7b903acfee4f56a...` | 8146 |
-| `docs/PAPERCRAFT/docs/NORTHSTAR_PAPER_ENGINE.md` | `179ed043655cf4cd...` | 28541 |
-| `docs/PAPERCRAFT/docs/NORTHSTAR_WEB_CLIENT.md` | `8628f4cb3af5ad3b...` | 12826 |
-| `docs/PARENA/NORTHSTAR.md` | `16a6013c5da3402d...` | 171263 |
-| `docs/PARENA/docs/AVR_ARDUINO_NORTHSTAR.md` | `bf98acd600567d3a...` | 19096 |
-| `docs/PARENA/docs/BYTES_NORTHSTAR.md` | `44c8bf8c6af08f08...` | 9447 |
-| `docs/PARENA/docs/DCGAN_PRIMITIVES_NORTHSTAR.md` | `94e5a7addf111956...` | 13301 |
-| `docs/PARENA/docs/EXPR_POSITION_BINDING_FORMS_NORTHSTAR.md` | `00e93db5cebc8240...` | 9840 |
-| `docs/PARENA/docs/I2C_NORTHSTAR.md` | `daa2cabd45429892...` | 6897 |
-| `docs/PARENA/docs/KISMET_WIRELESS_NORTHSTAR.md` | `0cd98e34b93fe539...` | 9934 |
-| `docs/PARENA/docs/LLVM_BACKEND_NORTHSTAR.md` | `86c38ae2503aaf5c...` | 33387 |
-| `docs/PARENA/docs/NATIVE_PCAP_NORTHSTAR.md` | `fbc0686fc4872a6b...` | 11016 |
-| `docs/PARENA/docs/NORTHSTAR_LINNEN.md` | `c8a97cf94a29e2b9...` | 6827 |
-| `docs/PARENA/docs/OS_PORTABILITY_NORTHSTAR.md` | `e4763e939149e0e2...` | 8491 |
-| `docs/PARENA/docs/PARENA_COREUTILS_NORTHSTAR.md` | `6b2c9bc424f009e9...` | 27189 |
-| `docs/PARENA/docs/PBX_ASTERISK_NORTHSTAR.md` | `ecf0b3cca4296089...` | 11668 |
-| `docs/PARENA/docs/SCAN_PROFILES_NORTHSTAR.md` | `687eb3aed6cae9f5...` | 6519 |
-| `docs/PARENA/docs/SIP_TWILIO_GATEWAY_NORTHSTAR.md` | `8be3920b50b66037...` | 11156 |
-| `docs/PARENA/docs/SPI_NORTHSTAR.md` | `101f2a1c99ac4e8f...` | 6844 |
-| `docs/PARENA/docs/UART_SERIAL_NORTHSTAR.md` | `79e55313f4fd4baa...` | 6280 |
-| `docs/PARENA/docs/V16_NORTHSTAR.md` | `5277859c598de2e5...` | 17342 |
-| `docs/PARENA/stdlib/forgedinface/NORTHSTAR.md` | `20ca1881150fe10b...` | 11065 |
-| `docs/PARENA/stdlib/forgedlevel/NORTHSTAR.md` | `cc6e8206a1f1551f...` | 12339 |
-| `docs/PELLEGRINO/NORTHSTAR.md` | `536c4b0e897594f6...` | 8938 |
-| `docs/PITVIPER/docs/NORTHSTAR.md` | `eef5f561f6d07d79...` | 14412 |
-| `docs/PRRJECT_FATBABY/docs/COMPETITOR_WEST_NORTHSTAR.md` | `2710c5fef3146548...` | 4302 |
-| `docs/PRRJECT_FATBABY/docs/CONTENT_TYPE_TAXONOMY.md` | `07f361f76154d32f...` | 7950 |
-| `docs/PRRJECT_FATBABY/docs/GTM_FUNNEL.md` | `8c326ac72c566ae1...` | 5670 |
-| `docs/PRRJECT_FATBABY/docs/headlines/live-feed-northstar.md` | `14ee2e556e0e1e2d...` | 9773 |
-| `docs/PRRJECT_FATBABY/docs/northstar/FATBABY_K8S_UDS_NORTHSTAR.md` | `6704ebeac7d593bd...` | 4157 |
-| `docs/PRRJECT_FATBABY/docs/northstar/KUBERNETES_MIGRATION.md` | `19e742f007818e3e...` | 19467 |
-| `docs/PRRJECT_FATBABY/docs/northstar/auto-generated-articles.md` | `559ed4ed311c1dab...` | 7548 |
-| `docs/PRRJECT_FATBABY/docs/northstar/director-network-ticker-discovery.md` | `502770b898bbd2ea...` | 4406 |
-| `docs/PRRJECT_FATBABY/docs/northstar/executive_summary.md` | `138c761f34208bbe...` | 12506 |
-| `docs/PRRJECT_FATBABY/docs/northstar/family-relationship-linkage.md` | `941369671921e39f...` | 10645 |
-| `docs/PRRJECT_FATBABY/docs/northstar/northstar.md` | `38aca1d81557f874...` | 24959 |
-| `docs/PRRJECT_FATBABY/docs/northstar/replay-fragility.md` | `acb32a2e72aa51cf...` | 26262 |
-| `docs/PRRJECT_FATBABY/docs/northstar/tina-engine.md` | `9e3bd77183a23b71...` | 7850 |
-| `docs/REDGARDEN/NORTHSTAR.md` | `f40488fee9288dc9...` | 276263 |
-| `docs/REDGARDEN/docs/BOT_HUMANNESS_NORTHSTAR.md` | `55fe0a209f49fa41...` | 18467 |
-| `docs/REDGARDEN/docs/CONSUMABLES_AND_COOKING.md` | `04f912427ea0377a...` | 5438 |
-| `docs/REDGARDEN/docs/FFXI_ITEM_PARITY_SEED.md` | `92561bcbaf40e41f...` | 6489 |
-| `docs/REDGARDEN/docs/HEROES_VS0.md` | `dd8056c298b117fe...` | 60812 |
-| `docs/REDGARDEN/docs/PING_SYSTEM_NORTHSTAR.md` | `fd1b3a176ddfc93c...` | 24603 |
-| `docs/REDGARDEN/docs/RANKED_MATCHMAKING.md` | `02efa7d59ea06ba0...` | 6210 |
-| `docs/SHANKPIT/docs/ANTICHEAT_NORTHSTAR.md` | `c9d6e33806513f5a...` | 10290 |
-| `docs/SHANKPIT/docs/BOT_TRAINING_NORTHSTAR.md` | `654a39f9584fd742...` | 33173 |
-| `docs/SHANKPIT/docs/DEADWEIGHT_IN_SHANKPIT_NEXT_STEPS.md` | `ebcdfdf582939ebd...` | 20490 |
-| `docs/SHANKPIT/docs/HUMANNESS_NORTHSTAR.md` | `33957d43c061122f...` | 15018 |
-| `docs/SHANKPIT/docs/ONGOING_DEVELOPMENT_REPORT_2026-11-04.md` | `8fe325a5ea57a541...` | 17381 |
-| `docs/SHANKPIT/docs/SHANKPIT_OS_NORTHSTAR.md` | `902a8360238013c7...` | 10579 |
-| `docs/SHANKPIT/docs/STORY_SYSTEM_NORTHSTAR.md` | `811b9b9c574aa18e...` | 26938 |
-| `docs/SHANKPIT/docs2/CLIENT_PREDICTION_SPEC.md` | `08c756b9c5c53114...` | 5975 |
-| `docs/SHANKPIT/docs2/GFD_FRONTEND_VS0_NORTHSTAR.md` | `c2e44c232a95caaf...` | 10060 |
-| `docs/SHANKPIT/docs2/MESH_EDITING_NORTHSTAR.md` | `6089dfcd51d85569...` | 5692 |
-| `docs/SHANKPIT/docs2/NETCODE_CONTRACT_SPEC.md` | `20b16d1eef900edb...` | 7157 |
-| `docs/SHANKPIT/docs2/NORTHSTAR.md` | `887fd9715fa60546...` | 22791 |
-| `docs/SHANKPIT/docs2/NORTHSTAR_TYLER_TEACHES_TYPING.md` | `8b6db1d5b5335304...` | 11882 |
-| `docs/SHANKPIT/docs2/PARTY_STORES.md` | `2e4d14a1ba163b14...` | 6556 |
-| `docs/SHANKPIT/docs2/RAGDOLL_ORIENTATION_NORTHSTAR.md` | `3d886adedeacab49...` | 15598 |
-| `docs/SHANKPIT/docs2/SHANKPIT_AI_ARCHITECTURE.md` | `258e9c37d5b99385...` | 11923 |
-| `docs/SHANKPIT/docs2/SHARED_ENGINE_NORTHSTAR.md` | `4b2e5e3d83459abf...` | 11288 |
-| `docs/SHANKPIT/docs2/TRAPX_NEIGHBORHOOD_PERSONALITIES.md` | `95d636549a965dc4...` | 6457 |
-| `docs/SHANKPIT/docs2/TRAPX_NORTHSTAR.md` | `5235267851c8ec34...` | 38005 |
-| `docs/SHANKPIT/docs2/specs/AI_SCRIPTED_ANIMATION_NORTHSTAR.md` | `994bb3f23265fe8e...` | 11377 |
-| `docs/SHANKPIT/docs2/specs/AI_SOLO_ENEMY_NORTHSTAR.md` | `0c1ad3e43fe9bcd5...` | 6458 |
-| `docs/SHANKPIT/docs2/specs/AI_WAYPOINT_NAV_NORTHSTAR.md` | `f1b0a46bf78eaa86...` | 6681 |
-| `docs/SHANKPIT/docs2/specs/BEDROCK_RACERS_SPEC.md` | `3145362c461ada9d...` | 10748 |
-| `docs/SHANKPIT/docs2/specs/BEDWARS_SPEC.md` | `5908dfc64545c5bd...` | 6627 |
-| `docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md` | `3d917e1630425455...` | 56375 |
-| `docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md` | `af28c362c1e86f00...` | 9395 |
-| `docs/SHANKPIT/docs2/specs/PELLEGRINO_PHONE_BROWSER_STATUS.md` | `67efdc3b25e9c117...` | 10731 |
-| `docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md` | `ec534711ba643d34...` | 7599 |
-| `docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md` | `e8a922a1bf9cff32...` | 6908 |
-| `docs/SHANKPIT/docs2/specs/TYLER_VALHANNA_MODE_NORTHSTAR.md` | `6a4ab7b8015b68fd...` | 15319 |
-| `docs/SHANKPIT/docs2/specs/WEAKNIGHT_VS0_ACCEPTANCE_CRITERIA.md` | `dab7177a5b153bf9...` | 7218 |
-| `docs/SLOWBOT_LEAGUE/NORTHSTAR.md` | `c1f2e76be36fefca...` | 16081 |
-| `docs/SPIDERBEETLE/NORTHSTAR.md` | `fafa1fba572ce86c...` | 4264 |
-| `docs/TIPJAR-wiki/Product-Core-Acceptance.md` | `cac741f900f2461f...` | 9961 |
-| `docs/TRAPX/docs/URBAN_FARMING_NORTHSTAR.md` | `65aed9a1c32c2703...` | 6538 |
-| `docs/TYLER/HQ-CANON-TYLER-105-EPOCH-EXTINCTION.md` | `f96885888663882a...` | 10284 |
-| `docs/TYLER/HQ-SPEC-LORE-104-QUEEN-SALLY-DOCTRINE.md` | `3a938fd7efcae201...` | 12563 |
-| `docs/TYLER/README.md` | `3b369a99f86d4c99...` | 121531 |
-| `docs/TYLER/engine/broadway_spec.md` | `31a3a669a800e1cc...` | 24609 |
-| `docs/TYLER/just_a_duck.md` | `95c53a5e7378f248...` | 992 |
-| `docs/TYLER/multiverse_heroes.md` | `169869e86060b833...` | 94533 |
-| `docs/TYLER/universe_engine.md` | `b3f734c7f3df8daf...` | 20676 |
-| `docs/WEAKNIGHT_BEDROCK_RACERS/docs/NORTHSTAR.md` | `6a226b013e21d2d5...` | 21527 |
-| `docs/WOTAN/CLUBS_NORTHSTAR.md` | `d0bfebc7f6cf669a...` | 30487 |
-| `docs/WOTAN/HEARTHSTONE_NORTHSTAR.md` | `7da24cd446880238...` | 12860 |
-| `docs/WOTAN/IDENTITY_NORTHSTAR.md` | `4dbaafc0121cff29...` | 15983 |
-| `docs/WOTAN/NOCK_SOCIAL_NORTHSTAR.md` | `6dd2669c6edda699...` | 12288 |
-| `docs/WOTAN/NORTHSTAR.md` | `a622d62e87c2a2ea...` | 11099 |
-| `docs/emily.cli/docs/NORTHSTAR.md` | `20f94d1febf365a8...` | 4797 |
-| `docs/gpt2-alpine-c/NORTHSTAR.md` | `f5398dcca6f61790...` | 15152 |
-| `docs/gpt2-alpine-c/docs/GAME_AI_NORTHSTAR.md` | `c2701ad6692a199c...` | 11211 |
-| `docs/gpt2-alpine-c/docs/TOWERPRINT.md` | `0a085de28f89b324...` | 9295 |
-| `docs/ladybug/README.md` | `a6ddaa17ca3fdc4a...` | 4482 |
-| `docs/shankpit-460/docs2/NORTHSTAR.md` | `18d29b55a15981cf...` | 14098 |
-| `scripts/generate_construct.sh` | `48f6eda5d91e5e56...` | 3130 |
+GOLDEN_DOCS MANIFEST
+schema_version: 1
+source: resync 2026-11-04 (targeted update)
+files:
+0c981b9700c8  212096  docs/BIG_O/NORTHSTAR.md
+70fde9db0ff7  9569  docs/BRAWLPIT/docs/BP_LEVEL_EDITOR_NORTHSTAR.md
+72f512153bd5  7965  docs/BRAWLPIT/docs/BP_LOBBY_MATCHMAKING_NORTHSTAR.md
+82a1f3fec237  9179  docs/BRAWLPIT/docs/BP_SOCIAL_LOBBY_NORTHSTAR.md
+5f549d493c87  5865  docs/BRAWLPIT/docs/BP_WASM_WOTAN_NORTHSTAR.md
+4e222407ba8e  26328  docs/BRAWLPIT/docs/RL_TRAINING_NORTHSTAR.md
+2d2809624d44  3333  docs/BRAWLPIT/docs/TIPJAR_ROADMAP.md
+086b3cb778df  22666  docs/BRAWLPIT/docs/WOTAN_HAT_STORE_NORTHSTAR.md
+f00b7c568c4c  851  docs/BRAWLPIT/docs/net_plan.md
+b44a8cf231e6  8908  docs/ECOWAR/docs/ARENA_API.md
+1c1a72555f0c  41751  docs/ECOWAR/docs/NORTHSTAR_LIVING_MAP.md
+4a168f7c906c  10753  docs/ECOWAR/docs/NORTHSTAR_MAP_EDITOR.md
+2220398e48c0  6542  docs/ECOWAR/docs/NORTHSTAR_MAP_LEAGUE.md
+97879ecac0c9  12256  docs/ECOWAR/docs/NORTHSTAR_REFLUX.md
+8ba43497249e  11862  docs/ECOWAR/docs/NORTHSTAR_SPHERE_CAMERA.md
+adeba9fa008d  3230  docs/EDIS/NORTHSTAR.md
+09aa0513558f  7299  docs/EDIS/docs/AD_MONETIZATION_NORTHSTAR.md
+0cb3afc864d4  7158  docs/EDIS/docs/DIS_DNS_NORTHSTAR.md
+227398ad72b0  3244  docs/EMILY/GOLDEN.md
+20ab0a0b54ce  13066  docs/EMILY/HQ-SPEC-PRIME-097-fixed-points.md
+237faa82d3de  1628  docs/EMILY/claire.md.txt
+36a780fd601f  285446  docs/EMILY/context/golden-docs-index.md
+4533b8543b4e  20808  docs/EMILY/docs/ARCHETYPE_ENGINE_NORTHSTAR.md
+b30adfe0c93a  14917  docs/EMILY/docs/BRAWLPIT_MOD_API_NORTHSTAR.md
+d74ff39c88d6  6595  docs/EMILY/docs/COMPANY_VALUES.md
+9a14a0292f1f  10782  docs/EMILY/docs/ECOSYSTEM_CONTINUITY_REPORT.md
+17e2a42cfd0c  9126  docs/EMILY/docs/EOSUI_NORTHSTAR.md
+f164fd91cc26  21971  docs/EMILY/docs/KUBERNETES_SERVICE_MIGRATION_NORTHSTAR.md
+569ec391fe88  21912  docs/EMILY/docs/MONOREPO_PRODUCT_AUDIT_2026-09-12.md
+8782cb997c5f  7930  docs/EMILY/docs/NORTHSTAR.md
+bce7abcf7f23  7711  docs/EMILY/docs/NORTHSTAR_BABY_ERP.md
+2275abbecdd3  5666  docs/EMILY/docs/NORTHSTAR_INDEX.md
+931992fe9906  9629  docs/EMILY/docs/NORTHSTAR_MOLTBOOK_INTEGRATION.md
+3798cc48af31  5764  docs/EMILY/docs/NORTHSTAR_OPENCLAW_INTEGRATION.md
+d7c6d24b0bee  35201  docs/EMILY/docs/NORTHSTAR_PROMPT_O_VERSE.md
+85c0abb80ed8  7480  docs/EMILY/docs/NORTHSTAR_STINKIES.md
+dfa5fa26c10e  6297  docs/EMILY/docs/NORTHSTAR_SUPPLY_CHAIN.md
+55939a29a477  17210  docs/EMILY/docs/PARENACLOUD_NORTHSTAR.md
+a96cc32bdd5f  14418  docs/EMILY/docs/PARENACLOUD_OPS_NORTHSTAR.md
+48c1cca0a217  16485  docs/EMILY/docs/PARENGINE_NORTHSTAR.md
+1bf0ff088432  24703  docs/EMILY/docs/SAGA_SYSTEM_AUDIT_2026-07-18.md
+61c03dbcbd5f  30416  docs/EMILY/docs/THE_EMILY_WAY.md
+96607ddac339  9436  docs/EMILY/docs/THE_FIELD.md
+8aa4ab5eee2f  5377  docs/EMILY/docs/TRAINING_PIPELINE.md
+52d168938c00  43056  docs/EMILY/docs/api.yaml
+1acb18bcb611  16358  docs/EMILY/docs/emily-agent-framework.md
+e2459781bdbe  7793  docs/EMILY/docs/emily-agent-protocol.md
+eb6db24c4bc6  18691  docs/EMILY/docs/emily-complete-system-integration.md
+ec86237560a7  47033  docs/EMILY/docs/emily-cron-autonomous-evolution.md
+0518c3af1815  5121  docs/EMILY/docs/emily-prime-agent-tools-spec.md
+42927318cfac  11749  docs/EMILY/docs/emily-rsi-engine-spec.md
+8c8ccc380654  6238  docs/EMILY/docs/emiree-over-agent-spec.md
+b6c1f2be6bca  11073  docs/EMILY/docs/hq-specs/HQ-SPEC-AI-103-fable-model-line.md
+bc167d55599c  12115  docs/EMILY/docs/hq-specs/HQ-SPEC-DOC-102-saga-curation-lifecycle.md
+a91c778010a2  8989  docs/EMILY/docs/hq-specs/HQ-SPEC-FIN-098-accounting-northstar.md
+76815e711379  17458  docs/EMILY/docs/hq-specs/HQ-SPEC-FIN-099-einhorn-ledger-platform.md
+47d756213d06  16915  docs/EMILY/docs/hq-specs/HQ-SPEC-INFRA-105-fates-dns.md
+4d833c2a5f44  12322  docs/EMILY/docs/hq-specs/HQ-SPEC-PRIME-101-norn-loop-kernel.md
+b7b104e76384  14449  docs/EMILY/docs/hq-specs/HQ-SPEC-SIM-100-springerton-seam-golden-band.md
+84a7364185fb  5255  docs/EMILY/docs/hq-specs/SAGA_SCHEMA.md
+f9162a1076b6  7190  docs/EMILY/docs/iam-integration-spec.md
+464c4e6bf768  7125  docs/EMILY/emily-memory/cycle-log.md
+309f204cc396  13536  docs/EMILY/emily-memory/world-state.md
+e793613baefd  14570  docs/EMILY/emily-prime-spec.md
+99fff42dbe22  5744  docs/EMILY/emiree-emily-fatbaby.md
+35d8f842a201  5833  docs/GOLDENBAND/format/GBAND_FORMAT.md
+96351dcd0295  7279  docs/GoblinFoxDragon/docs/NORTHSTAR.md
+55215dcce2e2  7047  docs/GoblinFoxDragon/docs2/BATTLEGROUNDS_MIGRATION_NORTHSTAR.md
+aaa5875403c7  13927  docs/GoblinFoxDragon/docs2/CHAT_BRIDGE_TO_EINHORN_SURVIVAL_SPEC.md
+92b8008b582c  17265  docs/GoblinFoxDragon/docs2/DRAGONSNSHIT_TWO_BACKENDS_AUDIT.md
+5011bc42b141  6153  docs/GoblinFoxDragon/docs2/DUNGEON_HAT_DROPS_NORTHSTAR.md
+75f0bd459de8  29863  docs/GoblinFoxDragon/docs2/DUNGEON_NORTHSTAR.md
+ccf5d92b08d7  7508  docs/GoblinFoxDragon/docs2/EDUCATION_CURRICULUM_NORTHSTAR.md
+67856ce01bbf  17077  docs/GoblinFoxDragon/docs2/GOLDENBAND_INTEGRATION_NORTHSTAR.md
+a704dda6df1a  8763  docs/GoblinFoxDragon/docs2/HEADLESS_SESSION_NORTHSTAR.md
+4fdd745e59d3  4646  docs/GoblinFoxDragon/docs2/HERO_BRIDGE_PREREQUISITES.md
+438fe30410c0  11014  docs/GoblinFoxDragon/docs2/HERO_CONTENT_FRAMEWORK.md
+fe80280f3f95  14511  docs/GoblinFoxDragon/docs2/INVENTORY_EQUIPMENT_NORTHSTAR.md
+91fe37ac17ba  7337  docs/GoblinFoxDragon/docs2/INVENTORY_PERSISTENCE_NORTHSTAR.md
+36e8000df77a  16374  docs/GoblinFoxDragon/docs2/ITEM_BUILDER_NORTHSTAR.md
+35ff1d1ff395  25309  docs/GoblinFoxDragon/docs2/JOB_SPELL_SYSTEM_NORTHSTAR.md
+99ba455c322d  22376  docs/GoblinFoxDragon/docs2/JUNGLE_CAMPS_NORTHSTAR.md
+9d2fa2670f6a  11276  docs/GoblinFoxDragon/docs2/MMO_NORTHSTAR.md
+52de399f4706  6294  docs/GoblinFoxDragon/docs2/MOB_SPAWN_NORTHSTAR.md
+611cb5fc67cc  22643  docs/GoblinFoxDragon/docs2/MOD_SURFACE_NORTHSTAR.md
+ede1ce0af3a8  4634  docs/GoblinFoxDragon/docs2/PER_JOB_LEVELS_NORTHSTAR.md
+194bbcfd2e68  32721  docs/GoblinFoxDragon/docs2/REDGARDEN_GUI_NORTHSTAR.md
+0d87cf051df3  8856  docs/GoblinFoxDragon/docs2/RENDERING_QUALITY_NORTHSTAR.md
+f20768a3d609  27419  docs/GoblinFoxDragon/docs2/SMOOTH_TERRAIN_NORTHSTAR.md
+9755ed4d3e98  27986  docs/GoblinFoxDragon/docs2/SSH_TRANSPORT_IDENTITY_NORTHSTAR.md
+a4a290007c64  14819  docs/GoblinFoxDragon/docs2/STACK_CONTINUITY_REPORT.md
+9d19d178c55a  9826  docs/GoblinFoxDragon/docs2/specs/REDGARDEN_MUD_BRIDGE_SPEC.md
+c62aa6cd862b  6099  docs/IDUNA/docs/APP_RELEASE_SIGNING.md
+6697dd309818  37772  docs/IDUNA/docs/EMILY_FOR_BUSINESS_NORTHSTAR.md
+2c86018706a2  12450  docs/IDUNA/docs/EMILY_INFRASTRUCTURE_PLAY_NORTHSTAR.md
+58b96029da55  10919  docs/IDUNA/docs/HF_SPACE_DEPLOY.md
+8172006e2be9  6346  docs/IDUNA/docs/IDUNA_NOTEBOOK_NORTHSTAR.md
+b6d8088dab88  6166  docs/IDUNA/docs/MULTI_KANBAN_NORTHSTAR.md
+05e257a08dc8  15619  docs/IDUNA/docs/NOCK_CHARACTER_PIPELINE_NORTHSTAR.md
+16c80762f3e1  41148  docs/IDUNA/docs/NOCK_NORTHSTAR.md
+49ed3ba32021  4406  docs/IDUNA/docs/NORTHSTAR.md
+d4f71d0adb9b  9611  docs/IDUNA/docs/NORTHSTAR_INVENTORY.md
+f864b7aa20f2  5581  docs/IDUNA/docs/NORTHSTAR_KIKORYU.md
+323762e62b40  6700  docs/IDUNA/docs/NORTHSTAR_PASSWORD_MANAGER.md
+c00c22de1bb9  4237  docs/IDUNA/docs/PROJECT_TAGS_NORTHSTAR.md
+79467225bd1a  23855  docs/IDUNA/docs/VS_REALITY_AUDIT.md
+2b8d48f65439  28503  docs/IDUNA/docs/kikoryu/FRONT_DOOR_FUNNEL.md
+e6ebe97eac48  4578  docs/IDUNA/docs/kikoryu/VS0_IDENTITY_GATE.md
+6dd43f0f4a4f  3140  docs/IDUNA/docs/kikoryu/VS10_SCOREBOARDS.md
+be2d7a440ec6  1480  docs/IDUNA/docs/kikoryu/VS11_TYLER_SYNDICATION.md
+0670ba499d54  1585  docs/IDUNA/docs/kikoryu/VS12_CRAFTING.md
+60670a712515  1661  docs/IDUNA/docs/kikoryu/VS13_MATERIAL_LINEAGE.md
+2833918b6f99  4346  docs/IDUNA/docs/kikoryu/VS1_IAM_MODERATION.md
+38d2df8726ad  5419  docs/IDUNA/docs/kikoryu/VS2_TOURNAMENTS.md
+4a307ef6bb38  1218  docs/IDUNA/docs/kikoryu/VS3_MARKET_GAME.md
+2fb7a1906aa5  1386  docs/IDUNA/docs/kikoryu/VS4_ARCHIVE_INTAKE.md
+5a696f54e687  1366  docs/IDUNA/docs/kikoryu/VS5_TRADE_TAPE.md
+76a4cf642690  1689  docs/IDUNA/docs/kikoryu/VS6_LICENSING.md
+591b34cd496c  4378  docs/IDUNA/docs/kikoryu/VS7_AGENT_AUTHORITY.md
+ff0b6664a93e  1486  docs/IDUNA/docs/kikoryu/VS8_AURABORIALIS.md
+08919571d8cd  3858  docs/IDUNA/docs/kikoryu/VS9_REPUTATION.md
+4b00192a4dd0  9325  docs/IDUNA/golden.md
+6fed534123c6  171403  docs/PARENA/NORTHSTAR.md
+bf98acd60056  19096  docs/PARENA/docs/AVR_ARDUINO_NORTHSTAR.md
+44c8bf8c6af0  9447  docs/PARENA/docs/BYTES_NORTHSTAR.md
+94e5a7addf11  13301  docs/PARENA/docs/DCGAN_PRIMITIVES_NORTHSTAR.md
+00e93db5cebc  9840  docs/PARENA/docs/EXPR_POSITION_BINDING_FORMS_NORTHSTAR.md
+daa2cabd4542  6897  docs/PARENA/docs/I2C_NORTHSTAR.md
+0cd98e34b93f  9934  docs/PARENA/docs/KISMET_WIRELESS_NORTHSTAR.md
+86c38ae2503a  33387  docs/PARENA/docs/LLVM_BACKEND_NORTHSTAR.md
+fbc0686fc487  11016  docs/PARENA/docs/NATIVE_PCAP_NORTHSTAR.md
+c8a97cf94a29  6827  docs/PARENA/docs/NORTHSTAR_LINNEN.md
+e4763e939149  8491  docs/PARENA/docs/OS_PORTABILITY_NORTHSTAR.md
+6b2c9bc424f0  27189  docs/PARENA/docs/PARENA_COREUTILS_NORTHSTAR.md
+ecf0b3cca429  11668  docs/PARENA/docs/PBX_ASTERISK_NORTHSTAR.md
+687eb3aed6ca  6519  docs/PARENA/docs/SCAN_PROFILES_NORTHSTAR.md
+8be3920b50b6  11156  docs/PARENA/docs/SIP_TWILIO_GATEWAY_NORTHSTAR.md
+101f2a1c99ac  6844  docs/PARENA/docs/SPI_NORTHSTAR.md
+79e55313f4fd  6280  docs/PARENA/docs/UART_SERIAL_NORTHSTAR.md
+576a2c843e80  17342  docs/PARENA/docs/V16_NORTHSTAR.md
+20ca1881150f  11065  docs/PARENA/stdlib/forgedinface/NORTHSTAR.md
+cc6e8206a1f1  12339  docs/PARENA/stdlib/forgedlevel/NORTHSTAR.md
+2710c5fef314  4302  docs/PRRJECT_FATBABY/docs/COMPETITOR_WEST_NORTHSTAR.md
+07f361f76154  7950  docs/PRRJECT_FATBABY/docs/CONTENT_TYPE_TAXONOMY.md
+8c326ac72c56  5670  docs/PRRJECT_FATBABY/docs/GTM_FUNNEL.md
+14ee2e556e0e  9773  docs/PRRJECT_FATBABY/docs/headlines/live-feed-northstar.md
+6704ebeac7d5  4157  docs/PRRJECT_FATBABY/docs/northstar/FATBABY_K8S_UDS_NORTHSTAR.md
+19e742f00781  19467  docs/PRRJECT_FATBABY/docs/northstar/KUBERNETES_MIGRATION.md
+559ed4ed311c  7548  docs/PRRJECT_FATBABY/docs/northstar/auto-generated-articles.md
+502770b898bb  4406  docs/PRRJECT_FATBABY/docs/northstar/director-network-ticker-discovery.md
+138c761f3420  12506  docs/PRRJECT_FATBABY/docs/northstar/executive_summary.md
+941369671921  10645  docs/PRRJECT_FATBABY/docs/northstar/family-relationship-linkage.md
+38aca1d81557  24959  docs/PRRJECT_FATBABY/docs/northstar/northstar.md
+acb32a2e72aa  26262  docs/PRRJECT_FATBABY/docs/northstar/replay-fragility.md
+9e3bd77183a2  7850  docs/PRRJECT_FATBABY/docs/northstar/tina-engine.md
+f40488fee928  276263  docs/REDGARDEN/NORTHSTAR.md
+55fe0a209f49  18467  docs/REDGARDEN/docs/BOT_HUMANNESS_NORTHSTAR.md
+04f912427ea0  5438  docs/REDGARDEN/docs/CONSUMABLES_AND_COOKING.md
+92561bcbaf40  6489  docs/REDGARDEN/docs/FFXI_ITEM_PARITY_SEED.md
+dd8056c298b1  60812  docs/REDGARDEN/docs/HEROES_VS0.md
+fd1b3a176ddf  24603  docs/REDGARDEN/docs/PING_SYSTEM_NORTHSTAR.md
+02efa7d59ea0  6210  docs/REDGARDEN/docs/RANKED_MATCHMAKING.md
+c9d6e3380651  10290  docs/SHANKPIT/docs/ANTICHEAT_NORTHSTAR.md
+469917cbeb5b  35840  docs/SHANKPIT/docs/BOT_TRAINING_NORTHSTAR.md
+ebcdfdf58293  20490  docs/SHANKPIT/docs/DEADWEIGHT_IN_SHANKPIT_NEXT_STEPS.md
+33957d43c061  15018  docs/SHANKPIT/docs/HUMANNESS_NORTHSTAR.md
+8fe325a5ea57  17381  docs/SHANKPIT/docs/ONGOING_DEVELOPMENT_REPORT_2026-11-04.md
+902a83602380  10579  docs/SHANKPIT/docs/SHANKPIT_OS_NORTHSTAR.md
+811b9b9c574a  26938  docs/SHANKPIT/docs/STORY_SYSTEM_NORTHSTAR.md
+08c756b9c5c5  5975  docs/SHANKPIT/docs2/CLIENT_PREDICTION_SPEC.md
+c2e44c232a95  10060  docs/SHANKPIT/docs2/GFD_FRONTEND_VS0_NORTHSTAR.md
+6089dfcd51d8  5692  docs/SHANKPIT/docs2/MESH_EDITING_NORTHSTAR.md
+20b16d1eef90  7157  docs/SHANKPIT/docs2/NETCODE_CONTRACT_SPEC.md
+887fd9715fa6  22791  docs/SHANKPIT/docs2/NORTHSTAR.md
+8b6db1d5b533  11882  docs/SHANKPIT/docs2/NORTHSTAR_TYLER_TEACHES_TYPING.md
+2e4d14a1ba16  6556  docs/SHANKPIT/docs2/PARTY_STORES.md
+3d886adedeac  15598  docs/SHANKPIT/docs2/RAGDOLL_ORIENTATION_NORTHSTAR.md
+258e9c37d5b9  11923  docs/SHANKPIT/docs2/SHANKPIT_AI_ARCHITECTURE.md
+4b2e5e3d8345  11288  docs/SHANKPIT/docs2/SHARED_ENGINE_NORTHSTAR.md
+95d636549a96  6457  docs/SHANKPIT/docs2/TRAPX_NEIGHBORHOOD_PERSONALITIES.md
+5235267851c8  38005  docs/SHANKPIT/docs2/TRAPX_NORTHSTAR.md
+994bb3f23265  11377  docs/SHANKPIT/docs2/specs/AI_SCRIPTED_ANIMATION_NORTHSTAR.md
+0c1ad3e43fe9  6458  docs/SHANKPIT/docs2/specs/AI_SOLO_ENEMY_NORTHSTAR.md
+f1b0a46bf78e  6681  docs/SHANKPIT/docs2/specs/AI_WAYPOINT_NAV_NORTHSTAR.md
+3145362c461a  10748  docs/SHANKPIT/docs2/specs/BEDROCK_RACERS_SPEC.md
+5908dfc64545  6627  docs/SHANKPIT/docs2/specs/BEDWARS_SPEC.md
+ecfc9d83219c  61354  docs/SHANKPIT/docs2/specs/BIGO_ENGINE_MERGE_NORTHSTAR.md
+af28c362c1e8  9395  docs/SHANKPIT/docs2/specs/CAPTCHA_FPS_PHYSICS_DOGFOOD_NORTHSTAR.md
+67efdc3b25e9  10731  docs/SHANKPIT/docs2/specs/PELLEGRINO_PHONE_BROWSER_STATUS.md
+ceb549118483  18829  docs/SHANKPIT/docs2/specs/SALVAGE_AND_COMPONENT_DESTRUCTION_NORTHSTAR.md
+ec534711ba64  7599  docs/SHANKPIT/docs2/specs/SHANKPIT_DRAGONSNSHIT_SYSTEMS_SPEC.md
+e8a922a1bf9c  6908  docs/SHANKPIT/docs2/specs/STORY_LEVEL_SEQUENCING_NORTHSTAR.md
+6a4ab7b8015b  15319  docs/SHANKPIT/docs2/specs/TYLER_VALHANNA_MODE_NORTHSTAR.md
+dab7177a5b15  7218  docs/SHANKPIT/docs2/specs/WEAKNIGHT_VS0_ACCEPTANCE_CRITERIA.md
+65aed9a1c32c  6538  docs/TRAPX/docs/URBAN_FARMING_NORTHSTAR.md
+f96885888663  10284  docs/TYLER/HQ-CANON-TYLER-105-EPOCH-EXTINCTION.md
+3a938fd7efca  12563  docs/TYLER/HQ-SPEC-LORE-104-QUEEN-SALLY-DOCTRINE.md
+c9e44e526cbd  127036  docs/TYLER/README.md
+31a3a669a800  24609  docs/TYLER/engine/broadway_spec.md
+95c53a5e7378  992  docs/TYLER/just_a_duck.md
+d97246e6a3ef  97082  docs/TYLER/multiverse_heroes.md
+b3f734c7f3df  20676  docs/TYLER/universe_engine.md
+d0bfebc7f6cf  30487  docs/WOTAN/CLUBS_NORTHSTAR.md
+7da24cd44688  12860  docs/WOTAN/HEARTHSTONE_NORTHSTAR.md
+bb9589c642f0  22004  docs/WOTAN/IDENTITY_NORTHSTAR.md
+6dd2669c6edd  12288  docs/WOTAN/NOCK_SOCIAL_NORTHSTAR.md
+a622d62e87c2  11099  docs/WOTAN/NORTHSTAR.md
+20f94d1febf3  4797  docs/emily.cli/docs/NORTHSTAR.md
+f5398dcca6f6  15152  docs/gpt2-alpine-c/NORTHSTAR.md
+c2701ad6692a  11211  docs/gpt2-alpine-c/docs/GAME_AI_NORTHSTAR.md
+0a085de28f89  9295  docs/gpt2-alpine-c/docs/TOWERPRINT.md
