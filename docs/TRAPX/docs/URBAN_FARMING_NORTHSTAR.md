@@ -30,7 +30,7 @@ Planned file: `PARENA/stdlib/trapx/farming_rules.prn` (does not exist yet). Same
 | water | each crop's water need per phase; drought is a slow failure, not an event | weather (`sky_rules`), season |
 | seed → crop | seed kind, grow phases, yield per plot quality | era tech (a 1700s plot has no greenhouse) |
 | harvest | yield and quality, and the contamination cut | soil, contamination, care |
-| market | what it is worth: a stall price, a neighbour price (contact affinity), and the auction floor | `ce-money-flow`, contacts |
+| market | what it is worth: a stall price, a neighbour price (contact affinity), and the auction floor | `ce-money-flow`, contacts, GFD's `ah.go` price history |
 | compost | district waste → soil health; the one loop that rewards staying put | day clock, citizens' hunger |
 | theft / vandalism | whether a plot is robbed: inverse scrutiny, thief path (DUEL/IDLE), time of day | `ce-scrutiny`, citizen day |
 | community garden | a plot that is a *safe zone*: raises local mood, lowers crime drift, attracts CRAFT citizens | neighborhood personality |
@@ -77,9 +77,12 @@ layer is deliberately boring:
 
 ## 6. Named, not built
 
-- No `farming_rules.prn`, no plot entity, no crop item, no market or auction house (the auction house does
-  not exist anywhere in this monorepo — it is planned in
-  `SHANKPIT/docs/ONGOING_DEVELOPMENT_REPORT_2026-11-04.md`, shared with mining and actor goals).
+- No `farming_rules.prn`, no plot entity, no crop item, no stall.
+- **The auction house exists in GFD, not here**: `GoblinFoxDragon/server/market/ah.go` is a real
+  server-authoritative FFXI-parity AH (blind bid, 12-sale price history, listing fee, categories) and
+  `server/attention/attention.go` already scales its tax with Attention. The merge's job is to surface it
+  in SHANKPIT's frontend and align item identity — not to build a second one. Plan:
+  `SHANKPIT/docs/ONGOING_DEVELOPMENT_REPORT_2026-11-04.md` §3.5.
 - No fluid system, so watering is a register, not water.
 - No seasons: `sky_rules.prn` has weather, `day_night_clock.c` has a clock, nothing has a calendar yet.
 - No neighborhood personality implementation (`TRAPX_NEIGHBORHOOD_PERSONALITIES.md` is still prose), so
@@ -90,4 +93,5 @@ layer is deliberately boring:
 1. `farming_rules.prn` + hand-derived C test beside the city engine's, nothing else.
 2. One plot in one authored level: geometry + one crop + harvest into cargo.
 3. Market stall: one neighbour, one price, contact affinity applied.
-4. Auction house (shared with mining), then the community-garden safe-zone effects.
+4. Surface GFD's auction house in the frontend (shared with mining and actor goals), then the
+   community-garden safe-zone effects.
